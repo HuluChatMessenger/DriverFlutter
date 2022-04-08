@@ -71,6 +71,8 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
                     errorValue = 'Please enter a phone number!';
                 }
               }, (r) => {isValid = true});
+            } else {
+              isValid = true;
             }
             return errorValue;
           },
@@ -79,7 +81,8 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
         // Button
         ElevatedButton(
             onPressed: () {
-              if (isValid && inputStr != null) {
+              print('Check' + isValid.toString() + inputStr.toString());
+              if (_formKey.currentState!.validate() && isValid && inputStr != null) {
                 addLogin(inputStr!);
               }
             },
@@ -107,6 +110,7 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
   }
 
   void addLogin(String input) {
+    print('Check');
     BlocProvider.of<LoginBloc>(context).add(GetOTPForLogin(input));
   }
 }

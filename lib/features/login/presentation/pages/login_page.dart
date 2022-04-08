@@ -36,48 +36,48 @@ class LoginPage extends StatelessWidget {
   BlocProvider<LoginBloc> buildBody(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<LoginBloc>(),
-      child: Column(
+      child: Stack(
         children: <Widget>[
-          // Top Background
-          backgroundTopCurveWidget(context),
-          // Content
-          const SizedBox(height: 32),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Column(
-              children: <Widget>[
-                // Greeting
-                greetingsLoginWidget(context),
-                const SizedBox(height: 48),
-                // Login Controls
-                const LoginControlsWidget(),
-                BlocBuilder<LoginBloc, LoginState>(
-                  builder: (context, state) {
-                    if (state is Empty) {
-                      return const MessageDisplayWidget(
-                        message: 'Please enter a phone number!',
-                      );
-                    } else if (state is Loading) {
-                      return const LoadingWidget();
-                    } else if (state is Loaded) {
-                      openPageOTP(context);
-                      return const Center(
-                        child: Text('Login Success!'),
-                      );
-                    } else if (state is Error) {
-                      return MessageDisplayWidget(
-                        message: state.message,
-                      );
-                    } else {
-                      return const MessageDisplayWidget(
-                        message: 'Please enter a phone number!',
-                      );
-                    }
-                  },
+          Column(
+            children: <Widget>[
+              // Top Background
+              backgroundTopCurveWidget(context),
+              // Content
+              const SizedBox(height: 32),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Column(
+                  children: <Widget>[
+                    // Greeting
+                    greetingsLoginWidget(context),
+                    const SizedBox(height: 48),
+                    // Login Controls
+                    const LoginControlsWidget(),
+                    const SizedBox(height: 64),
+                  ],
                 ),
-                const SizedBox(height: 64),
-              ],
-            ),
+              ),
+            ],
+          ),
+          BlocBuilder<LoginBloc, LoginState>(
+            builder: (context, state) {
+              if (state is Empty) {
+                return Container();
+              } else if (state is Loading) {
+                return LoadingWidget();
+              } else if (state is Loaded) {
+                openPageOTP(context);
+                return const Center(
+                  child: Text('Login Success!'),
+                );
+              } else if (state is Error) {
+                return MessageDisplayWidget(
+                  message: state.message,
+                );
+              } else {
+                return Container();
+              }
+            },
           ),
         ],
       ),

@@ -23,6 +23,8 @@ class InputConverter {
       return Left(InvalidInputPhoneFailure());
     } else if (str.length < 9) {
       return Left(InvalidInputIncompletePhoneFailure());
+    } else if (!(str.startsWith('9') || str.startsWith('7'))) {
+      return Left(InvalidInputPhoneFailure());
     } else if (regExp.hasMatch(str)) {
       return Right(str);
     }

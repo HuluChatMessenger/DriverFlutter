@@ -20,9 +20,9 @@ class MyApp extends StatelessWidget {
       title: 'HuluTaxi',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch().copyWith(
-            primary: Colors.green,
-            secondary: Colors.green.shade300,
-          )),
+        primary: Colors.green,
+        secondary: Colors.green.shade300,
+      )),
       home: const LoginPage(),
     );
   }
