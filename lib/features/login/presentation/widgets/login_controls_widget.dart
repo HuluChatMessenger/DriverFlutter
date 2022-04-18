@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/core/util/input_converter.dart';
 
 import '../bloc/bloc.dart';
@@ -31,7 +32,7 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
-            labelText: 'Enter Phone Number',
+            labelText: AppConstants.strPromptPhone,
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             prefix: Container(
               width: 72,
@@ -56,19 +57,19 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
           validator: (value) {
             String? errorValue;
             if (inputStr == null) {
-              errorValue = 'Please enter a phone number!';
+              errorValue = AppConstants.errMsgPhoneEmpty;
             } else if (InputConverter().stringValidPhone(inputStr!).isLeft()) {
               InputConverter().stringValidPhone(inputStr!).fold((l) {
                 isValid = false;
                 switch (l.runtimeType) {
                   case InvalidInputPhoneFailure:
-                    errorValue = 'Phone number starts with the digit 9 or 7!';
+                    errorValue = AppConstants.errMsgPhone;
                     break;
                   case InvalidInputIncompletePhoneFailure:
                     errorValue = null;
                     break;
                   case InvalidInputEmptyPhoneFailure:
-                    errorValue = 'Please enter a phone number!';
+                    errorValue = AppConstants.errMsgPhoneEmpty;
                 }
               }, (r) => {isValid = true});
             } else {
@@ -78,39 +79,50 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
           },
         ),
         const SizedBox(height: 40),
-        // Button
-        ElevatedButton(
-            onPressed: () {
-              print('Check' + isValid.toString() + inputStr.toString());
-              if (_formKey.currentState!.validate() && isValid && inputStr != null) {
-                addLogin(inputStr!);
-              }
-            },
-            style: ElevatedButton.styleFrom(primary: Colors.grey.shade300),
-            child: Container(
-              height: 50,
-              color: Colors.grey.shade300,
-              child: Row(
-                children: const [
-                  Text(
-                    'Continue',
-                    style: TextStyle(color: Colors.grey, fontSize: 20),
-                  ),
-                  Spacer(),
-                  Icon(
-                    Icons.arrow_forward,
-                    color: Colors.grey,
-                  ),
-                ],
-              ),
-            )),
+        MaterialButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate() &&
+                isValid &&
+                inputStr != null) {
+              addLogin(inputStr!);
+            } else {
+              return;
+            }
+          },
+          child: Container(
+            height: 50,
+            color: Colors.green,
+            child: Row(
+              children: const [
+                Text(
+                  AppConstants.strContinue,
+                  style: TextStyle(fontSize: 20),
+                ),
+                Spacer(),
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+          color: Colors.green,
+          disabledColor: Colors.grey.shade300,
+          textColor: Colors.white,
+          disabledTextColor: Colors.grey,
+          minWidth: MediaQuery.of(context).size.width - 100,
+          height: 44,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+        ),
       ]),
     ) // )
         ;
   }
 
   void addLogin(String input) {
-    print('Check');
+    FocusManager.instance.primaryFocus?.unfocus();
     BlocProvider.of<LoginBloc>(context).add(GetOTPForLogin(input));
   }
 }

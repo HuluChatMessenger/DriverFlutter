@@ -2,22 +2,15 @@ import 'package:bloc/bloc.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/util/input_converter.dart';
 
-import '../../domain/usecases/get_login_otp.dart';
+import '../../../../core/util/constants.dart';
+import '../../domain/usecases/post_login_otp.dart';
 import 'bloc.dart';
 
-const String serverFailureMessage = "Server Failure";
-const String cacheFailureMessage = "Cache Failure";
-const String connectionFailureMessage =
-    "Unable to connect to the internet. Please check your connection.";
-const String unknownFailureMessage = 'Some error occurred. Please, try again!';
-const String invalidInputFailureMessage =
-    "Phone number starts with the digit 9 or 7!";
-
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final GetLoginOTP getLoginOTP;
+  final PostLoginOTP postLoginOTP;
   final InputConverter inputConverter;
 
-  LoginBloc({required this.getLoginOTP, required this.inputConverter})
+  LoginBloc({required this.postLoginOTP, required this.inputConverter})
       : super(LoginInitial()) {
     on<LoginEvent>(mapLoginOTPState);
   }
@@ -30,22 +23,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final inputEither = inputConverter.stringValidPhone(event.phoneNumber);
       await inputEither.fold(
         (failure) async {
-          emit(const Error(message: invalidInputFailureMessage));
+          emit(const ErrorLogin(message: AppConstants.errMsgPhone));
         },
         (string) async {
           print('Request started');
-          emit(Loading());
+          emit(LoadingLogin());
 
           final failureOrSuccess =
-              await getLoginOTP(Params(phoneNumber: string));
+              await postLoginOTP(Params(phoneNumber: string));
           emit(failureOrSuccess.fold(
             (failure) {
               print('Response error');
-              return Error(message: _mapFailureToMessage(failure));
+              return ErrorLogin(message: _mapFailureToMessage(failure));
             },
             (success) {
               print('Response received');
-              return Loaded(login: success);
+              return LoadedLogin(phoneNumber: event.phoneNumber);
             },
           ));
         },
@@ -56,11 +49,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   String _mapFailureToMessage(Failure? failure) {
     switch (failure.runtimeType) {
       case ServerFailure:
-        return serverFailureMessage;
+        if (failure is ServerFailure &&
+            failure.errMsg != null &&
+            failure.errMsg!.isNotEmpty) {
+          return failure.errMsg!;
+        } else {
+          return AppConstants.errMsgServer;
+        }
       case ConnectionFailure:
-        return connectionFailureMessage;
+        return AppConstants.errMsgConnection;
       default:
-        return unknownFailureMessage;
+        return AppConstants.errMsgUnknown;
     }
   }
 }

@@ -11,20 +11,25 @@ class LoadingWidget extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: Colors.black12.withOpacity(0.2),
+        color: Colors.black.withOpacity(0.55),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height -
-                MediaQuery.of(context).size.height * 0.35,
-            child: SpinKitFadingCircle(
+      child: Center(
+        child: SizedBox(
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: 72, right: 72, top: 324, bottom: 324),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              child: const SpinKitFadingCircle(
                 color: Colors.green,
                 size: 50.0,
               ),
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
