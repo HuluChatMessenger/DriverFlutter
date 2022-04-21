@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
-import 'package:hulutaxi_driver/features/login/presentation/pages/splash_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/vehicle_page.dart';
 import 'package:hulutaxi_driver/injection_container.dart';
 
-import '../../../../core/util/constants.dart';
 import '../widgets/widgets.dart';
 
 class AddPicPage extends StatelessWidget {
-  String? pic;
-  bool isValid = false;
-
-  AddPicPage({Key? key}) : super(key: key);
+  AddPicPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +19,9 @@ class AddPicPage extends StatelessWidget {
   }
 
   BlocProvider<PicBloc> buildBody(BuildContext context) {
+    bool isBtnEnabled = false;
+    var colorsBtnBack = Colors.grey.shade300;
+    Color colorsBtnTxt = Colors.grey;
     return BlocProvider(
       create: (_) => sl<PicBloc>(),
       child: Stack(
@@ -39,31 +40,7 @@ class AddPicPage extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 16, right: 16),
                     child: Column(
                       children: <Widget>[
-                        Stack(
-                          children: <Widget>[
-                            CircleAvatar(
-                              radius: 104, // Image radius
-                              child: Image.asset(
-                                  'assets/images/place_holder_profile.png'),
-                            ),
-                            Positioned(
-                              bottom: 20,
-                              right: 24,
-                              child: IconButton(
-                                onPressed: () {
-                                  if (pic != null) {
-                                    addPic(context, pic!);
-                                  }
-                                },
-                                icon: const Icon(
-                                  Icons.add,
-                                  size: 64,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        PicControlsWidget(),
                         const SizedBox(height: 48),
                         const Text(
                           AppConstants.strAddPhotoSub,
@@ -74,42 +51,6 @@ class AddPicPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 64),
-                        MaterialButton(
-                          onPressed: () {
-                            if (isValid && pic != null) {
-                              openPageVehicle();
-                            } else {
-                              return;
-                            }
-                          },
-                          child: Container(
-                            height: 50,
-                            color: Colors.green,
-                            child: Row(
-                              children: const [
-                                Text(
-                                  AppConstants.strContinue,
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                Spacer(),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            ),
-                          ),
-                          color: Colors.green,
-                          disabledColor: Colors.grey.shade300,
-                          textColor: Colors.white,
-                          disabledTextColor: Colors.grey,
-                          minWidth: MediaQuery.of(context).size.width - 100,
-                          height: 44,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        const SizedBox(height: 64),
                       ],
                     ),
                   ),
@@ -117,12 +58,7 @@ class AddPicPage extends StatelessWidget {
               ),
             ),
           ),
-          BlocConsumer<PicBloc, PicState>(
-            listener: (context, state) {
-              if (state is LoadedPic) {
-                isValid = true;
-              }
-            },
+          BlocBuilder<PicBloc, PicState>(
             builder: (context, state) {
               if (state is LoadingPic) {
                 return const LoadingWidget();
@@ -132,8 +68,10 @@ class AddPicPage extends StatelessWidget {
                   isDismiss: true,
                   typeDialog: AppConstants.dialogTypeErr,
                 );
+              } else if (state is LoadedPic) {
+                return setBtnContinue(true);
               } else {
-                return Container();
+                return setBtnContinue(false);
               }
             },
           ),
@@ -142,16 +80,27 @@ class AddPicPage extends StatelessWidget {
     );
   }
 
-  void addPic(BuildContext context, String input) {
-    FocusManager.instance.primaryFocus?.unfocus();
-    BlocProvider.of<PicBloc>(context).add(GetPic(input));
+  Widget setBtnContinue(bool isBtnEnabled) {
+    return Positioned(
+      left: 32,
+      right: 32,
+      bottom: 140,
+      child: ButtonWidget(
+        isBtnEnabled: isBtnEnabled,
+        btnFunction: onBtnContinueClicked,
+      ),
+    );
+  }
+
+  void onBtnContinueClicked() {
+    openPageVehicle();
   }
 
   void openPageVehicle() {
     Get.offAll(() => const VehiclePage());
   }
 
-  void openPageSplash() {
-    Get.offAll(() => const SplashPage());
-  }
+// void openPageSplash() {
+//   Get.offAll(() => const SplashPage());
+// }
 }

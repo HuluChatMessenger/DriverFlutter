@@ -28,7 +28,7 @@ class DriverModel extends Driver {
     required state,
     required avgRating,
     required userIdn,
-    required tokenData,
+    tokenData,
     vehicle,
     required driverWallet,
     driverDocuments,
@@ -56,30 +56,44 @@ class DriverModel extends Driver {
         );
 
   factory DriverModel.fromJson(Map<String, dynamic> json) {
+
+    DriverWallet driverWallet =
+    DriverWalletModel.fromJson(json['driver_wallet']);
+
+    print('LogHulu CheckWallet: $driverWallet');
+
+    TokenData? token;
+    var tokenData = json['token_data'];
+
+    if (tokenData != null) {
+      token = TokenDataModel.fromJson(json['token_data']);
+    }
+
+    print('LogHulu CheckToken: $tokenData');
+
+    ProfilePic? profilePic;
+    var profilePicData = json['profile_picture'];
+
+    if (profilePicData != null)
+      profilePic = ProfilePicModel.fromJson(profilePicData);
+
+    print('LogHulu CheckPic: $profilePic');
+
+    Vehicle? vehicle;
+    var vehicleData = json['vehicle'];
+
+    if (vehicleData != null)
+      vehicle = VehicleModel.fromJson(vehicleData);
+
+    print('LogHulu CheckVehicle: $vehicle');
+
     var driverDocumentsFromJson = json['driver_documents'];
     List<DriverDocuments> driverDocumentsList = [];
     for (dynamic element in driverDocumentsFromJson) {
       DriverDocuments document = DriverDocumentsModel.fromJson(element);
       driverDocumentsList.add(document);
     }
-    print('Check: $driverDocumentsList');
-
-    ProfilePic profilePic = ProfilePicModel.fromJson(json['profile_picture']);
-
-
-    print('Check: $profilePic');
-
-    TokenData tokenData = TokenDataModel.fromJson(json['token_data']);
-
-    print('Check: $tokenData');
-    Vehicle vehicle = VehicleModel.fromJson(json['vehicle']);
-
-    print('Check: $vehicle');
-
-    DriverWallet driverWallet =
-        DriverWalletModel.fromJson(json['driver_wallet']);
-
-    print('Check: $driverWallet');
+    print('LogHulu CheckDoc: $driverDocumentsList');
 
     return DriverModel(
       id: json['id'],
@@ -97,43 +111,10 @@ class DriverModel extends Driver {
       state: json['state'],
       avgRating: json['avg_rating'],
       userIdn: json['user_idn'],
-      tokenData: tokenData,
+      tokenData: token,
       vehicle: vehicle,
       driverWallet: driverWallet,
       driverDocuments: driverDocumentsList,
-    );
-  }
-
-  factory DriverModel.fromJsonRegistration(Map<String, dynamic> json) {
-    TokenData tokenData = TokenDataModel.fromJson(json['token_data']);
-
-    print('Check: $tokenData');
-
-    DriverWallet driverWallet =
-        DriverWalletModel.fromJson(json['driver_wallet']);
-
-    print('Check: $driverWallet');
-
-    return DriverModel(
-      id: json['id'],
-      isApproved: json['is_approved'],
-      isContactConfirmed: json['contact_confirmed'],
-      isDocumentSubmitted: json['document_submited'],
-      isActive: json['is_active'],
-      isLoggedIn: json['is_logged_in'],
-      profilePic: null,
-      fName: json['first_name'],
-      mName: json['middle_name'],
-      lName: json['last_name'],
-      email: json['email'],
-      phoneNumber: json['phonenumber'],
-      state: json['state'],
-      avgRating: json['avg_rating'],
-      userIdn: json['user_idn'],
-      tokenData: tokenData,
-      vehicle: null,
-      driverWallet: driverWallet,
-      driverDocuments: [],
     );
   }
 

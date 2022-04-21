@@ -46,7 +46,8 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   Future<DriverModel> getDriver() {
-    final String? jsonDriver = sharedPreferences.getString(AppConstants.prefKeyDriver);
+    final String? jsonDriver =
+        sharedPreferences.getString(AppConstants.prefKeyDriver);
     if (jsonDriver != null) {
       return Future.value(DriverModel.fromJson(json.decode(jsonDriver)));
     } else {
@@ -66,7 +67,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   Future<void> cacheConfig(ConfigurationModel configModel) {
     return sharedPreferences.setString(
       AppConstants.prefKeyConfig,
-      json.encode(configModel.toJsonCache()),
+      json.encode(configModel.toJson()),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -26,6 +27,24 @@ class LoadedOtp extends OtpState {
   final Driver driver;
 
   const LoadedOtp({required this.driver});
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoadedOtpResendLogin extends OtpState {
+  final String phoneNumber;
+
+  const LoadedOtpResendLogin({required this.phoneNumber});
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoadedOtpResendRegistration extends OtpState {
+  final Registration registration;
+
+  const LoadedOtpResendRegistration({required this.registration});
 
   @override
   List<Object> get props => [];

@@ -5,6 +5,7 @@ import 'package:hulutaxi_driver/features/login/domain/entities/vehicle_colors.da
 
 class ConfigurationModel extends Configuration {
   ConfigurationModel({
+    isLoggedIn,
     required referralProgramEnabled,
     required supportedVersion,
     required currentVersion,
@@ -22,6 +23,7 @@ class ConfigurationModel extends Configuration {
           feedbackUrgencyLevels: feedbackUrgencyLevels,
           vehicleModels: vehicleModels,
           vehicleColors: vehicleColors,
+          isLoggedIn: isLoggedIn,
         );
 
   factory ConfigurationModel.fromJson(Map<String, dynamic> jsonData) {
@@ -65,6 +67,7 @@ class ConfigurationModel extends Configuration {
 
   Map<String, dynamic> toJson() {
     return {
+      "isLoggedIn": isLoggedIn,
       "referral_program_enabled": referralProgramEnabled,
       "supported_version": supportedVersion,
       "current_version": currentVersion,
@@ -73,17 +76,6 @@ class ConfigurationModel extends Configuration {
       "feedback_urgency_levels": feedbackUrgencyLevels,
       "vehicle_models": vehicleModels,
       "vehicle_colors": vehicleColors,
-    };
-  }
-
-  Map<String, dynamic> toJsonCache() {
-    return {
-      "referral_program_enabled": referralProgramEnabled,
-      "supported_version": supportedVersion,
-      "current_version": currentVersion,
-      "document_types": documentTypes,
-      "feedback_types": feedbackTypes,
-      "feedback_urgency_levels": feedbackUrgencyLevels,
     };
   }
 }

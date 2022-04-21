@@ -1,5 +1,5 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
 
 Widget backgroundLandingWidget(BuildContext context) {
   return Container(
@@ -8,6 +8,47 @@ Widget backgroundLandingWidget(BuildContext context) {
     decoration: BoxDecoration(
       color: Colors.white,
     ),
-    child: Image.asset('assets/images/landing_1.png'),
+    child: ListView(
+      children: [
+        CarouselSlider(
+          items: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/landing_1.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/landing_2.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/landing_3.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ],
+          options: CarouselOptions(
+            height: MediaQuery.of(context).size.height,
+            enlargeCenterPage: true,
+            autoPlay: true,
+            aspectRatio: 16 / 9,
+            autoPlayCurve: Curves.fastOutSlowIn,
+            enableInfiniteScroll: true,
+            autoPlayAnimationDuration: Duration(milliseconds: 500),
+            viewportFraction: 1,
+          ),
+        ),
+      ],
+    ),
   );
 }

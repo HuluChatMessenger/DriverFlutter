@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/otp_page.dart';
 import 'package:hulutaxi_driver/injection_container.dart';
@@ -73,7 +74,7 @@ class RegistrationPage extends StatelessWidget {
           BlocConsumer<RegistrationBloc, RegistrationState>(
             listener: (context, state) {
               if (state is LoadedRegistration) {
-                openPageOTP(state.registration.phoneNumber, state.registration.id.toString());
+                openPageOTP(state.registration);
               }
             },
             builder: (context, state) {
@@ -95,12 +96,13 @@ class RegistrationPage extends StatelessWidget {
     );
   }
 
-  void openPageOTP(String phoneNumber, String user) {
+  void openPageOTP(Registration registration) {
     OTPPage otpPage = OTPPage(
       isRegistration: true,
-      phoneNumber: phoneNumber,
+      phoneNumber: registration.phoneNumber,
+      registration: registration,
     );
-    otpPage.user = user;
-    Get.to(() => otpPage);
+    otpPage.user = registration.id.toString();
+    Get.offAll(() => otpPage);
   }
 }

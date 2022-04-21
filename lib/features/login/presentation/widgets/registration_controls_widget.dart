@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/registration_bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/registration_event.dart';
+import 'package:hulutaxi_driver/features/login/presentation/pages/terms_page.dart';
 
 import '../../../../core/util/input_converter.dart';
+import 'widgets.dart';
 
 class RegistrationControlsWidget extends StatefulWidget {
   final bool isReferral;
@@ -33,6 +36,9 @@ class _RegistrationControlsWidgetState
   String? inputStrGrandFatherName;
   String? inputStrPhone;
   String? inputStrReferral;
+
+  var colorsBtnBack = Colors.grey.shade300;
+  Color colorsBtnTxt = Colors.grey;
   final controllerReferral = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -54,6 +60,7 @@ class _RegistrationControlsWidgetState
           ),
           onChanged: (value) {
             inputStrFirstName = value;
+            setBtnEnabled();
           },
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
@@ -61,15 +68,8 @@ class _RegistrationControlsWidgetState
             if (inputStrFirstName == null ||
                 (inputStrFirstName != null && inputStrFirstName!.isEmpty)) {
               errorValue = AppConstants.errMsgFirstEmpty;
-              isBtnEnabled = false;
             } else {
               errorValue = null;
-              if (inputStrGrandFatherName != null &&
-                  inputStrFatherName != null &&
-                  isTerms &&
-                  isBtnEnabled) {
-                isBtnEnabled = true;
-              }
             }
             return errorValue;
           },
@@ -85,6 +85,7 @@ class _RegistrationControlsWidgetState
           ),
           onChanged: (value) {
             inputStrFatherName = value;
+            setBtnEnabled();
           },
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
@@ -92,15 +93,8 @@ class _RegistrationControlsWidgetState
             if (inputStrFatherName == null ||
                 (inputStrFatherName != null && inputStrFatherName!.isEmpty)) {
               errorValue = AppConstants.errMsgFatherEmpty;
-              isBtnEnabled = false;
             } else {
               errorValue = null;
-              if (inputStrFirstName != null &&
-                  inputStrGrandFatherName != null &&
-                  isTerms &&
-                  isBtnEnabled) {
-                isBtnEnabled = true;
-              }
             }
             return errorValue;
           },
@@ -116,6 +110,7 @@ class _RegistrationControlsWidgetState
           ),
           onChanged: (value) {
             inputStrGrandFatherName = value;
+            setBtnEnabled();
           },
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
@@ -124,15 +119,8 @@ class _RegistrationControlsWidgetState
                 (inputStrGrandFatherName != null &&
                     inputStrGrandFatherName!.isEmpty)) {
               errorValue = AppConstants.errMsgGrandfatherEmpty;
-              isBtnEnabled = false;
             } else {
               errorValue = null;
-              if (inputStrFirstName != null &&
-                  inputStrFatherName != null &&
-                  isTerms &&
-                  isBtnEnabled) {
-                isBtnEnabled = true;
-              }
             }
             return errorValue;
           },
@@ -146,7 +134,7 @@ class _RegistrationControlsWidgetState
             labelText: AppConstants.strPromptPhone,
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             prefix: SizedBox(
-              width: 72,
+              width: 76,
               child: Row(
                 children: <Widget>[
                   SizedBox(
@@ -163,6 +151,7 @@ class _RegistrationControlsWidgetState
           ),
           onChanged: (value) {
             inputStrPhone = value;
+            setBtnEnabled();
           },
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
@@ -187,16 +176,6 @@ class _RegistrationControlsWidgetState
             } else {
               errorValue = null;
             }
-            if (errorValue != null) {
-              isBtnEnabled = false;
-            } else if (inputStrFirstName != null &&
-                inputStrFatherName != null &&
-                inputStrGrandFatherName != null &&
-                inputStrPhone != null &&
-                isTerms &&
-                isBtnEnabled) {
-              isBtnEnabled = true;
-            }
             return errorValue;
           },
         ),
@@ -208,18 +187,19 @@ class _RegistrationControlsWidgetState
         Row(
           children: [
             Checkbox(
-                checkColor: Colors.green,
+                activeColor: Colors.green,
                 value: isTerms,
                 onChanged: (value) {
                   setState(() {
                     isTerms = value == true;
                     isErrVisible = !isTerms;
                   });
+                  setBtnEnabled();
                 }),
             TextButton(
               child: const Text(AppConstants.strAgree,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: Colors.black,
                   )),
               onPressed: () {
@@ -227,15 +207,18 @@ class _RegistrationControlsWidgetState
                   isTerms = !isTerms;
                   isErrVisible = !isTerms;
                 });
+                setBtnEnabled();
               },
             ),
             TextButton(
               child: const Text(AppConstants.strTerms,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 10,
                     color: Colors.green,
                   )),
-              onPressed: () {},
+              onPressed: () {
+                openTerms();
+              },
             ),
           ],
         ),
@@ -256,22 +239,21 @@ class _RegistrationControlsWidgetState
           ),
         ),
         const SizedBox(height: 32),
-        // Button
         MaterialButton(
-          onPressed: (isBtnEnabled) ? onButtonClicked : null,
+          onPressed: isBtnEnabled ? onBtnClicked : null,
           child: Container(
             height: 50,
-            color: Colors.green,
+            color: colorsBtnBack,
             child: Row(
-              children: const [
+              children: [
                 Text(
                   AppConstants.strContinue,
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, color: colorsBtnTxt),
                 ),
-                Spacer(),
+                const Spacer(),
                 Icon(
                   Icons.arrow_forward,
-                  color: Colors.white,
+                  color: colorsBtnTxt,
                 ),
               ],
             ),
@@ -283,7 +265,7 @@ class _RegistrationControlsWidgetState
           minWidth: MediaQuery.of(context).size.width - 100,
           height: 44,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(20.0),
           ),
         ),
       ]),
@@ -295,24 +277,31 @@ class _RegistrationControlsWidgetState
     controllerReferral.text = "Scanner Result";
   }
 
-  Function onButtonClicked() {
-    return () {
-      addRegistration(inputStrFirstName!, inputStrFatherName!,
-          inputStrGrandFatherName!, inputStrPhone!, inputStrReferral);
-    };
+  void onBtnClicked() {
+    addRegistration(inputStrFirstName!, inputStrFatherName!,
+        inputStrGrandFatherName!, inputStrPhone!, inputStrReferral);
+    ;
   }
 
   void setBtnEnabled() {
     setState(() {
-      if (_formKey.currentState!.validate() &&
+      if ((_formKey.currentState != null &&
+              _formKey.currentState!.validate()) &&
           inputStrFirstName != null &&
           inputStrFatherName != null &&
           inputStrGrandFatherName != null &&
-          inputStrPhone != null &&
+          (inputStrPhone != null && inputStrPhone?.length == 9) &&
           isTerms) {
         isBtnEnabled = true;
+        colorsBtnBack = Colors.green;
+        colorsBtnTxt = Colors.white;
       } else {
         isBtnEnabled = false;
+        colorsBtnBack = Colors.grey.shade300;
+        colorsBtnTxt = Colors.grey;
+        if (!isTerms) {
+          isErrVisible = true;
+        }
       }
     });
   }
@@ -356,6 +345,10 @@ class _RegistrationControlsWidgetState
     } else {
       return Container();
     }
+  }
+
+  void openTerms() {
+    Get.to(() => const TermsPage());
   }
 
   void addRegistration(String first, String father, String grandfather,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/otp_bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/main_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/pic_page.dart';
@@ -13,6 +14,7 @@ import '../widgets/widgets.dart';
 
 class OTPPage extends StatelessWidget {
   final String phoneNumber;
+  Registration? registration;
   String user = '';
   final bool isRegistration;
 
@@ -20,6 +22,7 @@ class OTPPage extends StatelessWidget {
     Key? key,
     required this.isRegistration,
     required this.phoneNumber,
+    this.registration,
   }) : super(key: key);
 
   @override
@@ -103,6 +106,7 @@ class OTPPage extends StatelessWidget {
     if (isRegistration) {
       return OtpControlsWidget(
         phoneNumber: user,
+        registration: registration,
         isRegistration: isRegistration,
       );
     } else {
@@ -115,9 +119,9 @@ class OTPPage extends StatelessWidget {
 
   void openPageOTP() {
     if (isRegistration) {
-      Get.offAll(AddPicPage());
+      Get.offAll(() => AddPicPage());
     } else {
-      Get.offAll(const MainPage());
+      Get.offAll(() => const MainPage());
     }
   }
 }

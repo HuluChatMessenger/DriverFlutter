@@ -29,24 +29,18 @@ class SplashPage extends StatelessWidget {
           BlocConsumer<SplashBloc, SplashState>(
             builder: (context, state) {
               if (state is ErrorSplash) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 40.0),
-                  child: Expanded(
-                    child: Align(
-                      alignment: FractionalOffset.bottomCenter,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          DefaultTextStyle(
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.green,
-                              fontStyle: FontStyle.italic,
-                            ),
-                            child: Text(state.message),
-                          ),
-                        ],
+                return Positioned(
+                  bottom: 32,
+                  right: 16,
+                  left: 16,
+                  child: Center(
+                    child: DefaultTextStyle(
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.green,
+                        fontStyle: FontStyle.italic,
                       ),
+                      child: Text(state.message),
                     ),
                   ),
                 );
@@ -80,26 +74,26 @@ class SplashPage extends StatelessWidget {
   }
 
   void openPageLanding(bool isReferral) {
-    Get.to(() => LandingPage(isReferral: isReferral));
+    Get.offAll(() => LandingPage(isReferral: isReferral));
   }
 
   void openPagePic() {
-    Get.to(() => AddPicPage());
+    Get.offAll(() => AddPicPage());
   }
 
   void openPageVehicle() {
-    Get.to(() => VehiclePage());
+    Get.offAll(() => const VehiclePage());
   }
 
   void openPageDocuments() {
-    Get.to(() => DocumentsPage());
+    Get.offAll(() => const DocumentsPage());
   }
 
   void openPageWaiting() {
-    Get.to(() => WaitingPage());
+    Get.offAll(() => const WaitingPage());
   }
 
   void openPageMain() {
-    Get.to(() => MainPage());
+    Get.offAll(() => const MainPage());
   }
 }

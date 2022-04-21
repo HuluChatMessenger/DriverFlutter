@@ -1,37 +1,51 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
-import 'package:hulutaxi_driver/core/util/input_converter.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../bloc/bloc.dart';
 
 class OtpControlsWidget extends StatefulWidget {
   final String phoneNumber;
+  Registration? registration;
   final bool isRegistration;
 
-  const OtpControlsWidget({
+  OtpControlsWidget({
     Key? key,
     required this.phoneNumber,
+    this.registration,
     required this.isRegistration,
   }) : super(key: key);
 
   @override
   _OtpControlsWidgetState createState() => _OtpControlsWidgetState(
-      phoneNumber: phoneNumber, isRegistration: isRegistration);
+      phoneNumber: phoneNumber,
+      registration: registration,
+      isRegistration: isRegistration);
 }
 
 class _OtpControlsWidgetState extends State<OtpControlsWidget> {
+  Registration? registration;
   final String phoneNumber;
   String? inputStr;
-  bool isValid = false;
   final bool isRegistration;
+  bool isBtnEnabled = false;
+  bool isResendCode = false;
+  String resendCodeTimer = AppConstants.strResend;
+  var colorsBtnBack = Colors.grey.shade300;
+  MaterialColor colorsResend = Colors.grey;
+  Color colorsBtnTxt = Colors.grey;
+  int _start = 60;
 
   _OtpControlsWidgetState(
-      {required this.phoneNumber, required this.isRegistration});
+      {required this.phoneNumber, this.registration,
+      required this.isRegistration}) {
+    startTimer();
+  }
 
   final _formKey = GlobalKey<FormState>();
 
@@ -59,7 +73,7 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
           backgroundColor: Colors.transparent,
           enableActiveFill: true,
           onCompleted: (v) {
-            if(inputStr != null && inputStr!.length == 5) {
+            if (isBtnEnabled && inputStr != null && inputStr!.length == 5) {
               addOtp(inputStr!);
             }
           },
@@ -68,11 +82,10 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
             setState(() {
               inputStr = value;
             });
+            setBtnEnabled();
           },
           beforeTextPaste: (text) {
             print("Allowing to paste $text");
-            //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-            //but you can show anything you want here, like your pop up saying wrong paste format or etc
             return true;
           },
         ),
@@ -80,30 +93,24 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
         Row(
           children: [
             TextButton(
-                onPressed: () {},
-                child: const Text(
+                onPressed: (isResendCode) ? onBtnResendClicked : null,
+                child: Text(
                   AppConstants.strResend,
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: TextStyle(fontSize: 14, color: colorsResend),
                 )),
             const SizedBox(width: 4),
             Text(
-              'in 0 seconds',
+              resendCodeTimer,
               style: TextStyle(fontSize: 14, color: Colors.green),
             ),
             const Spacer(),
             MaterialButton(
-              onPressed: () {
-                if (inputStr != null && inputStr!.length == 5) {
-                  addOtp(inputStr!);
-                } else {
-                  return;
-                }
-              },
+              onPressed: (isBtnEnabled) ? onBtnClicked : null,
               child: Icon(
                 Icons.arrow_forward,
-                color: Colors.white,
+                color: colorsBtnTxt,
               ),
-              color: Colors.green,
+              color: colorsBtnBack,
               disabledColor: Colors.grey.shade300,
               textColor: Colors.white,
               disabledTextColor: Colors.grey,
@@ -120,6 +127,53 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
         ;
   }
 
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _start = 60;
+    colorsResend = Colors.grey;
+    Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            timer.cancel();
+            isResendCode = true;
+            resendCodeTimer = '';
+            colorsResend = Colors.green;
+          });
+        } else {
+          setState(() {
+            _start--;
+            resendCodeTimer = 'in $_start seconds';
+          });
+        }
+      },
+    );
+  }
+
+  void onBtnClicked() {
+    if (inputStr != null) addOtp(inputStr!);
+  }
+
+  void onBtnResendClicked() {
+    startTimer();
+    addResendOtp();
+  }
+
+  void setBtnEnabled() {
+    setState(() {
+      if (inputStr != null && inputStr!.length == 5) {
+        isBtnEnabled = true;
+        colorsBtnBack = Colors.green;
+        colorsBtnTxt = Colors.white;
+      } else {
+        isBtnEnabled = false;
+        colorsBtnBack = Colors.grey.shade300;
+        colorsBtnTxt = Colors.grey;
+      }
+    });
+  }
+
   void addOtp(String input) {
     FocusManager.instance.primaryFocus?.unfocus();
     final Otp otp = Otp(
@@ -129,5 +183,15 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
     );
 
     BlocProvider.of<OtpBloc>(context).add(GetOTP(otp));
+  }
+
+  void addResendOtp() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (isRegistration && registration != null) {
+      BlocProvider.of<OtpBloc>(context)
+          .add(ResendOTPRegistration(registration!));
+    } else if (!isRegistration) {
+      BlocProvider.of<OtpBloc>(context).add(ResendOTPLogin(phoneNumber));
+    }
   }
 }

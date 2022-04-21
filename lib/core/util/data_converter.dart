@@ -1,3 +1,5 @@
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
+
 class DataConverter {
   static List<List<String>> jsonToListOfListString(
       Map<String, dynamic> jsonData, String fieldName) {

@@ -1,6 +1,7 @@
-import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 abstract class OtpEvent extends Equatable {
@@ -14,4 +15,22 @@ class GetOTP extends OtpEvent {
 
   @override
   List<Object> get props => [otp];
+}
+
+class ResendOTPRegistration extends OtpEvent {
+  final Registration registration;
+
+  ResendOTPRegistration(this.registration) : super([registration]);
+
+  @override
+  List<Object?> get props => [registration];
+}
+
+class ResendOTPLogin extends OtpEvent {
+  final String phoneNumber;
+
+  ResendOTPLogin(this.phoneNumber) : super([phoneNumber]);
+
+  @override
+  List<Object> get props => [phoneNumber];
 }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -7,7 +8,7 @@ abstract class PicEvent extends Equatable {
 }
 
 class GetPic extends PicEvent {
-  final String pic;
+  final XFile pic;
 
   GetPic(this.pic) : super([pic]);
 

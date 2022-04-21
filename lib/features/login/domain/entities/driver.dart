@@ -9,9 +9,9 @@ class Driver extends Equatable {
   final int id;
   final bool isApproved;
   final bool isContactConfirmed;
-  bool isDocumentSubmitted = false;
-  bool isPicSubmitted = false;
-  bool isLoggedIn = false;
+  bool? isDocumentSubmitted = false;
+  bool? isPicSubmitted = false;
+  bool? isLoggedIn;
   final bool isActive;
   ProfilePic? profilePic;
   final String fName;
@@ -22,20 +22,20 @@ class Driver extends Equatable {
   final String state;
   final int avgRating;
   final String userIdn;
-  final TokenData tokenData;
+  TokenData? tokenData;
   Vehicle? vehicle;
   final DriverWallet driverWallet;
-  List<DriverDocuments> driverDocuments = [];
+  List<DriverDocuments>? driverDocuments;
 
   Driver({
     required this.id,
     required this.isApproved,
     required this.isContactConfirmed,
-    isDocumentSubmitted,
-    isPicSubmitted,
-    isLoggedIn,
+    this.isDocumentSubmitted,
+    this.isPicSubmitted,
+    this.isLoggedIn,
     required this.isActive,
-    profilePic,
+    this.profilePic,
     required this.fName,
     required this.mName,
     required this.lName,
@@ -44,10 +44,10 @@ class Driver extends Equatable {
     required this.state,
     required this.avgRating,
     required this.userIdn,
-    required this.tokenData,
-    vehicle,
+    this.tokenData,
+    this.vehicle,
     required this.driverWallet,
-    driverDocuments,
+    this.driverDocuments,
   });
 
   @override

@@ -34,28 +34,28 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
           }
         },
         (success) async {
-          print('LogHulu: Config Response received');
+          print('LogHulu: Config Response received $success   =====result.');
 
           final config = success;
 
-          if (config.isLoggedIn) {
+          if (config.isLoggedIn == true) {
             final failureOrSuccessDriver = await getDriver(null);
 
             emit(failureOrSuccessDriver.fold(
               (failureDriver) {
-                print('LogHulu: Driver Response error');
+                print('LogHulu: Driver Response error $failureDriver');
                 return ErrorSplash(
                     message: _mapFailureToMessage(failureDriver));
               },
               (successDriver) {
                 print('LogHulu: Driver Response received');
-                if (!successDriver.isLoggedIn) {
+                if (successDriver.isLoggedIn == false) {
                   return LoadedLandingSplash(configuration: config);
-                } else if (!successDriver.isPicSubmitted) {
+                } else if (successDriver.isPicSubmitted == false) {
                   return LoadedPicSplash(driver: successDriver);
                 } else if (successDriver.vehicle == null) {
                   return LoadedVehicleSplash(driver: successDriver);
-                } else if (!successDriver.isDocumentSubmitted) {
+                } else if (successDriver.isDocumentSubmitted == false) {
                   return LoadedDocumentsSplash(driver: successDriver);
                 } else if (!successDriver.isApproved) {
                   return LoadedWaitingSplash(driver: successDriver);

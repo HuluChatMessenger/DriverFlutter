@@ -6,6 +6,7 @@ import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/core/util/input_converter.dart';
 
 import '../bloc/bloc.dart';
+import 'widgets.dart';
 
 class LoginControlsWidget extends StatefulWidget {
   const LoginControlsWidget({
@@ -19,6 +20,9 @@ class LoginControlsWidget extends StatefulWidget {
 class _LoginControlsWidgetState extends State<LoginControlsWidget> {
   String? inputStr;
   bool isValid = false;
+  bool isBtnEnabled = false;
+  var colorsBtnBack = Colors.grey.shade300;
+  Color colorsBtnTxt = Colors.grey;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -35,7 +39,7 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
             labelText: AppConstants.strPromptPhone,
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             prefix: Container(
-              width: 72,
+              width: 76,
               child: Row(
                 children: <Widget>[
                   SizedBox(
@@ -52,6 +56,7 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
           ),
           onChanged: (value) {
             inputStr = value;
+            setBtnEnabled();
           },
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
@@ -80,28 +85,20 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
         ),
         const SizedBox(height: 40),
         MaterialButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate() &&
-                isValid &&
-                inputStr != null) {
-              addLogin(inputStr!);
-            } else {
-              return;
-            }
-          },
+          onPressed: isBtnEnabled ? onBtnClicked : null,
           child: Container(
             height: 50,
-            color: Colors.green,
+            color: colorsBtnBack,
             child: Row(
-              children: const [
+              children: [
                 Text(
                   AppConstants.strContinue,
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, color: colorsBtnTxt),
                 ),
-                Spacer(),
+                const Spacer(),
                 Icon(
                   Icons.arrow_forward,
-                  color: Colors.white,
+                  color: colorsBtnTxt,
                 ),
               ],
             ),
@@ -113,12 +110,34 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
           minWidth: MediaQuery.of(context).size.width - 100,
           height: 44,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(20.0),
           ),
         ),
       ]),
     ) // )
         ;
+  }
+
+  void setBtnEnabled() {
+    setState(() {
+      if ((_formKey.currentState != null &&
+              _formKey.currentState!.validate()) &&
+          isValid &&
+          inputStr != null &&
+          inputStr!.length == 9) {
+        isBtnEnabled = true;
+        colorsBtnBack = Colors.green;
+        colorsBtnTxt = Colors.white;
+      } else {
+        isBtnEnabled = false;
+        colorsBtnBack = Colors.grey.shade300;
+        colorsBtnTxt = Colors.grey;
+      }
+    });
+  }
+
+  void onBtnClicked() {
+    if (inputStr != null) addLogin(inputStr!);
   }
 
   void addLogin(String input) {

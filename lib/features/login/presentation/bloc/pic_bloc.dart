@@ -3,14 +3,24 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:hulutaxi_driver/features/login/data/models/driver_model.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/profile_pic.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/post_driver.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_pic.dart';
 
 import 'bloc.dart';
 
 class PicBloc extends Bloc<PicEvent, PicState> {
   final PostPic postPic;
+  final PostDriver postDriver;
+  final GetDriver getDriver;
 
-  PicBloc({required this.postPic}) : super(PicInitial()) {
+  PicBloc(
+      {required this.postPic,
+      required this.postDriver,
+      required this.getDriver})
+      : super(PicInitial()) {
     on<PicEvent>(mapPicState);
   }
 
@@ -19,23 +29,79 @@ class PicBloc extends Bloc<PicEvent, PicState> {
     Emitter<PicState> emit,
   ) async {
     if (event is GetPic) {
-      emit(LoadingPic());
-      final failureOrSuccessDriver = await postPic(Params(pic: event.pic));
+      print('LogHulu Pic: $event');
 
-      emit(failureOrSuccessDriver.fold(
-        (failureDriver) {
-          print('LogHulu Waiting: Driver Response error');
-          return ErrorPic(message: _mapFailureToMessage(failureDriver));
+      emit(LoadingPic());
+      ProfilePic? profilePic;
+      final failureOrSuccessPic = await postPic(ParamsPic(pic: event.pic));
+
+      await failureOrSuccessPic.fold(
+        (failureDriver) async {
+          print('LogHulu PicFailure: Driver Response error');
+          return emit(ErrorPic(message: _mapFailureToMessage(failureDriver)));
         },
-        (success) {
-          print('LogHulu Waiting: Driver Response received');
-          if (success.isApproved) {
-            return LoadedPic(driver: success);
-          } else {
-            return EmptyPic();
-          }
+        (success) async {
+          print('LogHulu PicSuccess: Driver Response received');
+          profilePic = success.profilePic;
+
+          final failureOrSuccessDriver = await getDriver(null);
+
+          await failureOrSuccessDriver.fold(
+            (failureDriver) async {
+              print('LogHulu Pic: Driver Response error $failureDriver');
+              return emit(
+                  ErrorPic(message: _mapFailureToMessage(failureDriver)));
+            },
+            (successDriver) async {
+              print('LogHulu Pic: Driver Response received');
+
+              DriverModel driverModel = DriverModel(
+                id: successDriver.id,
+                isApproved: successDriver.isApproved,
+                isContactConfirmed: successDriver.isContactConfirmed,
+                isDocumentSubmitted: successDriver.isDocumentSubmitted = false,
+                isPicSubmitted: successDriver.isPicSubmitted = false,
+                isLoggedIn: successDriver.isLoggedIn,
+                isActive: successDriver.isActive,
+                profilePic: profilePic,
+                fName: successDriver.fName,
+                mName: successDriver.mName,
+                lName: successDriver.lName,
+                email: successDriver.email,
+                phoneNumber: successDriver.phoneNumber,
+                state: successDriver.state,
+                avgRating: successDriver.avgRating,
+                userIdn: successDriver.userIdn,
+                tokenData: successDriver.tokenData,
+                vehicle: successDriver.vehicle,
+                driverWallet: successDriver.driverWallet,
+                driverDocuments: successDriver.driverDocuments,
+              );
+
+              final failureOrSuccessDriverUpdate =
+                  await postDriver(ParamsDriverUpdate(driver: driverModel));
+
+              emit(failureOrSuccessDriverUpdate.fold(
+                (failureDriverUpdate) {
+                  print(
+                      'LogHulu PicUpdateDriver: Driver Response error $failureDriverUpdate');
+                  return ErrorPic(
+                      message: _mapFailureToMessage(failureDriverUpdate));
+                },
+                (successDriverUpdate) {
+                  print('LogHulu PicUpdateDriver: Driver Response received');
+
+                  if (successDriverUpdate.profilePic != null) {
+                    return LoadedPic(driver: successDriverUpdate);
+                  } else {
+                    return EmptyPic();
+                  }
+                },
+              ));
+            },
+          );
         },
-      ));
+      );
     }
   }
 

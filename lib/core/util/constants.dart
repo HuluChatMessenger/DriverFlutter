@@ -1,13 +1,14 @@
 abstract class AppConstants {
-  //Base Url
+  //Url
   static const baseUrl = "https://api.huluchat.com/";
+  static const urlTerms = 'https://hulugram.org/hulutaxi/termsandconditions';
 
   //EndPoints
   static const apiEndpointConfiguration = 'huluride/configurations/';
   static const apiEndpointRegister = 'huluride/register/';
   static const apiEndpointOtpRegister = 'huluride/register.otp.verify/';
   static const apiEndpointOtpRegisterResend = 'huluride/register.otp.resend/';
-  static const apiEndpointOtpLogin = 'huluride/auth.otp.send/';
+  static const apiEndpointOtpLoginSend = 'huluride/auth.otp.send/';
   static const apiEndpointLogin = 'huluride/auth/';
   static const apiEndpointDriver = 'huluride/driver/';
   static const apiEndpointPic = 'photo.upload/';
@@ -15,10 +16,8 @@ abstract class AppConstants {
   static const apiEndpointDocument = 'huluride/driver/document/';
 
   // Prefs
-  static const prefKeyLogin = 'PREF_KEY_LOGIN';
   static const prefKeyConfig = 'PREF_KEY_CONFIG';
   static const prefKeyDriver = 'PREF_KEY_DRIVER';
-  static const prefKeyAuthToken = 'PREF_KEY_AUTH_TOKEN';
 
   // Splash
   static const splashLanding = 'SPLASH_LANDING';
@@ -40,7 +39,7 @@ abstract class AppConstants {
       'Unable to connect to the internet. Please check your connection.';
   static const String errMsgUnknown = 'Some error occurred. Please, try again!';
   static const String errMsgLogout =
-      'Sorry, you account has been logged out of. Please login.';
+      'Sorry, your account has been logged out of. Please login!';
   static const String errMsgPhone =
       'Phone number starts with the digit 9 or 7!';
   static const String errMsgFirstEmpty = 'Please enter first name!';
@@ -59,6 +58,7 @@ abstract class AppConstants {
   static const String strBack = 'Back';
   static const String strContinue = 'Continue';
   static const String strResend = 'Resend Code';
+  static const String strResendTimer = 'in 0 seconds';
   static const String strGreetingFirst = 'Hello, nice to meet you';
   static const String strGreetingSecondLogin = 'Login To HuluTaxi!';
   static const String strGreetingThirdLogin =

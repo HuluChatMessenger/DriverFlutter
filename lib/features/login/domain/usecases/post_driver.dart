@@ -3,24 +3,23 @@ import 'package:equatable/equatable.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/usecases/usecase.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
-import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/repositories/repositories.dart';
 
-class PostDriver implements UseCase<Driver, Params> {
+class PostDriver implements UseCase<Driver, ParamsDriverUpdate> {
   final Repository repository;
 
   PostDriver(this.repository);
 
   @override
-  Future<Either<Failure, Driver>> call(Params params) async {
-    return await repository.postDriver(params.driver);
+  Future<Either<Failure, Driver>> call(ParamsDriverUpdate params) async {
+    return await repository.putDriver(params.driver);
   }
 }
 
-class Params extends Equatable {
+class ParamsDriverUpdate extends Equatable {
   final Driver driver;
 
-  const Params({required this.driver});
+  const ParamsDriverUpdate({required this.driver});
 
   @override
   List<Object?> get props => [driver];

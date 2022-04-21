@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/vehicle_colors.dart';
 
 class Configuration extends Equatable {
-  bool isLoggedIn = false;
+  bool? isLoggedIn = false;
   final bool referralProgramEnabled;
   final double supportedVersion;
   final double currentVersion;
@@ -13,6 +13,7 @@ class Configuration extends Equatable {
   final List<VehicleColors> vehicleColors;
 
   Configuration({
+    this.isLoggedIn,
     required this.referralProgramEnabled,
     required this.supportedVersion,
     required this.currentVersion,
@@ -25,6 +26,7 @@ class Configuration extends Equatable {
 
   @override
   List<Object?> get props => [
+        isLoggedIn,
         referralProgramEnabled,
         supportedVersion,
         currentVersion,
