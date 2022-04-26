@@ -67,7 +67,7 @@ class _RegistrationControlsWidgetState
             String? errorValue;
             if (inputStrFirstName == null ||
                 (inputStrFirstName != null && inputStrFirstName!.isEmpty)) {
-              errorValue = AppConstants.errMsgFirstEmpty;
+              errorValue = AppConstants.errMsgEmptyFirst;
             } else {
               errorValue = null;
             }
@@ -92,7 +92,7 @@ class _RegistrationControlsWidgetState
             String? errorValue;
             if (inputStrFatherName == null ||
                 (inputStrFatherName != null && inputStrFatherName!.isEmpty)) {
-              errorValue = AppConstants.errMsgFatherEmpty;
+              errorValue = AppConstants.errMsgEmptyFather;
             } else {
               errorValue = null;
             }
@@ -118,7 +118,7 @@ class _RegistrationControlsWidgetState
             if (inputStrGrandFatherName == null ||
                 (inputStrGrandFatherName != null &&
                     inputStrGrandFatherName!.isEmpty)) {
-              errorValue = AppConstants.errMsgGrandfatherEmpty;
+              errorValue = AppConstants.errMsgEmptyGrandfather;
             } else {
               errorValue = null;
             }
@@ -157,7 +157,7 @@ class _RegistrationControlsWidgetState
           validator: (value) {
             String? errorValue;
             if (inputStrPhone == null) {
-              errorValue = AppConstants.errMsgPhoneEmpty;
+              errorValue = AppConstants.errMsgEmptyPhone;
             } else if (InputConverter()
                 .stringValidPhone(inputStrPhone!)
                 .isLeft()) {
@@ -170,7 +170,7 @@ class _RegistrationControlsWidgetState
                     errorValue = null;
                     break;
                   case InvalidInputEmptyPhoneFailure:
-                    errorValue = AppConstants.errMsgPhoneEmpty;
+                    errorValue = AppConstants.errMsgEmptyPhone;
                 }
               }, (r) => {});
             } else {

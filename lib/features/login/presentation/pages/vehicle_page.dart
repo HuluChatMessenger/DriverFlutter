@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/document_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/splash_page.dart';
@@ -10,16 +12,19 @@ import '../../../../core/util/constants.dart';
 import '../widgets/widgets.dart';
 
 class VehiclePage extends StatelessWidget {
-  const VehiclePage({Key? key}) : super(key: key);
+  final Configuration configuration;
+  List<DriverDocuments>? documents;
+
+  VehiclePage({Key? key, required this.configuration}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return buildBody(context);
   }
 
-  BlocProvider<LoginBloc> buildBody(BuildContext context) {
+  BlocProvider<VehicleBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<LoginBloc>(),
+      create: (_) => sl<VehicleBloc>(),
       child: Stack(
         children: <Widget>[
           Scaffold(
@@ -51,11 +56,9 @@ class VehiclePage extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 16, right: 16),
                     child: Column(
                       children: <Widget>[
-                        // Greeting
-                        greetingsLoginWidget(context),
-                        const SizedBox(height: 48),
-                        // Login Controls
-                        const LoginControlsWidget(),
+                        VehicleControlsWidget(
+                          configuration: configuration,
+                        ),
                         const SizedBox(height: 64),
                       ],
                     ),
@@ -64,16 +67,20 @@ class VehiclePage extends StatelessWidget {
               ),
             ),
           ),
-          BlocBuilder<LoginBloc, LoginState>(
+          BlocConsumer<VehicleBloc, VehicleState>(
+            listener: (context, state) {
+              if (state is LoadedVehicle) {
+                List<DriverDocuments> documents = [];
+                if (state.driver.driverDocuments != null) {
+                  documents = state.driver.driverDocuments!;
+                }
+                openPageDocuments(documents);
+              }
+            },
             builder: (context, state) {
-              if (state is EmptyLogin) {
-                return Container();
-              } else if (state is LoadingLogin) {
+              if (state is LoadingVehicle) {
                 return const LoadingWidget();
-              } else if (state is LoadedLogin) {
-                openPageDocuments();
-                return Container();
-              } else if (state is ErrorLogin) {
+              } else if (state is ErrorVehicle) {
                 return DialogWidget(
                   message: state.message,
                   isDismiss: true,
@@ -89,8 +96,12 @@ class VehiclePage extends StatelessWidget {
     );
   }
 
-  void openPageDocuments() {
-    Get.offAll(() => const DocumentsPage());
+  void openPageDocuments(List<DriverDocuments> documents) {
+    Get.offAll(() => DocumentPage(
+          documentTypes: configuration.documentTypes,
+          documents: documents,
+          isSplash: true,
+        ));
   }
 
   void openPageSplash() {

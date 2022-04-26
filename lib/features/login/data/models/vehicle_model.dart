@@ -3,12 +3,12 @@ import 'package:hulutaxi_driver/features/login/domain/entities/vehicle.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/vehicle_channel.dart';
 
 class VehicleModel extends Vehicle {
-  const VehicleModel(
-      {required String color,
-      required String model,
-      required String plateNo,
-      required int makeYear,
-      required VehicleChannel channel})
+  VehicleModel(
+      {required color,
+      required model,
+      required plateNo,
+      required makeYear,
+      channel})
       : super(
           color: color,
           model: model,
@@ -18,8 +18,12 @@ class VehicleModel extends Vehicle {
         );
 
   factory VehicleModel.fromJson(json) {
-    VehicleChannel vehicleChannel =
-        VehicleChannelModel.fromJson(json['channel']);
+    VehicleChannel? vehicleChannel;
+    try {
+      vehicleChannel = VehicleChannelModel.fromJson(json['channel']);
+    } catch (e) {
+      print('LogHulu Vehicle: $e');
+    }
 
     return VehicleModel(
       color: json['color'],

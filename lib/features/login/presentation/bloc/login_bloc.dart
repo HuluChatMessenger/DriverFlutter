@@ -26,18 +26,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(const ErrorLogin(message: AppConstants.errMsgPhone));
         },
         (string) async {
-          print('Request started');
+          print('LogHulu Request started');
           emit(LoadingLogin());
 
           final failureOrSuccess =
               await postLoginOTP(Params(phoneNumber: string));
           emit(failureOrSuccess.fold(
             (failure) {
-              print('Response error');
+              print('LogHulu Response error');
               return ErrorLogin(message: _mapFailureToMessage(failure));
             },
             (success) {
-              print('Response received');
+              print('LogHulu Response received');
               return LoadedLogin(phoneNumber: event.phoneNumber);
             },
           ));

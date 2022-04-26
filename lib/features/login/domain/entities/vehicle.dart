@@ -7,14 +7,14 @@ class Vehicle extends Equatable {
   final String model;
   final String plateNo;
   final int makeYear;
-  final VehicleChannel channel;
+  VehicleChannel? channel;
 
-  const Vehicle({
+  Vehicle({
     required this.color,
     required this.model,
     required this.plateNo,
     required this.makeYear,
-    required this.channel,
+    this.channel,
   });
 
   @override

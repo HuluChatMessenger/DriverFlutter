@@ -45,6 +45,8 @@ dependencies:
   webview_flutter: ^3.0.2
   #ImagePicker
   image_picker: ^0.8.5
+  #FilePicker
+  file_picker: ^4.5.1
   #Http
   http_parser: ^4.0.0
   #File Upload

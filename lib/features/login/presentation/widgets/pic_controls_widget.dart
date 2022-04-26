@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../bloc/bloc.dart';
+import 'widgets.dart';
 
 class PicControlsWidget extends StatefulWidget {
   const PicControlsWidget({
@@ -17,6 +20,8 @@ class PicControlsWidget extends StatefulWidget {
 
 class _PicControlsWidgetState extends State<PicControlsWidget> {
   final ImagePicker picker = ImagePicker();
+  XFile? imageFile;
+  String? retrieveDataError;
   var pickedImage = CircleAvatar(
     radius: 104, // Image radius
     child: Image.asset('assets/images/place_holder_profile.png'),
@@ -71,6 +76,41 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
               children: [
                 SizedBox(
                   height: 44,
+                ),
+                Center(
+                  child:
+                      !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                          ? FutureBuilder<void>(
+                              future: retrieveLostData(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.none:
+                                  case ConnectionState.waiting:
+                                    return const Text(
+                                      'You have not yet picked an image.',
+                                      textAlign: TextAlign.center,
+                                    );
+                                  case ConnectionState.done:
+                                    return getPicSelection();
+                                  default:
+                                    if (snapshot.hasError) {
+                                      return DialogWidget(
+                                        message: snapshot.error.toString(),
+                                        isDismiss: true,
+                                        typeDialog: AppConstants.dialogTypeErr,
+                                      );
+                                    } else {
+                                      return DialogWidget(
+                                        message: AppConstants.errMsgPic,
+                                        isDismiss: true,
+                                        typeDialog: AppConstants.dialogTypeErr,
+                                      );
+                                    }
+                                }
+                              },
+                            )
+                          : Container(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -148,7 +188,36 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
     );
   }
 
+  Future<void> retrieveLostData() async {
+    final LostDataResponse response = await picker.retrieveLostData();
+    if (response.isEmpty) {
+      return;
+    }
+    if (response.file != null) {
+      setState(() {
+        imageFile = response.file;
+      });
+    } else {
+      retrieveDataError = response.exception!.code;
+    }
+  }
+
+  Widget getPicSelection() {
+    if (retrieveDataError != null) {
+      String errMsg = retrieveDataError!;
+      retrieveDataError = null;
+      return DialogWidget(
+        message: errMsg,
+        isDismiss: true,
+        typeDialog: AppConstants.dialogTypeErr,
+      );
+    } else {
+      return Container();
+    }
+  }
+
   void setPickedImage(XFile image) {
+    imageFile = image;
     pic = image.path;
     if (pic != null) {
       addPic(image);

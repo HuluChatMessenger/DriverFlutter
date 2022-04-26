@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/vehicle_page.dart';
 import 'package:hulutaxi_driver/injection_container.dart';
@@ -9,6 +11,7 @@ import 'package:hulutaxi_driver/injection_container.dart';
 import '../widgets/widgets.dart';
 
 class AddPicPage extends StatelessWidget {
+  Configuration? configuration;
   AddPicPage({
     Key? key,
   }) : super(key: key);
@@ -19,9 +22,6 @@ class AddPicPage extends StatelessWidget {
   }
 
   BlocProvider<PicBloc> buildBody(BuildContext context) {
-    bool isBtnEnabled = false;
-    var colorsBtnBack = Colors.grey.shade300;
-    Color colorsBtnTxt = Colors.grey;
     return BlocProvider(
       create: (_) => sl<PicBloc>(),
       child: Stack(
@@ -69,6 +69,7 @@ class AddPicPage extends StatelessWidget {
                   typeDialog: AppConstants.dialogTypeErr,
                 );
               } else if (state is LoadedPic) {
+                configuration = state.configuration;
                 return setBtnContinue(true);
               } else {
                 return setBtnContinue(false);
@@ -97,7 +98,9 @@ class AddPicPage extends StatelessWidget {
   }
 
   void openPageVehicle() {
-    Get.offAll(() => const VehiclePage());
+    if (configuration != null) {
+      Get.offAll(() => VehiclePage(configuration: configuration!,));
+    }
   }
 
 // void openPageSplash() {

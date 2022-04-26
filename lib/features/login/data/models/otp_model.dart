@@ -2,9 +2,9 @@ import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
 
 class OtpModel extends Otp {
   const OtpModel(
-      {required String otp,
-      required String phoneNumber,
-      required bool isRegistration})
+      {required otp,
+      required phoneNumber,
+      required isRegistration})
       : super(
             otp: otp, phoneNumber: phoneNumber, isRegistration: isRegistration);
 

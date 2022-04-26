@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:meta/meta.dart';
 
@@ -23,9 +24,9 @@ class LoadingPic extends PicState {
 }
 
 class LoadedPic extends PicState {
-  final Driver driver;
+  final Configuration configuration;
 
-  const LoadedPic({required this.driver});
+  const LoadedPic({required this.configuration});
 
   @override
   List<Object> get props => [];

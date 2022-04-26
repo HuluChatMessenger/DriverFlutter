@@ -30,18 +30,18 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           emit(const ErrorRegistration(message: AppConstants.errMsgPhone));
         },
         (string) async {
-          print('Request started');
+          print('LogHulu Request started');
           emit(LoadingRegistration());
 
           final failureOrSuccess = await postRegistrationOTP(
               Params(registration: event.registration));
           emit(failureOrSuccess.fold(
             (failure) {
-              print('Response error');
+              print('LogHulu Response error');
               return ErrorRegistration(message: _mapFailureToMessage(failure));
             },
             (success) {
-              print('Response received');
+              print('LogHulu Response received');
               return LoadedRegistration(registration: success);
             },
           ));

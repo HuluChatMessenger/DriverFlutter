@@ -9,9 +9,9 @@ class Driver extends Equatable {
   final int id;
   final bool isApproved;
   final bool isContactConfirmed;
-  bool? isDocumentSubmitted = false;
-  bool? isPicSubmitted = false;
-  bool? isLoggedIn;
+  bool isDocumentSubmitted = false;
+  bool isPicSubmitted = false;
+  bool isLoggedIn = false;
   final bool isActive;
   ProfilePic? profilePic;
   final String fName;
@@ -31,9 +31,9 @@ class Driver extends Equatable {
     required this.id,
     required this.isApproved,
     required this.isContactConfirmed,
-    this.isDocumentSubmitted,
-    this.isPicSubmitted,
-    this.isLoggedIn,
+    required isDocumentSubmitted,
+    required isPicSubmitted,
+    required isLoggedIn,
     required this.isActive,
     this.profilePic,
     required this.fName,

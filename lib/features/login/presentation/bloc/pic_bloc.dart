@@ -6,20 +6,18 @@ import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/data/models/driver_model.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/profile_pic.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
-import 'package:hulutaxi_driver/features/login/domain/usecases/post_driver.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_pic.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/put_driver.dart';
 
 import 'bloc.dart';
 
 class PicBloc extends Bloc<PicEvent, PicState> {
   final PostPic postPic;
-  final PostDriver postDriver;
+  final PutDriver putDriver;
   final GetDriver getDriver;
 
   PicBloc(
-      {required this.postPic,
-      required this.postDriver,
-      required this.getDriver})
+      {required this.postPic, required this.putDriver, required this.getDriver})
       : super(PicInitial()) {
     on<PicEvent>(mapPicState);
   }
@@ -79,7 +77,7 @@ class PicBloc extends Bloc<PicEvent, PicState> {
               );
 
               final failureOrSuccessDriverUpdate =
-                  await postDriver(ParamsDriverUpdate(driver: driverModel));
+                  await putDriver(ParamsDriverUpdate(driver: driverModel));
 
               emit(failureOrSuccessDriverUpdate.fold(
                 (failureDriverUpdate) {
@@ -90,12 +88,7 @@ class PicBloc extends Bloc<PicEvent, PicState> {
                 },
                 (successDriverUpdate) {
                   print('LogHulu PicUpdateDriver: Driver Response received');
-
-                  if (successDriverUpdate.profilePic != null) {
-                    return LoadedPic(driver: successDriverUpdate);
-                  } else {
-                    return EmptyPic();
-                  }
+                  return LoadedPic(configuration: successDriverUpdate);
                 },
               ));
             },

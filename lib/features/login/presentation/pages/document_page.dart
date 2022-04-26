@@ -1,92 +1,158 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:hulutaxi_driver/core/util/common_utils.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
-import 'package:hulutaxi_driver/features/login/presentation/pages/otp_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/splash_page.dart';
 import 'package:hulutaxi_driver/injection_container.dart';
 
 import '../../../../core/util/constants.dart';
 import '../widgets/widgets.dart';
 
-class DocumentsPage extends StatelessWidget {
-  const DocumentsPage({Key? key}) : super(key: key);
+class DocumentPage extends StatelessWidget {
+  List<List<String>> documentTypes = [];
+  List<DriverDocuments> documents = [];
+  final bool isSplash;
+
+  DocumentPage(
+      {Key? key,
+      required this.documentTypes,
+      required this.documents,
+      required this.isSplash})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return buildBody(context);
   }
 
-  BlocProvider<LoginBloc> buildBody(BuildContext context) {
+  BlocProvider<DocumentBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<LoginBloc>(),
-      child: Stack(
-        children: <Widget>[
-          Scaffold(
-            appBar: AppBar(
-              leading: Builder(
-                builder: (BuildContext context) {
-                  return IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      size: 24,
-                    ),
-                    onPressed: () {
-                      Get.back();
-                    },
-                  );
-                },
-              ),
-              title: const Text(AppConstants.strBack),
-              elevation: 0,
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  // Top Background
-                  backgroundTopCurveWidget(context),
-                  // Content
-                  const SizedBox(height: 32),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: Column(
-                      children: <Widget>[
-                        // Greeting
-                        greetingsLoginWidget(context),
-                        const SizedBox(height: 48),
-                        // Login Controls
-                        const LoginControlsWidget(),
-                        const SizedBox(height: 64),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          BlocBuilder<LoginBloc, LoginState>(
-            builder: (context, state) {
-              if (state is EmptyLogin) {
+        create: (_) => sl<DocumentBloc>(),
+        child: BlocBuilder<DocumentBloc, DocumentState>(
+          builder: (context, state) {
+            if (state is LoadingDocument) {
+              return buildDocumentWidget(
+                  context, null, null, true, null);
+            } else if (state is LoadedDocument) {
+              return buildDocumentWidget(
+                  context,
+                  state.configuration?.documentTypes,
+                  state.documents,
+                  false,
+                  null);
+            } else if (state is ErrorDocument) {
+              return buildDocumentWidget(
+                  context, null, null, false, state.message);
+            } else {
+              return buildDocumentWidget(
+                  context, null, null, false, null);
+            }
+          },
+        ));
+  }
+
+  Widget buildDocumentWidget(
+    BuildContext context,
+    List<List<String>>? configurationCurrent,
+    List<DriverDocuments>? documentsCurrent,
+    bool isLoading,
+    String? errMsg,
+  ) {
+    List<List<String>> configurationWidget =
+        (configurationCurrent != null) ? configurationCurrent : documentTypes;
+    List<DriverDocuments> documentsWidget =
+        (documentsCurrent != null) ? documentsCurrent : documents;
+    if (documentsWidget == null || documentsWidget.isEmpty) {
+      documents = [];
+    } else {
+      documents = documentsWidget;
+    }
+    documentTypes = configurationWidget;
+
+    int countRequired =
+        CommonUtils().countDocsRequired(documentTypes, documents);
+    int countUploaded =
+        CommonUtils().countDocsUploaded(documentTypes, documents);
+
+    print('LogHulu : $documentTypes  ===|||=== $documents  ===|||==== result.');
+
+    return Stack(children: <Widget>[
+      Scaffold(
+        appBar: AppBar(
+          leading: Builder(
+            builder: (BuildContext context) {
+              if (isSplash) {
                 return Container();
-              } else if (state is LoadingLogin) {
-                return const LoadingWidget();
-              } else if (state is LoadedLogin) {
-                openPageWaiting();
-                return Container();
-              } else if (state is ErrorLogin) {
-                return DialogWidget(
-                  message: state.message,
-                  isDismiss: true,
-                  typeDialog: AppConstants.dialogTypeErr,
-                );
               } else {
-                return Container();
+                return IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    size: 24,
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  },
+                );
               }
             },
           ),
-        ],
-      ),
+          title: title(),
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              backgroundTopCurveWidget(context),
+              // Content
+              const SizedBox(height: 32),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: DocumentControlsWidget(
+                  documentTypes: documentTypes,
+                  documents: documents,
+                  isBtnEnabled: countRequired == countUploaded,
+                  isSplash: isSplash,
+                  countRequired: countRequired,
+                  countUploaded: countUploaded,
+                ),
+              ),
+            ],
+          ),
+        ),
+    ),
+      loading(isLoading),
+      error(errMsg),],
     );
+  }
+
+  Widget title() {
+    if (isSplash) {
+      return const Text(AppConstants.strDoc);
+    } else {
+      return const Text(AppConstants.strBack);
+    }
+  }
+
+  Widget loading(bool isLoading) {
+    if (isLoading) {
+      return const LoadingWidget();
+    } else {
+      return Container();
+    }
+  }
+
+  Widget error(String? errMsg) {
+    if (errMsg != null && errMsg.isNotEmpty) {
+      return DialogWidget(
+        message: errMsg,
+        isDismiss: true,
+        typeDialog: AppConstants.dialogTypeErr,
+      );
+    } else {
+      return Container();
+    }
   }
 
   void openPageWaiting() {

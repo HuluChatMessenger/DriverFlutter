@@ -18,6 +18,8 @@ abstract class AppConstants {
   // Prefs
   static const prefKeyConfig = 'PREF_KEY_CONFIG';
   static const prefKeyDriver = 'PREF_KEY_DRIVER';
+  static const prefKeyLogin = 'PREF_KEY_LOGIN';
+  static const prefKeyToken = 'PREF_KEY_TOKEN';
 
   // Splash
   static const splashLanding = 'SPLASH_LANDING';
@@ -42,12 +44,19 @@ abstract class AppConstants {
       'Sorry, your account has been logged out of. Please login!';
   static const String errMsgPhone =
       'Phone number starts with the digit 9 or 7!';
-  static const String errMsgFirstEmpty = 'Please enter first name!';
-  static const String errMsgFatherEmpty = "Please enter father's name!";
-  static const String errMsgGrandfatherEmpty =
+  static const String errMsgEmptyFirst = 'Please enter first name!';
+  static const String errMsgEmptyFather = "Please enter father's name!";
+  static const String errMsgEmptyGrandfather =
       "Please enter grandfather's name!";
-  static const String errMsgPhoneEmpty = 'Please enter a phone number!';
+  static const String errMsgEmptyPhone = 'Please enter a phone number!';
   static const String errTerms = 'Please accept terms and conditions!';
+  static const String errMsgModel = "Please select your car's model!";
+  static const String errMsgColor = "Please select your car's color!";
+  static const String errMsgEmptyPlateNo = "Please enter your car's plate number!";
+  static const String errMsgEmptyMakeYear = "Please enter your car's make year!";
+  static const String errMsgValidPlateNo = "Please enter a valid plate number!";
+  static const String errMsgValidMakeYear = "Please enter a valid make year!";
+  static const String errMsgPic = "Picture not picked. Please try again!";
 
   //Strings
   static const String strRegister = 'REGISTER';
@@ -55,6 +64,7 @@ abstract class AppConstants {
   static const String strChooseLanguage = 'ቋንቋ ይምረጡ / Choose Language';
   static const String strAddPhotoTitle = 'Profile Photo';
   static const String strAddPhotoSub = 'Add Your Photo';
+  static const String strAddVehicleTitle = 'Add Vehicle';
   static const String strBack = 'Back';
   static const String strContinue = 'Continue';
   static const String strResend = 'Resend Code';
@@ -71,10 +81,19 @@ abstract class AppConstants {
   static const String strPromptFirstName = 'First Name';
   static const String strPromptFatherName = "Father's Name";
   static const String strPromptGFatherName = "Grandfather's Name";
-  static const String strPromptReferralCode = "Referral Code";
+  static const String strPromptReferralCode = 'Referral Code';
+  static const String strPromptPlateNo = 'AA-01-A12345';
+  static const String strPromptMakeYear = 'Make Year';
+  static const String strModel = 'Model';
+  static const String strColor = 'Color';
+  static const String strRegisterVehicle = 'Register Vehicle';
   static const String strAgree = 'I agree to the';
   static const String strTerms = 'Terms & Conditions';
   static const String strThanks = 'Thank You!';
   static const String strWaitingTxt =
-      'Thank you for submitting the required documents. We are evaluating your documents, you will receive notification when your account is activated.';
+      'Thank you for submitting the required documents. We are evaluating your documents, you will receive a notification when your account is activated.';
+  static const String strFinish = 'Finish';
+  static const String strDoc = 'Driver Documents';
+  static const String strDocReq = 'Required Document';
+  static const String strUpload = 'Upload';
 }

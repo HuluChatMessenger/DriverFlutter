@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
 
@@ -48,15 +49,21 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
                     message: _mapFailureToMessage(failureDriver));
               },
               (successDriver) {
-                print('LogHulu: Driver Response received');
+                print(
+                    'LogHulu: Driver Response received  $successDriver  ===|||=== result');
                 if (successDriver.isLoggedIn == false) {
                   return LoadedLandingSplash(configuration: config);
                 } else if (successDriver.isPicSubmitted == false) {
                   return LoadedPicSplash(driver: successDriver);
                 } else if (successDriver.vehicle == null) {
-                  return LoadedVehicleSplash(driver: successDriver);
+                  return LoadedVehicleSplash(configuration: config);
                 } else if (successDriver.isDocumentSubmitted == false) {
-                  return LoadedDocumentsSplash(driver: successDriver);
+                  List<DriverDocuments> documents = [];
+                  if (successDriver.driverDocuments != null) {
+                    documents = successDriver.driverDocuments!;
+                  }
+                  return LoadedDocumentsSplash(
+                      configuration: config, documents: documents);
                 } else if (!successDriver.isApproved) {
                   return LoadedWaitingSplash(driver: successDriver);
                 } else {

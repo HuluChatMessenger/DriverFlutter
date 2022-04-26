@@ -23,49 +23,49 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     Emitter<OtpState> emit,
   ) async {
     if (event is GetOTP) {
-      print('Request started');
+      print('LogHulu Request started');
       emit(LoadingOtp());
 
       final failureOrSuccess = await postOtp(Params(otp: event.otp));
       emit(failureOrSuccess.fold(
         (failure) {
-          print('Response error');
+          print('LogHulu Response error');
           return ErrorOtp(message: _mapFailureToMessage(failure));
         },
         (success) {
-          print('Response received');
+          print('LogHulu Response received');
           return LoadedOtp(driver: success);
         },
       ));
     } else if (event is ResendOTPLogin) {
-      print('Request started');
+      print('LogHulu Request started');
       emit(LoadingOtp());
 
       final failureOrSuccess =
       await postLoginOTP(ParamsResendOtpLogin(phoneNumber: event.phoneNumber));
       emit(failureOrSuccess.fold(
             (failure) {
-          print('Response error');
+          print('LogHulu Response error');
           return ErrorOtp(message: _mapFailureToMessage(failure));
         },
             (success) {
-          print('Response received');
+          print('LogHulu Response received');
           return LoadedOtpResendLogin(phoneNumber: event.phoneNumber);
         },
       ));
     } else if (event is ResendOTPRegistration) {
-      print('Request started');
+      print('LogHulu Request started');
       emit(LoadingOtp());
 
       final failureOrSuccess = await postRegistrationOTP(
           ParamsResendOtpRegistration(registration: event.registration));
       emit(failureOrSuccess.fold(
             (failure) {
-          print('Response error');
+          print('LogHulu Response error');
           return ErrorOtp(message: _mapFailureToMessage(failure));
         },
             (success) {
-          print('Response received');
+          print('LogHulu Response received');
           return LoadedOtpResendRegistration(registration: success);
         },
       ));

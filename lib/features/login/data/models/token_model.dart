@@ -1,7 +1,7 @@
 import 'package:hulutaxi_driver/features/login/domain/entities/token_data.dart';
 
 class TokenDataModel extends TokenData {
-  const TokenDataModel({required String access})
+  const TokenDataModel({required access})
       : super(access: access);
 
   factory TokenDataModel.fromJson(json) {

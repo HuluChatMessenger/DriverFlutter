@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/dio.dart' as multipartdio;
@@ -11,8 +12,10 @@ import 'package:hulutaxi_driver/features/login/data/models/errors_model.dart';
 import 'package:hulutaxi_driver/features/login/data/models/login_model.dart';
 import 'package:hulutaxi_driver/features/login/data/models/pic_model.dart';
 import 'package:hulutaxi_driver/features/login/data/models/registration_model.dart';
+import 'package:hulutaxi_driver/features/login/data/models/token_model.dart';
+import 'package:hulutaxi_driver/features/login/data/models/vehicle_model.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/DriverDocumentRequest.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
-import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/errors.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
@@ -51,7 +54,7 @@ abstract class RemoteDataSource {
   ///Calls the https://api.huluchat.com/huluride/photo.upload/ endpoint.
   ///
   /// Throws a [ServerException] & [LogoutException] for all error codes.
-  Future<DriverModel> postPic(XFile pic);
+  Future<ProfilePicModel> postPic(XFile pic);
 
   ///Calls the https://api.huluchat.com/huluride/driver/ endpoint.
   ///
@@ -61,12 +64,12 @@ abstract class RemoteDataSource {
   ///Calls the https://api.huluchat.com/huluride/driver/vehicle/ endpoint.
   ///
   /// Throws a [ServerException] & [LogoutException] for all error codes.
-  Future<DriverModel> postVehicle(Vehicle vehicle);
+  Future<VehicleModel> postVehicle(Vehicle vehicle);
 
   ///Calls the https://api.huluchat.com/huluride/driver/document/ endpoint.
   ///
   /// Throws a [ServerException] & [LogoutException] for all error codes.
-  Future<DriverModel> postDocument(DriverDocuments document);
+  Future<DriverModel> postDocument(DriverDocumentRequest document);
 
   ///Calls the https://api.huluchat.com/huluride/configurations/ endpoint.
   ///
@@ -117,7 +120,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       body: body,
     );
 
-    print('LogHulu Response: ' +
+    print('LogHulu Call Response: ' +
         response.statusCode.toString() +
         " | " +
         response.body);
@@ -154,7 +157,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       body: jsonEncode({'phonenumber': phoneNumber}),
     );
 
-    print('LogHulu LoginResponse: ' +
+    print('LogHulu Call LoginResponse: ' +
         response.statusCode.toString() +
         " | " +
         response.body);
@@ -194,7 +197,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }),
     );
 
-    print('LogHulu OtpResponse: ' +
+    print('LogHulu Call OtpResponse: ' +
         response.statusCode.toString() +
         " | " +
         response.body);
@@ -234,13 +237,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }),
     );
 
-    print('LogHulu Response: ' +
+    print('LogHulu Call Response: ' +
         response.statusCode.toString() +
         " | " +
         response.body);
 
     if (response.statusCode == 200) {
-      return DriverModel.fromJson(json.decode(response.body));
+      DriverModel driverModel =
+          DriverModel.fromJson(json.decode(response.body));
+
+      return driverModel;
     } else {
       print('LogHulu RegistrationOTPException: ' +
           response.statusCode.toString() +
@@ -264,32 +270,31 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<DriverModel> postPic(XFile pic) async {
-    DriverModel? driverModel;
-    final String? jsonDriver =
-        sharedPreferences.getString(AppConstants.prefKeyDriver);
-    if (jsonDriver != null) {
-      driverModel = DriverModel.fromJson(json.decode(jsonDriver));
+  Future<ProfilePicModel> postPic(XFile pic) async {
+    TokenDataModel? tokenAccess;
+    final String? tokenData =
+        sharedPreferences.getString(AppConstants.prefKeyToken);
+    final bool? isLogin = sharedPreferences.getBool(AppConstants.prefKeyLogin);
+
+    if (tokenData != null) {
+      tokenAccess = TokenDataModel.fromJson(json.decode(tokenData));
     }
 
-    if (driverModel?.tokenData?.access != null) {
+    if (tokenAccess != null &&
+        tokenAccess.access != null &&
+        tokenAccess.access.isNotEmpty &&
+        isLogin == true) {
+      String token = 'Token ${tokenAccess.access}';
       int fileTypePosition = pic.name.indexOf('.') + 1;
-
       String fileType = pic.name.substring(fileTypePosition);
-
       print(
           'LogHulu type : ${pic.mimeType} === ${pic.runtimeType} === ${pic.name} === $fileType === ${pic.path}');
-
-      String token = 'Token ${driverModel?.tokenData?.access}';
-
       var dio = Dio();
-
       dio.options.baseUrl = AppConstants.baseUrl;
       dio.options.headers = {
         'content-Type': 'application/json',
         'Authorization': token
       };
-
       var formData = FormData.fromMap({
         'photo': await multipartdio.MultipartFile.fromFile(pic.path,
             filename: pic.name, contentType: MediaType('image', fileType)),
@@ -297,7 +302,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
       dynamic uploadPicData;
 
-      final response = await dio.post(
+      await dio.post(
         '/${AppConstants.apiEndpointPic}',
         data: formData,
         onSendProgress: (int sent, int total) {
@@ -315,12 +320,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         print('LogHulu PicException: $e');
       }
 
-      print('LogHulu Response: ' + uploadPicData.toString());
+      print('LogHulu Call Response: ' + uploadPicData.toString());
 
-      if (profilePicModel != null && driverModel != null) {
-        driverModel.profilePic = profilePicModel;
-        print('LogHulu UploadDriverCheck: $driverModel  =====|||===== result');
-        return driverModel;
+      if (profilePicModel != null) {
+        print('LogHulu UploadPicCheck: $profilePicModel  =====|||===== result');
+        return profilePicModel;
       } else {
         print('LogHulu PicError: ' + uploadPicData);
         ServerException exception = ServerException(null);
@@ -345,8 +349,18 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<DriverModel> putDriver(Driver driver) async {
-    if (driver.tokenData?.access != null) {
-      String token = 'Token ${driver.tokenData?.access}';
+    TokenDataModel? tokenAccess;
+    final String? tokenData =
+        sharedPreferences.getString(AppConstants.prefKeyToken);
+    final bool? isLogin = sharedPreferences.getBool(AppConstants.prefKeyLogin);
+    if (tokenData != null) {
+      tokenAccess = TokenDataModel.fromJson(json.decode(tokenData));
+    }
+    if (tokenAccess != null &&
+        tokenAccess.access != null &&
+        tokenAccess.access.isNotEmpty &&
+        isLogin == true) {
+      String token = 'Token ${tokenAccess.access}';
       final body = jsonEncode({
         'id': driver.id,
         'is_approved': driver.isApproved,
@@ -372,7 +386,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         body: body,
       );
 
-      print('LogHulu DriverUploadResponse: ' +
+      print('LogHulu Call DriverUploadResponse: ' +
           response.statusCode.toString() +
           " | " +
           response.body);
@@ -380,9 +394,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       if (response.statusCode == 403) {
         throw LogoutException();
       } else if (response.statusCode == 200) {
-        DriverModel resultDriver = DriverModel.fromJson(json.decode(response.body));
-        resultDriver.isLoggedIn  = true;
-        resultDriver.tokenData  = driver.tokenData;
+        DriverModel resultDriver =
+            DriverModel.fromJson(json.decode(response.body));
+        resultDriver.isLoggedIn = isLogin == true;
         return resultDriver;
       } else {
         print('LogHulu DriverUploadException: ' +
@@ -410,21 +424,24 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<DriverModel> postVehicle(Vehicle vehicle) async {
-    DriverModel? driverModel;
-    final String? jsonDriver =
-        sharedPreferences.getString(AppConstants.prefKeyDriver);
-    if (jsonDriver != null) {
-      driverModel = DriverModel.fromJson(json.decode(jsonDriver));
+  Future<VehicleModel> postVehicle(Vehicle vehicle) async {
+    TokenDataModel? tokenAccess;
+    final String? tokenData =
+        sharedPreferences.getString(AppConstants.prefKeyToken);
+    final bool? isLogin = sharedPreferences.getBool(AppConstants.prefKeyLogin);
+    if (tokenData != null) {
+      tokenAccess = TokenDataModel.fromJson(json.decode(tokenData));
     }
-
-    if (driverModel?.tokenData?.access != null) {
-      String token = 'Token ${driverModel?.tokenData?.access}';
+    if (tokenAccess != null &&
+        tokenAccess.access != null &&
+        tokenAccess.access.isNotEmpty &&
+        isLogin == true) {
+      String token = 'Token ${tokenAccess.access}';
       final body = jsonEncode({
-        'first_name': vehicle.color,
-        'middle_name': vehicle.model,
-        'last_name': vehicle.plateNo,
-        'phonenumber': vehicle.makeYear,
+        'color': vehicle.color,
+        'model': vehicle.model,
+        'plate_no': vehicle.plateNo,
+        'make_year': vehicle.makeYear,
       });
 
       final response = await client.post(
@@ -433,15 +450,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         body: body,
       );
 
-      print('LogHulu Response: ' +
+      print('LogHulu Call Response: ' +
           response.statusCode.toString() +
           " | " +
           response.body);
 
       if (response.statusCode == 403) {
         throw LogoutException();
-      } else if (response.statusCode == 200) {
-        return DriverModel.fromJson(json.decode(response.body));
+      } else if (response.statusCode == 201) {
+        return VehicleModel.fromJson(json.decode(response.body));
       } else {
         print('LogHulu DriverException: ' +
             response.statusCode.toString() +
@@ -468,44 +485,74 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<DriverModel> postDocument(DriverDocuments document) async {
-    DriverModel? driverModel;
-    final String? jsonDriver =
-        sharedPreferences.getString(AppConstants.prefKeyDriver);
-    if (jsonDriver != null) {
-      driverModel = DriverModel.fromJson(json.decode(jsonDriver));
+  Future<DriverModel> postDocument(DriverDocumentRequest document) async {
+    TokenDataModel? tokenAccess;
+    final String? tokenData =
+        sharedPreferences.getString(AppConstants.prefKeyToken);
+    final bool? isLogin = sharedPreferences.getBool(AppConstants.prefKeyLogin);
+    if (tokenData != null) {
+      tokenAccess = TokenDataModel.fromJson(json.decode(tokenData));
     }
+    if (tokenAccess != null &&
+        tokenAccess.access != null &&
+        tokenAccess.access.isNotEmpty &&
+        isLogin == true) {
+      String token = 'Token ${tokenAccess.access}';
+      var dio = Dio();
+      dio.options.baseUrl = AppConstants.baseUrl;
+      dio.options.headers = {
+        'content-Type': 'application/json',
+        'Authorization': token
+      };
+      FormData? formData;
+      if (document.isPic && document.picDoc != null) {
+        XFile pic = document.picDoc!;
+        int fileTypePosition = pic.name.indexOf('.') + 1;
+        String fileType = pic.name.substring(fileTypePosition);
+        print(
+            'LogHulu type : ${pic.mimeType} === ${pic.runtimeType} === ${pic.name} === $fileType === ${pic.path}');
+        formData = FormData.fromMap({
+          'document_type': document.docType,
+          'document': await multipartdio.MultipartFile.fromFile(pic.path,
+              filename: pic.name, contentType: MediaType('image', fileType)),
+        });
+      } else if (document.isPic == false && document.pdfDoc != null) {
+        File file = document.pdfDoc!;
+        var filePathName = (file.path.split('/').last);
+        int fileTypePosition = filePathName.indexOf('.') + 1;
+        String fileType = filePathName.substring(fileTypePosition);
+        String fileName = filePathName.substring(0, fileTypePosition);
+        formData = FormData.fromMap({
+          'document_type': document.docType,
+          'document': await multipartdio.MultipartFile.fromFile(file.uri.path,
+              filename: fileName, contentType: MediaType('pdf', fileType)),
+        });
+      }
 
-    if (driverModel?.tokenData?.access != null) {
-      String token = 'Token ${driverModel?.tokenData?.access}';
-      final body = jsonEncode({
-        'first_name': document.id,
-        'middle_name': document.documentType,
-      });
+      Response<dynamic>? uploadFileData;
 
-      final response = await client.post(
-        Uri.parse(AppConstants.baseUrl + AppConstants.apiEndpointDocument),
-        headers: {'content-Type': 'application/json', 'Authorization': token},
-        body: body,
-      );
+      await dio.post(
+        '/${AppConstants.apiEndpointDocument}',
+        data: formData,
+        onSendProgress: (int sent, int total) {
+          print('LogHulu : $sent $total');
+        },
+      ).then((value) => {uploadFileData = value});
 
-      print('LogHulu Response: ' +
-          response.statusCode.toString() +
-          " | " +
-          response.body);
+      DriverModel? driverModel;
 
-      if (response.statusCode == 403) {
-        throw LogoutException();
-      } else if (response.statusCode == 200) {
-        return DriverModel.fromJson(json.decode(response.body));
+      if (uploadFileData != null && uploadFileData?.statusCode != 400) {
+        driverModel = await getDriver();
+      }
+      print(
+          'LogHulu Document : ${uploadFileData?.statusCode}  ===||=== $uploadFileData ====||||=== result.');
+
+      if (driverModel != null) {
+        return driverModel;
       } else {
-        print('LogHulu DriverException: ' +
-            response.statusCode.toString() +
-            " | " +
-            response.body);
         ServerException exception = ServerException(null);
         try {
-          Errors errors = ErrorsModel.fromJson(json.decode(response.body));
+          Errors errors = ErrorsModel.fromJson(uploadFileData?.data);
 
           if (errors.nonFieldErrors.isNotEmpty) {
             exception = ServerException(errors.nonFieldErrors.first);
@@ -530,7 +577,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       headers: {'content-Type': 'application/json'},
     );
 
-    print('LogHulu Response: ' +
+    print('LogHulu Call Response: ' +
         response.statusCode.toString() +
         " | " +
         response.body);
@@ -561,21 +608,24 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<ConfigurationModel> getConfigurationLogin() async {
-    DriverModel? driverModel;
-    final String? jsonDriver =
-        sharedPreferences.getString(AppConstants.prefKeyDriver);
-    if (jsonDriver != null) {
-      driverModel = DriverModel.fromJson(json.decode(jsonDriver));
+    TokenDataModel? tokenAccess;
+    final String? tokenData =
+        sharedPreferences.getString(AppConstants.prefKeyToken);
+    final bool? isLogin = sharedPreferences.getBool(AppConstants.prefKeyLogin);
+    if (tokenData != null) {
+      tokenAccess = TokenDataModel.fromJson(json.decode(tokenData));
     }
-
-    if (driverModel?.tokenData?.access != null) {
-      String token = 'Token ${driverModel?.tokenData?.access}';
+    if (tokenAccess != null &&
+        tokenAccess.access != null &&
+        tokenAccess.access.isNotEmpty &&
+        isLogin == true) {
+      String token = 'Token ${tokenAccess.access}';
       final response = await client.get(
         Uri.parse(AppConstants.baseUrl + AppConstants.apiEndpointConfiguration),
         headers: {'content-Type': 'application/json', 'Authorization': token},
       );
 
-      print('LogHulu Response: ' +
+      print('LogHulu Call Response: ' +
           response.statusCode.toString() +
           " | " +
           response.body);
@@ -583,7 +633,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       if (response.statusCode == 403) {
         throw LogoutException();
       } else if (response.statusCode == 200) {
-        return ConfigurationModel.fromJson(json.decode(response.body));
+        ConfigurationModel configurationModel =
+            ConfigurationModel.fromJson(json.decode(response.body));
+        configurationModel.isLoggedIn = isLogin == true;
+        return configurationModel;
       } else {
         print('LogHulu ConfigurationException: ' +
             response.statusCode.toString() +
@@ -611,25 +664,25 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<DriverModel> getDriver() async {
-    DriverModel? driverModel;
-    final String? jsonDriver =
-        sharedPreferences.getString(AppConstants.prefKeyDriver);
-    if (jsonDriver != null) {
-      driverModel = DriverModel.fromJson(json.decode(jsonDriver));
+    TokenDataModel? tokenAccess;
+    final String? tokenData =
+        sharedPreferences.getString(AppConstants.prefKeyToken);
+    final bool? isLogin = sharedPreferences.getBool(AppConstants.prefKeyLogin);
+    if (tokenData != null) {
+      tokenAccess = TokenDataModel.fromJson(json.decode(tokenData));
     }
-
-    print('LogHulu Chekc: $driverModel');
-
-    if (driverModel?.tokenData?.access != null) {
-      bool loginStatus = driverModel?.isLoggedIn == true;
-      String token = 'Token ${driverModel?.tokenData?.access}';
+    if (tokenAccess != null &&
+        tokenAccess.access != null &&
+        tokenAccess.access.isNotEmpty &&
+        isLogin == true) {
+      String token = 'Token ${tokenAccess.access}';
       print('LogHulu $token');
       final response = await client.get(
         Uri.parse(AppConstants.baseUrl + AppConstants.apiEndpointDriver),
         headers: {'content-Type': 'application/json', 'Authorization': token},
       );
 
-      print('LogHulu Response: ' +
+      print('LogHulu Call Response: ' +
           response.statusCode.toString() +
           " | " +
           response.body);
@@ -640,11 +693,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         DriverModel driverModelResult =
             DriverModel.fromJson(json.decode(response.body));
 
-        if (loginStatus) {
-          driverModelResult.isLoggedIn = loginStatus;
-          driverModelResult.tokenData = driverModel?.tokenData;
-        }
+        driverModelResult.isLoggedIn = isLogin == true;
 
+        print('LogHulu Call Login: $driverModelResult');
         return driverModelResult;
       } else {
         print('LogHulu DriverException: ' +
@@ -687,7 +738,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }),
     );
 
-    print('LogHulu OtpResendResponse: ' +
+    print('LogHulu Call OtpResendResponse: ' +
         response.statusCode.toString() +
         " | " +
         response.body);

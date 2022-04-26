@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/document_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/landing_page.dart';
@@ -51,16 +53,14 @@ class SplashPage extends StatelessWidget {
             listener: (context, state) {
               print('LogHulu : $state');
               if (state is EmptySplash) {
-              } else if (state is LoadingSplash) {
               } else if (state is LoadedLandingSplash) {
-                // openPagePic();
                 openPageLanding(state.configuration.referralProgramEnabled);
               } else if (state is LoadedPicSplash) {
                 openPagePic();
               } else if (state is LoadedVehicleSplash) {
-                openPageVehicle();
+                openPageVehicle(state.configuration);
               } else if (state is LoadedDocumentsSplash) {
-                openPageDocuments();
+                openPageDocuments(state.configuration, state.documents);
               } else if (state is LoadedWaitingSplash) {
                 openPageWaiting();
               } else if (state is LoadedLoginSplash) {
@@ -81,12 +81,20 @@ class SplashPage extends StatelessWidget {
     Get.offAll(() => AddPicPage());
   }
 
-  void openPageVehicle() {
-    Get.offAll(() => const VehiclePage());
+  void openPageVehicle(
+      Configuration configuration) {
+    Get.offAll(() => VehiclePage(
+          configuration: configuration,
+        ));
   }
 
-  void openPageDocuments() {
-    Get.offAll(() => const DocumentsPage());
+  void openPageDocuments(
+      Configuration configuration, List<DriverDocuments> documents) {
+    Get.offAll(() => DocumentPage(
+          documentTypes: configuration.documentTypes,
+          documents: documents,
+          isSplash: true,
+        ));
   }
 
   void openPageWaiting() {

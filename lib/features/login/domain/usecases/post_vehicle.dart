@@ -7,10 +7,10 @@ import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/vehicle.dart';
 import 'package:hulutaxi_driver/features/login/domain/repositories/repositories.dart';
 
-class PostDriver implements UseCase<Driver, Params> {
+class PostVehicle implements UseCase<Driver, Params> {
   final Repository repository;
 
-  PostDriver(this.repository);
+  PostVehicle(this.repository);
 
   @override
   Future<Either<Failure, Driver>> call(Params params) async {

@@ -62,7 +62,7 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
           validator: (value) {
             String? errorValue;
             if (inputStr == null) {
-              errorValue = AppConstants.errMsgPhoneEmpty;
+              errorValue = AppConstants.errMsgEmptyPhone;
             } else if (InputConverter().stringValidPhone(inputStr!).isLeft()) {
               InputConverter().stringValidPhone(inputStr!).fold((l) {
                 isValid = false;
@@ -74,7 +74,7 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
                     errorValue = null;
                     break;
                   case InvalidInputEmptyPhoneFailure:
-                    errorValue = AppConstants.errMsgPhoneEmpty;
+                    errorValue = AppConstants.errMsgEmptyPhone;
                 }
               }, (r) => {isValid = true});
             } else {

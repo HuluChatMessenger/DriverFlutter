@@ -8,13 +8,16 @@ import 'package:hulutaxi_driver/features/login/data/repositories/repository_impl
 import 'package:hulutaxi_driver/features/login/domain/repositories/repositories.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
-import 'package:hulutaxi_driver/features/login/domain/usecases/post_driver.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/post_document.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_login_otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_login_resend_otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_pic.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_registration_otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_registration_resend_otp.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/post_vehicle.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/put_driver.dart';
+import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/login_bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/otp_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +26,7 @@ import 'features/login/data/datasources/local_data_source.dart';
 import 'features/login/presentation/bloc/pic_bloc.dart';
 import 'features/login/presentation/bloc/registration_bloc.dart';
 import 'features/login/presentation/bloc/splash_bloc.dart';
+import 'features/login/presentation/bloc/vehicle_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -48,7 +52,17 @@ Future<void> init() async {
       ));
   sl.registerFactory(() => PicBloc(
         postPic: sl(),
-        postDriver: sl(),
+        putDriver: sl(),
+        getDriver: sl(),
+      ));
+  sl.registerFactory(() => VehicleBloc(
+        postVehicle: sl(),
+      ));
+  sl.registerFactory(() => DocumentBloc(
+        postDocument: sl(),
+        getConfiguration: sl(),
+      ));
+  sl.registerFactory(() => WaitingBloc(
         getDriver: sl(),
       ));
 
@@ -59,7 +73,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => PostResendOTPLogin(sl()));
   sl.registerLazySingleton(() => PostResendOTPRegistration(sl()));
   sl.registerLazySingleton(() => PostPic(sl()));
-  sl.registerLazySingleton(() => PostDriver(sl()));
+  sl.registerLazySingleton(() => PostVehicle(sl()));
+  sl.registerLazySingleton(() => PostDocument(sl()));
+  sl.registerLazySingleton(() => PutDriver(sl()));
   sl.registerLazySingleton(() => GetConfiguration(sl()));
   sl.registerLazySingleton(() => GetDriver(sl()));
 
