@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/main_page.dart';
 import 'package:hulutaxi_driver/injection_container.dart';
 
@@ -9,7 +11,9 @@ import '../bloc/bloc.dart';
 import '../widgets/widgets.dart';
 
 class WaitingPage extends StatelessWidget {
-  const WaitingPage({Key? key}) : super(key: key);
+  final Configuration configuration;
+
+  const WaitingPage({Key? key, required this.configuration}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +84,12 @@ class WaitingPage extends StatelessWidget {
             listener: (context, state) {
               print('LogHulu : $state');
               if (state is LoadedWaiting) {
-                openPageMain();
+                openPageMain(
+                  state.driver,
+                  state.configuration != null
+                      ? state.configuration!
+                      : configuration,
+                );
               }
             },
           ),
@@ -89,7 +98,10 @@ class WaitingPage extends StatelessWidget {
     );
   }
 
-  void openPageMain() {
-    Get.to(() => const MainPage());
+  void openPageMain(Driver driver, Configuration configuration) {
+    Get.to(() => MainPage(
+          driver: driver,
+          configuration: configuration,
+        ));
   }
 }

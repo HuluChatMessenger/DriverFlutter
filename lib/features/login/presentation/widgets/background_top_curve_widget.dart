@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-Widget backgroundTopCurveWidget(BuildContext context) {
+Widget backgroundTopCurveWidget(BuildContext context, double? height) {
   return SizedBox(
     width: double.infinity,
-    height: 136.0,
+    height: (height != null) ? height : 136.0,
     child: CustomPaint(
       painter: _MyPainter(),
     ),

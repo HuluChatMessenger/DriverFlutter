@@ -67,7 +67,7 @@ class DialogWidget extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text(AppConstants.strCancel),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -89,7 +89,7 @@ class DialogWidget extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text(AppConstants.strCancel),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -111,7 +111,7 @@ class DialogWidget extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text(AppConstants.strCancel),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

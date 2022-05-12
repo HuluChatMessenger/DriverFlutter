@@ -18,18 +18,35 @@ class VehicleBloc extends Bloc<VehicleEvent, VehicleState> {
   ) async {
     if (event is GetVehicle) {
       print('LogHulu Vehicle: Add Request started');
-      emit(LoadingVehicle());
+      emit(LoadingVehicle(
+        selectedModel: event.vehicleModels,
+        selectedColor: event.vehicleColors,
+        enteredPlate: event.vehicle.plateNo,
+        enteredMakeYear: event.vehicle.makeYear.toString(),
+      ));
 
       final failureOrSuccess =
           await postVehicle(Params(vehicle: event.vehicle));
       emit(failureOrSuccess.fold(
         (failure) {
           print('LogHulu Response error');
-          return ErrorVehicle(message: _mapFailureToMessage(failure));
+          return ErrorVehicle(
+            message: _mapFailureToMessage(failure),
+            selectedModel: event.vehicleModels,
+            selectedColor: event.vehicleColors,
+            enteredPlate: event.vehicle.plateNo,
+            enteredMakeYear: event.vehicle.makeYear.toString(),
+          );
         },
         (success) {
           print('LogHulu Response received');
-          return LoadedVehicle(driver: success);
+          return LoadedVehicle(
+            driver: success,
+            selectedModel: event.vehicleModels,
+            selectedColor: event.vehicleColors,
+            enteredPlate: event.vehicle.plateNo,
+            enteredMakeYear: event.vehicle.makeYear.toString(),
+          );
         },
       ));
     }

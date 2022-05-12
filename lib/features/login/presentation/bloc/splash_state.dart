@@ -64,8 +64,9 @@ class LoadedDocumentsSplash extends SplashState {
 
 class LoadedWaitingSplash extends SplashState {
   final Driver driver;
+  final Configuration configuration;
 
-  const LoadedWaitingSplash({required this.driver});
+  const LoadedWaitingSplash({required this.driver, required this.configuration});
 
   @override
   List<Object> get props => [];
@@ -73,8 +74,9 @@ class LoadedWaitingSplash extends SplashState {
 
 class LoadedLoginSplash extends SplashState {
   final Driver driver;
+  final Configuration configuration;
 
-  const LoadedLoginSplash({required this.driver});
+  const LoadedLoginSplash({required this.driver, required this.configuration});
 
   @override
   List<Object> get props => [];

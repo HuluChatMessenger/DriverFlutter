@@ -10,23 +10,39 @@ import '../bloc/bloc.dart';
 import 'widgets.dart';
 
 class PicControlsWidget extends StatefulWidget {
-  const PicControlsWidget({
+  XFile? selectedPic;
+
+  PicControlsWidget({
     Key? key,
+    this.selectedPic,
   }) : super(key: key);
 
   @override
-  _PicControlsWidgetState createState() => _PicControlsWidgetState();
+  _PicControlsWidgetState createState() =>
+      _PicControlsWidgetState(selectedPic: selectedPic);
 }
 
 class _PicControlsWidgetState extends State<PicControlsWidget> {
   final ImagePicker picker = ImagePicker();
   XFile? imageFile;
+  XFile? selectedPic;
   String? retrieveDataError;
   var pickedImage = CircleAvatar(
     radius: 104, // Image radius
-    child: Image.asset('assets/images/place_holder_profile.png'),
+    child: Image.asset('assets/images/logo_drawer.png'),
   );
   String? pic;
+
+  _PicControlsWidgetState({this.selectedPic}) {
+    if (selectedPic != null) {
+      imageFile = selectedPic;
+      pic = selectedPic?.path;
+      pickedImage = CircleAvatar(
+        radius: 104,
+        backgroundImage: FileImage(File(pic!)),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +60,7 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
           child: Container(
             height: 52,
             width: 52,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.green,
               shape: BoxShape.circle,
             ),

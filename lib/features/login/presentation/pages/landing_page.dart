@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/login_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/registration_page.dart';
 
@@ -9,8 +10,11 @@ import '../widgets/widgets.dart';
 
 class LandingPage extends StatelessWidget {
   final bool isReferral;
+  final Configuration configuration;
 
-  const LandingPage({Key? key, required this.isReferral}) : super(key: key);
+  const LandingPage(
+      {Key? key, required this.isReferral, required this.configuration})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +34,7 @@ class LandingPage extends StatelessWidget {
                   },
                   child: const Text(
                     AppConstants.strRegister,
-                    style: TextStyle(
-                        color: Colors.white, fontSize: 20),
+                    style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                   color: Colors.green,
                   minWidth: MediaQuery.of(context).size.width - 100,
@@ -66,8 +69,7 @@ class LandingPage extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         TextButton(
-                          child: const Text(
-                              AppConstants.strChooseLanguage,
+                          child: const Text(AppConstants.strChooseLanguage,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.black,
@@ -78,8 +80,7 @@ class LandingPage extends StatelessWidget {
                         SizedBox(
                           height: 24,
                           width: 24,
-                          child: SvgPicture.asset(
-                              'assets/images/et.svg',
+                          child: SvgPicture.asset('assets/images/et.svg',
                               semanticsLabel: 'Top Curve'),
                         ),
                       ],
@@ -97,10 +98,13 @@ class LandingPage extends StatelessWidget {
   void openPageRegistration() {
     Get.to(() => RegistrationPage(
           isReferral: isReferral,
+          configuration: configuration,
         ));
   }
 
   void openPageLogin() {
-    Get.to(() => LoginPage());
+    Get.to(() => LoginPage(
+          configuration: configuration,
+        ));
   }
 }

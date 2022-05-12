@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
-import 'package:hulutaxi_driver/features/login/domain/entities/DriverDocumentRequest.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_document_request.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/waiting_page.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +22,7 @@ class DocumentControlsWidget extends StatefulWidget {
   final bool isSplash;
   final int countRequired;
   final int countUploaded;
+  final Configuration configuration;
 
   DocumentControlsWidget({
     Key? key,
@@ -30,6 +32,7 @@ class DocumentControlsWidget extends StatefulWidget {
     required this.isSplash,
     required this.countRequired,
     required this.countUploaded,
+    required this.configuration,
   }) : super(key: key);
 
   @override
@@ -40,6 +43,7 @@ class DocumentControlsWidget extends StatefulWidget {
         isSplash: isSplash,
         countRequired: countRequired,
         countUploaded: countUploaded,
+        configuration: configuration,
       );
 }
 
@@ -48,6 +52,7 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
   List<DriverDocuments> documents = [];
   final bool isBtnEnabled;
   final bool isSplash;
+  final Configuration configuration;
   bool isPic = false;
   XFile? picFile;
   File? pdfFile;
@@ -66,6 +71,7 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
     required this.isSplash,
     required this.countRequired,
     required this.countUploaded,
+    required this.configuration,
   }) {
     if (isBtnEnabled) {
       colorsBtnBack = Colors.green;
@@ -83,40 +89,43 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
         ),
         const SizedBox(height: 16),
         Container(
-          height: 400,
+          height: (isSplash || countUploaded != countRequired) ? 400 : 550,
           child: ListView(
               // Important: Remove any padding from the ListView.
               padding: EdgeInsets.zero,
               children: documentRows(context)),
         ),
         const SizedBox(height: 40),
-        MaterialButton(
-          onPressed: isBtnEnabled ? onBtnClicked : null,
-          child: Container(
-            height: 50,
-            color: colorsBtnBack,
-            child: Row(
-              children: [
-                Text(
-                  AppConstants.strFinish,
-                  style: TextStyle(fontSize: 20, color: colorsBtnTxt),
-                ),
-                const Spacer(),
-                Icon(
-                  Icons.arrow_forward,
-                  color: colorsBtnTxt,
-                ),
-              ],
+        Visibility(
+          visible: isSplash,
+          child: MaterialButton(
+            onPressed: isBtnEnabled ? onBtnClicked : null,
+            child: Container(
+              height: 50,
+              color: colorsBtnBack,
+              child: Row(
+                children: [
+                  Text(
+                    AppConstants.strFinish,
+                    style: TextStyle(fontSize: 20, color: colorsBtnTxt),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.arrow_forward,
+                    color: colorsBtnTxt,
+                  ),
+                ],
+              ),
             ),
-          ),
-          color: Colors.green,
-          disabledColor: Colors.grey.shade300,
-          textColor: Colors.white,
-          disabledTextColor: Colors.grey,
-          minWidth: MediaQuery.of(context).size.width - 100,
-          height: 44,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.green,
+            disabledColor: Colors.grey.shade300,
+            textColor: Colors.white,
+            disabledTextColor: Colors.grey,
+            minWidth: MediaQuery.of(context).size.width - 100,
+            height: 44,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
           ),
         ),
       ],
@@ -130,14 +139,14 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
       String typeDocument = documentType.elementAt(0);
       bool isUpload = true;
       bool isDone = false;
-      // for (DriverDocuments document in documents) {
-      //   if (document.documentType.toString().replaceAll(' ', '') ==
-      //       typeDocument) {
-      //     isDone = true;
-      //     isUpload = false;
-      //     break;
-      //   }
-      // }
+      for (DriverDocuments document in documents) {
+        if (document.documentType.toString().replaceAll(' ', '') ==
+            typeDocument) {
+          isDone = true;
+          isUpload = false;
+          break;
+        }
+      }
 
       Widget documentRow = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,7 +423,7 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
 
   void onNext() {
     if (isSplash) {
-      Get.offAll(() => const WaitingPage());
+      Get.offAll(() => WaitingPage(configuration: configuration,));
     } else {
       Get.back();
     }

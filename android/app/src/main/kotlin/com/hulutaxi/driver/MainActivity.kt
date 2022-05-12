@@ -1,4 +1,4 @@
-package com.hulutaxi.driver.hulutaxi_driver
+package com.hulutaxi.driver
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name" translatable="false">HuluTaxi</string>
+    <string name="googleAPIKEY" translatable="false">AIzaSyDywlkflWqYCy3_bQHu0lka5Ybr3YUN5s0</string>
+
+</resources>

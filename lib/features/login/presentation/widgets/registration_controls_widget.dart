@@ -1,28 +1,38 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/registration_bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/registration_event.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/terms_page.dart';
+import 'package:hulutaxi_driver/features/login/presentation/widgets/qr_controls_widget.dart';
 
 import '../../../../core/util/input_converter.dart';
-import 'widgets.dart';
 
 class RegistrationControlsWidget extends StatefulWidget {
   final bool isReferral;
+  final Configuration configuration;
+  Registration? registration;
 
   RegistrationControlsWidget({
     Key? key,
     required this.isReferral,
+    this.registration,
+    required this.configuration,
   }) : super(key: key);
 
   @override
   _RegistrationControlsWidgetState createState() =>
-      _RegistrationControlsWidgetState(isReferral: isReferral);
+      _RegistrationControlsWidgetState(
+        isReferral: isReferral,
+        registration: registration,
+        configuration: configuration,
+      );
 }
 
 class _RegistrationControlsWidgetState
@@ -37,13 +47,39 @@ class _RegistrationControlsWidgetState
   String? inputStrPhone;
   String? inputStrReferral;
 
+  Registration? registration;
+  final Configuration configuration;
+
   var colorsBtnBack = Colors.grey.shade300;
   Color colorsBtnTxt = Colors.grey;
   final controllerReferral = TextEditingController();
+  final controllerNameFirst = TextEditingController();
+  final controllerNameMiddle = TextEditingController();
+  final controllerNameLast = TextEditingController();
+  final controllerPhone = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
-  _RegistrationControlsWidgetState({required this.isReferral});
+  _RegistrationControlsWidgetState({
+    required this.isReferral,
+    this.registration,
+    required this.configuration,
+  }) {
+    if (registration != null) {
+      controllerNameFirst.text = registration!.firstName;
+      controllerNameMiddle.text = registration!.fatherName;
+      controllerNameLast.text = registration!.grandfatherName;
+      controllerPhone.text = registration!.phoneNumber;
+      if (registration?.isTerms != null) {
+        isTerms = registration!.isTerms == true;
+      }
+      if (isReferral &&
+          registration!.referralCode != null &&
+          registration!.referralCode?.isNotEmpty == true) {
+        controllerReferral.text = registration!.referralCode!;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +87,7 @@ class _RegistrationControlsWidgetState
       key: _formKey,
       child: Column(children: <Widget>[
         TextFormField(
+          controller: controllerNameFirst,
           keyboardType: TextInputType.name,
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
           decoration: const InputDecoration(
@@ -76,6 +113,7 @@ class _RegistrationControlsWidgetState
         ),
         const SizedBox(height: 16),
         TextFormField(
+          controller: controllerNameMiddle,
           keyboardType: TextInputType.name,
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
           decoration: const InputDecoration(
@@ -101,6 +139,7 @@ class _RegistrationControlsWidgetState
         ),
         const SizedBox(height: 16),
         TextFormField(
+          controller: controllerNameLast,
           keyboardType: TextInputType.name,
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
           decoration: const InputDecoration(
@@ -127,6 +166,7 @@ class _RegistrationControlsWidgetState
         ),
         const SizedBox(height: 16),
         TextFormField(
+          controller: controllerPhone,
           keyboardType: TextInputType.phone,
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
           decoration: InputDecoration(
@@ -141,7 +181,7 @@ class _RegistrationControlsWidgetState
                     height: 24,
                     width: 24,
                     child: SvgPicture.asset('assets/images/et.svg',
-                        semanticsLabel: 'Top Curve'),
+                        semanticsLabel: 'Country Flag'),
                   ),
                   const SizedBox(width: 4),
                   const Text('+251')
@@ -180,7 +220,7 @@ class _RegistrationControlsWidgetState
           },
         ),
         referralFieldSpacing(),
-        referralField(),
+        referralField(configuration),
         const SizedBox(
           height: 16,
         ),
@@ -273,8 +313,27 @@ class _RegistrationControlsWidgetState
         ;
   }
 
-  void qrScanner() {
-    controllerReferral.text = "Scanner Result";
+  void qrScanner(Configuration configuration) {
+    String firstName = (inputStrFirstName != null) ? inputStrFirstName! : '';
+    String fatherName = (inputStrFatherName != null) ? inputStrFatherName! : '';
+    String grandfatherName =
+        (inputStrGrandFatherName != null) ? inputStrGrandFatherName! : '';
+    String phoneNumber = (inputStrPhone != null) ? inputStrPhone! : '';
+
+    final registrationCurrent = Registration(
+        id: 0,
+        firstName: firstName,
+        fatherName: fatherName,
+        grandfatherName: grandfatherName,
+        phoneNumber: phoneNumber,
+        referralCode: inputStrReferral,
+        isTerms: isTerms);
+
+    Get.to(() => QRControlsWidget(
+          registration: registrationCurrent,
+          contextBloc: context,
+          configuration: configuration,
+        ));
   }
 
   void onBtnClicked() {
@@ -314,7 +373,7 @@ class _RegistrationControlsWidgetState
     }
   }
 
-  Widget referralField() {
+  Widget referralField(Configuration configuration) {
     if (isReferral) {
       return TextFormField(
         keyboardType: TextInputType.text,
@@ -328,7 +387,7 @@ class _RegistrationControlsWidgetState
             height: 20,
             child: IconButton(
                 onPressed: () {
-                  qrScanner();
+                  qrScanner(configuration);
                 },
                 icon: const Icon(
                   Icons.qr_code_scanner,
@@ -360,7 +419,8 @@ class _RegistrationControlsWidgetState
         fatherName: father,
         grandfatherName: grandfather,
         phoneNumber: phone,
-        referralCode: referralCode);
+        referralCode: referralCode,
+        isTerms: isTerms);
 
     BlocProvider.of<RegistrationBloc>(context)
         .add(GetOTPForRegistration(registration));

@@ -55,6 +55,7 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
       key: _formKey,
       child: Column(children: <Widget>[
         PinCodeTextField(
+          autoFocus: true,
           appContext: context,
           length: 5,
           obscureText: false,
@@ -64,6 +65,7 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
             borderRadius: BorderRadius.circular(5),
             fieldHeight: 50,
             fieldWidth: 40,
+            selectedColor: Colors.green,
             activeFillColor: Colors.white,
             selectedFillColor: Colors.green.shade50,
             inactiveColor: Colors.green.shade50,

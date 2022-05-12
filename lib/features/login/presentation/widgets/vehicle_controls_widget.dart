@@ -11,20 +11,38 @@ import '../bloc/bloc.dart';
 
 class VehicleControlsWidget extends StatefulWidget {
   final Configuration configuration;
+  VehicleModels? selectedModel;
+  VehicleColors? selectedColor;
+  String? enteredPlate;
+  String? enteredMakeYear;
 
-  const VehicleControlsWidget({Key? key, required this.configuration})
-      : super(key: key);
+  VehicleControlsWidget({
+    Key? key,
+    required this.configuration,
+    this.selectedModel,
+    this.selectedColor,
+    this.enteredPlate,
+    this.enteredMakeYear,
+  }) : super(key: key);
 
   @override
-  _VehicleControlsWidgetState createState() =>
-      _VehicleControlsWidgetState(configuration: configuration);
+  _VehicleControlsWidgetState createState() => _VehicleControlsWidgetState(
+        configuration: configuration,
+        selectedModel: selectedModel,
+        selectedColor: selectedColor,
+        enteredPlate: enteredPlate,
+        enteredMakeYear: enteredMakeYear,
+      );
 }
 
 class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
   final Configuration configuration;
-
+  final controllerPlate = TextEditingController();
+  final controllerMakeYear = TextEditingController();
   VehicleModels? selectedModel;
   VehicleColors? selectedColor;
+  String? enteredPlate;
+  String? enteredMakeYear;
   String? inputModel;
   String? inputColor;
   String? inputPlateNo;
@@ -37,7 +55,21 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
 
   final _formKey = GlobalKey<FormState>();
 
-  _VehicleControlsWidgetState({required this.configuration});
+  _VehicleControlsWidgetState({
+    required this.configuration,
+    this.selectedModel,
+    this.selectedColor,
+    this.enteredPlate,
+    this.enteredMakeYear,
+  }) {
+    if (enteredPlate != null && enteredPlate?.isNotEmpty == true) {
+      controllerPlate.text = enteredPlate!;
+    }
+
+    if (enteredMakeYear != null && enteredMakeYear?.isNotEmpty == true) {
+      controllerMakeYear.text = enteredMakeYear!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +174,7 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             height: 24,
           ),
           TextFormField(
+            controller: controllerPlate,
             keyboardType: TextInputType.text,
             inputFormatters: [LengthLimitingTextInputFormatter(13)],
             decoration: const InputDecoration(
@@ -167,6 +200,7 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
           ),
           const SizedBox(height: 24),
           TextFormField(
+            controller: controllerMakeYear,
             keyboardType: TextInputType.number,
             inputFormatters: [LengthLimitingTextInputFormatter(4)],
             decoration: const InputDecoration(
@@ -280,6 +314,8 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
           plateNo: inputPlateNo,
           makeYear: int.parse(inputMakeYear),
         ),
+        selectedModel!,
+        selectedColor!,
       ),
     );
   }

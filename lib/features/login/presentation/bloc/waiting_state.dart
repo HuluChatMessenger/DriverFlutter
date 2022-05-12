@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:meta/meta.dart';
 
@@ -24,8 +25,9 @@ class LoadingWaiting extends WaitingState {
 
 class LoadedWaiting extends WaitingState {
   final Driver driver;
+  final Configuration? configuration;
 
-  const LoadedWaiting({required this.driver});
+  const LoadedWaiting({required this.driver, this.configuration});
 
   @override
   List<Object> get props => [];

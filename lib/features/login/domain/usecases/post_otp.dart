@@ -6,21 +6,21 @@ import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/repositories/repositories.dart';
 
-class PostOtp implements UseCase<Driver, Params> {
+class PostOtp implements UseCase<Driver, ParamsOtp> {
   final Repository repository;
 
   PostOtp(this.repository);
 
   @override
-  Future<Either<Failure, Driver>> call(Params params) async {
+  Future<Either<Failure, Driver>> call(ParamsOtp params) async {
     return await repository.postOtp(params.otp);
   }
 }
 
-class Params extends Equatable {
+class ParamsOtp extends Equatable {
   final Otp otp;
 
-  const Params({required this.otp});
+  const ParamsOtp({required this.otp});
 
   @override
   List<Object?> get props => [otp];

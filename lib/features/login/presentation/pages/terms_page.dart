@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
-import 'package:hulutaxi_driver/features/login/presentation/pages/otp_page.dart';
-import 'package:hulutaxi_driver/injection_container.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../core/util/constants.dart';
@@ -32,10 +28,7 @@ class TermsPage extends StatelessWidget {
         title: const Text(AppConstants.strBack),
         elevation: 0,
       ),
-      body: const WebView(
-        initialUrl: AppConstants.urlTerms,
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
+      body: const TermsControlsWidget(),
     );
   }
 }

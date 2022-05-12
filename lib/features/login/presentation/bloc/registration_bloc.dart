@@ -13,7 +13,8 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   final PostRegistrationOTP postRegistrationOTP;
   final InputConverter inputConverter;
 
-  RegistrationBloc({required this.postRegistrationOTP, required this.inputConverter})
+  RegistrationBloc(
+      {required this.postRegistrationOTP, required this.inputConverter})
       : super(RegistrationInitial()) {
     on<RegistrationEvent>(mapRegistrationOTPState);
   }
@@ -27,18 +28,22 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           inputConverter.stringValidPhone(event.registration.phoneNumber);
       await inputEither.fold(
         (failure) async {
-          emit(const ErrorRegistration(message: AppConstants.errMsgPhone));
+          emit(ErrorRegistration(
+              message: AppConstants.errMsgPhone,
+              registration: event.registration));
         },
         (string) async {
           print('LogHulu Request started');
-          emit(LoadingRegistration());
+          emit(LoadingRegistration(registration: event.registration));
 
           final failureOrSuccess = await postRegistrationOTP(
               Params(registration: event.registration));
           emit(failureOrSuccess.fold(
             (failure) {
               print('LogHulu Response error');
-              return ErrorRegistration(message: _mapFailureToMessage(failure));
+              return ErrorRegistration(
+                  message: _mapFailureToMessage(failure),
+                  registration: event.registration);
             },
             (success) {
               print('LogHulu Response received');

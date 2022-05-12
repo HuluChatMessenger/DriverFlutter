@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/document_page.dart';
@@ -15,7 +18,7 @@ import 'package:hulutaxi_driver/injection_container.dart';
 import '../widgets/widgets.dart';
 
 class SplashPage extends StatelessWidget {
-  const SplashPage({Key? key}) : super(key: key);
+  SplashPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +34,14 @@ class SplashPage extends StatelessWidget {
           BlocConsumer<SplashBloc, SplashState>(
             builder: (context, state) {
               if (state is ErrorSplash) {
+                const SplashWidget();
                 return Positioned(
                   bottom: 32,
                   right: 16,
                   left: 16,
                   child: Center(
                     child: DefaultTextStyle(
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.green,
                         fontStyle: FontStyle.italic,
@@ -54,17 +58,18 @@ class SplashPage extends StatelessWidget {
               print('LogHulu : $state');
               if (state is EmptySplash) {
               } else if (state is LoadedLandingSplash) {
-                openPageLanding(state.configuration.referralProgramEnabled);
+                openPageLanding(state.configuration.referralProgramEnabled,
+                    state.configuration);
               } else if (state is LoadedPicSplash) {
-                openPagePic();
+                openPagePic(state.driver.vehicle == null);
               } else if (state is LoadedVehicleSplash) {
                 openPageVehicle(state.configuration);
               } else if (state is LoadedDocumentsSplash) {
                 openPageDocuments(state.configuration, state.documents);
               } else if (state is LoadedWaitingSplash) {
-                openPageWaiting();
+                openPageWaiting(state.configuration);
               } else if (state is LoadedLoginSplash) {
-                openPageMain();
+                openPageMain(state.driver, state.configuration);
               }
             },
           ),
@@ -73,16 +78,36 @@ class SplashPage extends StatelessWidget {
     );
   }
 
-  void openPageLanding(bool isReferral) {
-    Get.offAll(() => LandingPage(isReferral: isReferral));
+  void startReload() {
+    const oneSec = Duration(seconds: 1);
+    int start = 5;
+    Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (start == 0) {
+          startReload();
+          const SplashWidget();
+        } else {
+          start--;
+        }
+      },
+    );
   }
 
-  void openPagePic() {
-    Get.offAll(() => AddPicPage());
+  void openPageLanding(bool isReferral, Configuration configuration) {
+    Get.offAll(() => LandingPage(
+          isReferral: isReferral,
+          configuration: configuration,
+        ));
   }
 
-  void openPageVehicle(
-      Configuration configuration) {
+  void openPagePic(bool isNextVehicle) {
+    Get.offAll(() => AddPicPage(
+          isNextVehicle: isNextVehicle,
+        ));
+  }
+
+  void openPageVehicle(Configuration configuration) {
     Get.offAll(() => VehiclePage(
           configuration: configuration,
         ));
@@ -94,14 +119,17 @@ class SplashPage extends StatelessWidget {
           documentTypes: configuration.documentTypes,
           documents: documents,
           isSplash: true,
+          configuration: configuration,
         ));
   }
 
-  void openPageWaiting() {
-    Get.offAll(() => const WaitingPage());
+  void openPageWaiting(Configuration configuration) {
+    Get.offAll(() => WaitingPage(
+          configuration: configuration,
+        ));
   }
 
-  void openPageMain() {
-    Get.offAll(() => const MainPage());
+  void openPageMain(Driver driver, Configuration configuration) {
+    Get.offAll(() => MainPage(driver: driver, configuration: configuration));
   }
 }

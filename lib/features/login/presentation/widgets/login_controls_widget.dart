@@ -6,25 +6,36 @@ import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/core/util/input_converter.dart';
 
 import '../bloc/bloc.dart';
-import 'widgets.dart';
 
 class LoginControlsWidget extends StatefulWidget {
-  const LoginControlsWidget({
+  String? enteredPhone;
+
+  LoginControlsWidget({
     Key? key,
+    this.enteredPhone,
   }) : super(key: key);
 
   @override
-  _LoginControlsWidgetState createState() => _LoginControlsWidgetState();
+  _LoginControlsWidgetState createState() =>
+      _LoginControlsWidgetState(enteredPhone: enteredPhone);
 }
 
 class _LoginControlsWidgetState extends State<LoginControlsWidget> {
   String? inputStr;
+  String? enteredPhone;
   bool isValid = false;
   bool isBtnEnabled = false;
   var colorsBtnBack = Colors.grey.shade300;
   Color colorsBtnTxt = Colors.grey;
+  final controllerPhone = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  _LoginControlsWidgetState({this.enteredPhone}) {
+    if (enteredPhone != null && enteredPhone?.isNotEmpty == true) {
+      controllerPhone.text = enteredPhone!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +43,7 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
       key: _formKey,
       child: Column(children: <Widget>[
         TextFormField(
+          controller: controllerPhone,
           keyboardType: TextInputType.phone,
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
           decoration: InputDecoration(

@@ -45,19 +45,22 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
             emit(failureOrSuccessDriver.fold(
               (failureDriver) {
                 print('LogHulu: Driver Response error $failureDriver');
-                return ErrorSplash(
-                    message: _mapFailureToMessage(failureDriver));
+                if (failureDriver is LogoutFailure)
+                  return LoadedLandingSplash(configuration: config);
+                else
+                  return ErrorSplash(
+                      message: _mapFailureToMessage(failureDriver));
               },
               (successDriver) {
                 print(
-                    'LogHulu: Driver Response received  $successDriver  ===|||=== result');
-                if (successDriver.isLoggedIn == false) {
+                    'LogHulu: Driver Response received ${successDriver.isLoggedIn}  $successDriver  ===|||=== result');
+                if (successDriver.isLoggedIn != true) {
                   return LoadedLandingSplash(configuration: config);
-                } else if (successDriver.isPicSubmitted == false) {
+                } else if (successDriver.isPicSubmitted != true) {
                   return LoadedPicSplash(driver: successDriver);
                 } else if (successDriver.vehicle == null) {
                   return LoadedVehicleSplash(configuration: config);
-                } else if (successDriver.isDocumentSubmitted == false) {
+                } else if (successDriver.isDocumentSubmitted != true) {
                   List<DriverDocuments> documents = [];
                   if (successDriver.driverDocuments != null) {
                     documents = successDriver.driverDocuments!;
@@ -65,9 +68,9 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
                   return LoadedDocumentsSplash(
                       configuration: config, documents: documents);
                 } else if (!successDriver.isApproved) {
-                  return LoadedWaitingSplash(driver: successDriver);
+                  return LoadedWaitingSplash(driver: successDriver, configuration: config);
                 } else {
-                  return LoadedLoginSplash(driver: successDriver);
+                  return LoadedLoginSplash(driver: successDriver, configuration: config);
                 }
               },
             ));

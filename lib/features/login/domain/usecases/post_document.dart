@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/usecases/usecase.dart';
-import 'package:hulutaxi_driver/features/login/domain/entities/DriverDocumentRequest.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_document_request.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:hulutaxi_driver/features/login/domain/repositories/repositories.dart';
 

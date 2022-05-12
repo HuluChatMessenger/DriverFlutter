@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:hulutaxi_driver/features/login/domain/entities/DriverDocumentRequest.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_document_request.dart';
 import 'package:meta/meta.dart';
 
 

@@ -8,9 +8,22 @@ import 'package:hulutaxi_driver/features/login/data/repositories/repository_impl
 import 'package:hulutaxi_driver/features/login/domain/repositories/repositories.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_earning_six.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_earnings.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_earnings_initial.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_history_initial.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_history_next.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_hulu_coin_balance.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_logout.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_service.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_wallet_initial.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_wallet_next.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/post_airtime.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_document.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/post_feedback.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_login_otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_login_resend_otp.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/post_main.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_pic.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/post_registration_otp.dart';
@@ -45,6 +58,7 @@ Future<void> init() async {
         postOtp: sl(),
         postLoginOTP: sl(),
         postRegistrationOTP: sl(),
+        getConfiguration: sl(),
       ));
   sl.registerFactory(() => RegistrationBloc(
         postRegistrationOTP: sl(),
@@ -64,6 +78,36 @@ Future<void> init() async {
       ));
   sl.registerFactory(() => WaitingBloc(
         getDriver: sl(),
+        getConfiguration: sl(),
+      ));
+  sl.registerFactory(() => MainBloc(
+        postMain: sl(),
+        getDriver: sl(),
+      ));
+  sl.registerFactory(() => ProfileBloc(
+        getDriver: sl(),
+        getEarningSix: sl(),
+        getLogout: sl(),
+      ));
+  sl.registerFactory(() => FeedbackBloc(
+        postFeedback: sl(),
+      ));
+  sl.registerFactory(() => WalletBloc(
+        getWalletInitial: sl(),
+        getWalletNext: sl(),
+      ));
+  sl.registerFactory(() => HistoryBloc(
+        getHistoryInitial: sl(),
+        getHistoryNext: sl(),
+      ));
+  sl.registerFactory(() => CoinBloc(
+        getService: sl(),
+        getHuluCoinBalance: sl(),
+        postAirtime: sl(),
+      ));
+  sl.registerFactory(() => EarningsBloc(
+        getEarningsInitial: sl(),
+        getEarnings: sl(),
       ));
 
   //Use cases
@@ -75,9 +119,22 @@ Future<void> init() async {
   sl.registerLazySingleton(() => PostPic(sl()));
   sl.registerLazySingleton(() => PostVehicle(sl()));
   sl.registerLazySingleton(() => PostDocument(sl()));
+  sl.registerLazySingleton(() => PostMain(sl()));
+  sl.registerLazySingleton(() => PostFeedback(sl()));
   sl.registerLazySingleton(() => PutDriver(sl()));
+  sl.registerLazySingleton(() => PostAirtime(sl()));
   sl.registerLazySingleton(() => GetConfiguration(sl()));
   sl.registerLazySingleton(() => GetDriver(sl()));
+  sl.registerLazySingleton(() => GetWalletInitial(sl()));
+  sl.registerLazySingleton(() => GetWalletNext(sl()));
+  sl.registerLazySingleton(() => GetEarningSix(sl()));
+  sl.registerLazySingleton(() => GetHistoryInitial(sl()));
+  sl.registerLazySingleton(() => GetHistoryNext(sl()));
+  sl.registerLazySingleton(() => GetHuluCoinBalance(sl()));
+  sl.registerLazySingleton(() => GetService(sl()));
+  sl.registerLazySingleton(() => GetEarnings(sl()));
+  sl.registerLazySingleton(() => GetEarningsInitial(sl()));
+  sl.registerLazySingleton(() => GetLogout(sl()));
 
   //Repository
   sl.registerLazySingleton<Repository>(

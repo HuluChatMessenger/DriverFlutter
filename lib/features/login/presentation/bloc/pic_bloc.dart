@@ -29,14 +29,16 @@ class PicBloc extends Bloc<PicEvent, PicState> {
     if (event is GetPic) {
       print('LogHulu Pic: $event');
 
-      emit(LoadingPic());
+      emit(LoadingPic(selcetedPic: event.pic));
       ProfilePic? profilePic;
       final failureOrSuccessPic = await postPic(ParamsPic(pic: event.pic));
 
       await failureOrSuccessPic.fold(
         (failureDriver) async {
           print('LogHulu PicFailure: Driver Response error');
-          return emit(ErrorPic(message: _mapFailureToMessage(failureDriver)));
+          return emit(ErrorPic(
+              message: _mapFailureToMessage(failureDriver),
+              selcetedPic: event.pic));
         },
         (success) async {
           print('LogHulu PicSuccess: Driver Response received');
@@ -47,8 +49,9 @@ class PicBloc extends Bloc<PicEvent, PicState> {
           await failureOrSuccessDriver.fold(
             (failureDriver) async {
               print('LogHulu Pic: Driver Response error $failureDriver');
-              return emit(
-                  ErrorPic(message: _mapFailureToMessage(failureDriver)));
+              return emit(ErrorPic(
+                  message: _mapFailureToMessage(failureDriver),
+                  selcetedPic: event.pic));
             },
             (successDriver) async {
               print('LogHulu Pic: Driver Response received');
@@ -84,11 +87,14 @@ class PicBloc extends Bloc<PicEvent, PicState> {
                   print(
                       'LogHulu PicUpdateDriver: Driver Response error $failureDriverUpdate');
                   return ErrorPic(
-                      message: _mapFailureToMessage(failureDriverUpdate));
+                      message: _mapFailureToMessage(failureDriverUpdate),
+                      selcetedPic: event.pic);
                 },
                 (successDriverUpdate) {
                   print('LogHulu PicUpdateDriver: Driver Response received');
-                  return LoadedPic(configuration: successDriverUpdate);
+                  return LoadedPic(
+                      configuration: successDriverUpdate,
+                      selcetedPic: event.pic);
                 },
               ));
             },

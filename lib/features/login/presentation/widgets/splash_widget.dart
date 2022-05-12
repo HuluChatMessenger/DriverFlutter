@@ -15,7 +15,7 @@ class SplashWidget extends StatefulWidget {
 
 class _SplashWidgetState extends State<SplashWidget> {
   _SplashWidgetState() {
-    Future.delayed(const Duration(microseconds: 100), () {
+    Future.delayed(const Duration(microseconds: 15), () {
       addConfig();
     });
   }
