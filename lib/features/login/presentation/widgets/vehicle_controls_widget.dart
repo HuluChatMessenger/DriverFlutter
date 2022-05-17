@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/vehicle.dart';
@@ -79,10 +80,10 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
         padding: const EdgeInsets.all(8.0),
         child: Column(children: <Widget>[
           Row(
-            children: const <Widget>[
+            children: <Widget>[
               Text(
-                AppConstants.strAddVehicleTitle,
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                'strAddVehicleTitle'.tr,
+                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.start,
               ),
             ],
@@ -91,7 +92,7 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             height: 32,
           ),
           DropdownButton<VehicleModels>(
-            hint: const Text(AppConstants.strModel),
+            hint: Text('strModel'.tr),
             isExpanded: true,
             items: configuration.vehicleModels.map((List<String> value) {
               String key = '';
@@ -124,9 +125,9 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             child: Padding(
               padding: const EdgeInsets.only(left: 14.0, right: 14.0),
               child: Row(
-                children: const [
-                  Text(AppConstants.errMsgModel,
-                      style: TextStyle(
+                children: [
+                  Text('errMsgModel'.tr,
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Colors.red,
                       )),
@@ -135,7 +136,7 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             ),
           ),
           DropdownButton<VehicleColors>(
-            hint: const Text(AppConstants.strColor),
+            hint: Text('strColor'.tr),
             isExpanded: true,
             items: configuration.vehicleColors.map((VehicleColors value) {
               return DropdownMenuItem<VehicleColors>(
@@ -160,9 +161,9 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             child: Padding(
               padding: const EdgeInsets.only(left: 14.0, right: 14.0),
               child: Row(
-                children: const [
-                  Text(AppConstants.errMsgColor,
-                      style: TextStyle(
+                children: [
+                  Text('errMsgColor'.tr,
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Colors.red,
                       )),
@@ -190,7 +191,7 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             validator: (value) {
               String? errorValue;
               if (inputPlateNo == null || inputPlateNo?.isEmpty == true) {
-                errorValue = AppConstants.errMsgEmptyPlateNo;
+                errorValue = 'errMsgEmptyPlateNo'.tr;
               }
               // else if (inputPlateNo != null && inputPlateNo!.length < 10) {
               //   errorValue = AppConstants.errMsgValidPlateNo;
@@ -203,9 +204,9 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             controller: controllerMakeYear,
             keyboardType: TextInputType.number,
             inputFormatters: [LengthLimitingTextInputFormatter(4)],
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: AppConstants.strPromptMakeYear,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: 'strPromptMakeYear'.tr,
               floatingLabelBehavior: FloatingLabelBehavior.auto,
             ),
             onChanged: (value) {
@@ -216,7 +217,7 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             validator: (value) {
               String? errorValue;
               if (inputMakeYear == null || inputMakeYear?.isEmpty == true) {
-                errorValue = AppConstants.errMsgEmptyMakeYear;
+                errorValue = 'errMsgEmptyMakeYear'.tr;
               }
               // else if (inputMakeYear != null && inputMakeYear!.length < 4) {
               //   errorValue = AppConstants.errMsgValidMakeYear;
@@ -227,13 +228,22 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
           const SizedBox(height: 64),
           MaterialButton(
             onPressed: isBtnEnabled ? onBtnClicked : null,
+            color: Colors.green,
+            disabledColor: Colors.grey.shade300,
+            textColor: Colors.white,
+            disabledTextColor: Colors.grey,
+            minWidth: MediaQuery.of(context).size.width - 100,
+            height: 44,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
             child: Container(
               height: 50,
               color: colorsBtnBack,
               child: Row(
                 children: [
                   Text(
-                    AppConstants.strRegisterVehicle,
+                    'strRegisterVehicle'.tr,
                     style: TextStyle(fontSize: 20, color: colorsBtnTxt),
                   ),
                   const Spacer(),
@@ -243,15 +253,6 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
                   ),
                 ],
               ),
-            ),
-            color: Colors.green,
-            disabledColor: Colors.grey.shade300,
-            textColor: Colors.white,
-            disabledTextColor: Colors.grey,
-            minWidth: MediaQuery.of(context).size.width - 100,
-            height: 44,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
             ),
           ),
         ]),

@@ -100,7 +100,7 @@ class VehiclePage extends StatelessWidget {
                 );
               },
             ),
-            title: const Text(AppConstants.strBack),
+            title: Text('strBack'.tr),
             elevation: 0,
           ),
           body: SingleChildScrollView(

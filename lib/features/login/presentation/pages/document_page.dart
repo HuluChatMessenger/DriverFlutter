@@ -136,9 +136,9 @@ class DocumentPage extends StatelessWidget {
 
   Widget title() {
     if (isSplash) {
-      return const Text(AppConstants.strDoc);
+      return Text('strDoc'.tr);
     } else {
-      return const Text(AppConstants.strBack);
+      return Text('strBack'.tr);
     }
   }
 

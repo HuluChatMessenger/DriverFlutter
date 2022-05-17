@@ -96,7 +96,7 @@ class EarningsPage extends StatelessWidget {
               },
             ),
             elevation: 0,
-            title: const Text(AppConstants.strEarnings),
+            title: Text('strEarnings'.tr),
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -165,9 +165,7 @@ class EarningsPage extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  CommonUtils.formatCurrency(earning.totalEarning.toString()) +
-                      " " +
-                      AppConstants.strBirr,
+                  "${CommonUtils.formatCurrency(earning.totalEarning.toString())} ${'strBirr'.tr}",
                   style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black,
@@ -180,7 +178,7 @@ class EarningsPage extends StatelessWidget {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: 0.1,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.green,
                 ),
               ),

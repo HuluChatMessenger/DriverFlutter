@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/feedbacks.dart';
@@ -48,7 +49,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
             height: 32,
           ),
           DropdownButton<String>(
-            hint: const Text(AppConstants.strFeedbackType),
+            hint: Text('strFeedbackType'.tr),
             isExpanded: true,
             items: configuration.feedbackTypes.map((List<String> value) {
               String valueFeedBackType = '';
@@ -75,9 +76,9 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
             child: Padding(
               padding: const EdgeInsets.only(left: 14.0, right: 14.0),
               child: Row(
-                children: const [
-                  Text(AppConstants.errMsgFeedbackType,
-                      style: TextStyle(
+                children:  [
+                  Text('errMsgFeedbackType'.tr,
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Colors.red,
                       )),
@@ -86,7 +87,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
             ),
           ),
           DropdownButton<String>(
-            hint: const Text(AppConstants.strUrgencyLevel),
+            hint: Text('strUrgencyLevel'.tr),
             isExpanded: true,
             items:
                 configuration.feedbackUrgencyLevels.map((List<String> value) {
@@ -114,9 +115,9 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
             child: Padding(
               padding: const EdgeInsets.only(left: 14.0, right: 14.0),
               child: Row(
-                children: const [
-                  Text(AppConstants.errMsgUrgencyLeve,
-                      style: TextStyle(
+                children: [
+                  Text('errMsgUrgencyLeve'.tr,
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Colors.red,
                       )),
@@ -132,9 +133,9 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
             minLines: 10,
             maxLines: 10,
             inputFormatters: [LengthLimitingTextInputFormatter(13)],
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: AppConstants.strPromptFeedback,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: 'strPromptFeedback'.tr,
               alignLabelWithHint: true,
               floatingLabelBehavior: FloatingLabelBehavior.auto,
             ),
@@ -146,7 +147,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
             validator: (value) {
               String? errorValue;
               if (inputFeedback == null || inputFeedback?.isEmpty == true) {
-                errorValue = AppConstants.errMsgEmptyFeedback;
+                errorValue = 'errMsgEmptyFeedback'.tr;
               }
               return errorValue;
             },
@@ -154,13 +155,22 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
           const SizedBox(height: 64),
           MaterialButton(
             onPressed: isBtnEnabled ? onBtnClicked : null,
+            color: Colors.green,
+            disabledColor: Colors.grey.shade300,
+            textColor: Colors.white,
+            disabledTextColor: Colors.grey,
+            minWidth: MediaQuery.of(context).size.width - 100,
+            height: 44,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
             child: Container(
               height: 50,
               color: colorsBtnBack,
               child: Row(
                 children: [
                   Text(
-                    AppConstants.strSend,
+                    'strSend'.tr,
                     style: TextStyle(fontSize: 20, color: colorsBtnTxt),
                   ),
                   const Spacer(),
@@ -170,15 +180,6 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
                   ),
                 ],
               ),
-            ),
-            color: Colors.green,
-            disabledColor: Colors.grey.shade300,
-            textColor: Colors.white,
-            disabledTextColor: Colors.grey,
-            minWidth: MediaQuery.of(context).size.width - 100,
-            height: 44,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
             ),
           ),
         ]),

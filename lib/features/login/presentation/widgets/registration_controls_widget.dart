@@ -10,9 +10,10 @@ import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart
 import 'package:hulutaxi_driver/features/login/presentation/bloc/registration_bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/registration_event.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/terms_page.dart';
-import 'package:hulutaxi_driver/features/login/presentation/widgets/qr_controls_widget.dart';
+// import 'package:hulutaxi_driver/features/login/presentation/widgets/qr_controls_widget.dart';
 
 import '../../../../core/util/input_converter.dart';
+import 'widgets.dart';
 
 class RegistrationControlsWidget extends StatefulWidget {
   final bool isReferral;
@@ -90,9 +91,9 @@ class _RegistrationControlsWidgetState
           controller: controllerNameFirst,
           keyboardType: TextInputType.name,
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: AppConstants.strPromptFirstName,
+          decoration:  InputDecoration(
+            border: const OutlineInputBorder(),
+            labelText: 'strPromptFirstName'.tr,
             floatingLabelBehavior: FloatingLabelBehavior.auto,
           ),
           onChanged: (value) {
@@ -104,7 +105,7 @@ class _RegistrationControlsWidgetState
             String? errorValue;
             if (inputStrFirstName == null ||
                 (inputStrFirstName != null && inputStrFirstName!.isEmpty)) {
-              errorValue = AppConstants.errMsgEmptyFirst;
+              errorValue = 'errMsgEmptyFirst'.tr;
             } else {
               errorValue = null;
             }
@@ -116,9 +117,9 @@ class _RegistrationControlsWidgetState
           controller: controllerNameMiddle,
           keyboardType: TextInputType.name,
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: AppConstants.strPromptFatherName,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            labelText: 'strPromptFatherName'.tr,
             floatingLabelBehavior: FloatingLabelBehavior.auto,
           ),
           onChanged: (value) {
@@ -130,7 +131,7 @@ class _RegistrationControlsWidgetState
             String? errorValue;
             if (inputStrFatherName == null ||
                 (inputStrFatherName != null && inputStrFatherName!.isEmpty)) {
-              errorValue = AppConstants.errMsgEmptyFather;
+              errorValue = 'errMsgEmptyFather'.tr;
             } else {
               errorValue = null;
             }
@@ -142,9 +143,9 @@ class _RegistrationControlsWidgetState
           controller: controllerNameLast,
           keyboardType: TextInputType.name,
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: AppConstants.strPromptGFatherName,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            labelText: 'strPromptGFatherName'.tr,
             floatingLabelBehavior: FloatingLabelBehavior.auto,
           ),
           onChanged: (value) {
@@ -157,7 +158,7 @@ class _RegistrationControlsWidgetState
             if (inputStrGrandFatherName == null ||
                 (inputStrGrandFatherName != null &&
                     inputStrGrandFatherName!.isEmpty)) {
-              errorValue = AppConstants.errMsgEmptyGrandfather;
+              errorValue = 'errMsgEmptyGrandfather'.tr;
             } else {
               errorValue = null;
             }
@@ -171,7 +172,7 @@ class _RegistrationControlsWidgetState
           inputFormatters: [LengthLimitingTextInputFormatter(9)],
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
-            labelText: AppConstants.strPromptPhone,
+            labelText: 'strPromptPhone'.tr,
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             prefix: SizedBox(
               width: 76,
@@ -180,7 +181,7 @@ class _RegistrationControlsWidgetState
                   SizedBox(
                     height: 24,
                     width: 24,
-                    child: SvgPicture.asset('assets/images/et.svg',
+                    child: SvgPicture.asset('assets/images/icons.svg',
                         semanticsLabel: 'Country Flag'),
                   ),
                   const SizedBox(width: 4),
@@ -197,20 +198,20 @@ class _RegistrationControlsWidgetState
           validator: (value) {
             String? errorValue;
             if (inputStrPhone == null) {
-              errorValue = AppConstants.errMsgEmptyPhone;
+              errorValue = 'errMsgEmptyPhone'.tr;
             } else if (InputConverter()
                 .stringValidPhone(inputStrPhone!)
                 .isLeft()) {
               InputConverter().stringValidPhone(inputStrPhone!).fold((l) {
                 switch (l.runtimeType) {
                   case InvalidInputPhoneFailure:
-                    errorValue = AppConstants.errMsgPhone;
+                    errorValue = 'errMsgPhone'.tr;
                     break;
                   case InvalidInputIncompletePhoneFailure:
                     errorValue = null;
                     break;
                   case InvalidInputEmptyPhoneFailure:
-                    errorValue = AppConstants.errMsgEmptyPhone;
+                    errorValue = 'errMsgEmptyPhone'.tr;
                 }
               }, (r) => {});
             } else {
@@ -237,8 +238,8 @@ class _RegistrationControlsWidgetState
                   setBtnEnabled();
                 }),
             TextButton(
-              child: const Text(AppConstants.strAgree,
-                  style: TextStyle(
+              child: Text('strAgree'.tr,
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.black,
                   )),
@@ -251,8 +252,8 @@ class _RegistrationControlsWidgetState
               },
             ),
             TextButton(
-              child: const Text(AppConstants.strTerms,
-                  style: TextStyle(
+              child: Text('strTerms'.tr,
+                  style: const TextStyle(
                     fontSize: 10,
                     color: Colors.green,
                   )),
@@ -268,9 +269,9 @@ class _RegistrationControlsWidgetState
           child: Padding(
             padding: const EdgeInsets.only(left: 14.0, right: 14.0),
             child: Row(
-              children: const [
-                Text(AppConstants.errTerms,
-                    style: TextStyle(
+              children: [
+                Text('errTerms'.tr,
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Colors.red,
                     )),
@@ -281,13 +282,22 @@ class _RegistrationControlsWidgetState
         const SizedBox(height: 32),
         MaterialButton(
           onPressed: isBtnEnabled ? onBtnClicked : null,
+          color: Colors.green,
+          disabledColor: Colors.grey.shade300,
+          textColor: Colors.white,
+          disabledTextColor: Colors.grey,
+          minWidth: MediaQuery.of(context).size.width - 100,
+          height: 44,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
           child: Container(
             height: 50,
             color: colorsBtnBack,
             child: Row(
               children: [
                 Text(
-                  AppConstants.strContinue,
+                  'strContinue'.tr,
                   style: TextStyle(fontSize: 20, color: colorsBtnTxt),
                 ),
                 const Spacer(),
@@ -297,15 +307,6 @@ class _RegistrationControlsWidgetState
                 ),
               ],
             ),
-          ),
-          color: Colors.green,
-          disabledColor: Colors.grey.shade300,
-          textColor: Colors.white,
-          disabledTextColor: Colors.grey,
-          minWidth: MediaQuery.of(context).size.width - 100,
-          height: 44,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
           ),
         ),
       ]),
@@ -329,11 +330,11 @@ class _RegistrationControlsWidgetState
         referralCode: inputStrReferral,
         isTerms: isTerms);
 
-    Get.to(() => QRControlsWidget(
-          registration: registrationCurrent,
-          contextBloc: context,
-          configuration: configuration,
-        ));
+    // Get.to(() => QRControlsWidget(
+    //       registration: registrationCurrent,
+    //       contextBloc: context,
+    //       configuration: configuration,
+    //     ));
   }
 
   void onBtnClicked() {
@@ -380,10 +381,10 @@ class _RegistrationControlsWidgetState
         inputFormatters: [LengthLimitingTextInputFormatter(9)],
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: AppConstants.strPromptReferralCode,
+          labelText: 'strPromptReferralCode'.tr,
           floatingLabelBehavior: FloatingLabelBehavior.auto,
           suffix: SizedBox(
-            width: 72,
+            width: 36,
             height: 20,
             child: IconButton(
                 onPressed: () {
@@ -391,7 +392,7 @@ class _RegistrationControlsWidgetState
                 },
                 icon: const Icon(
                   Icons.qr_code_scanner,
-                  size: 24,
+                  size: 28,
                   color: Colors.green,
                 )),
           ),

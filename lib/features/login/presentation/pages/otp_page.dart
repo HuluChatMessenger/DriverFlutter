@@ -82,7 +82,7 @@ class OTPPage extends StatelessWidget {
                 );
               },
             ),
-            title: const Text(AppConstants.strBack),
+            title: Text('strBack'.tr),
             elevation: 0,
           ),
           body: SingleChildScrollView(
@@ -104,11 +104,9 @@ class OTPPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 120,),
-                Text(
-                  AppConstants.strCopyright +
-                      ' ' +
-                      AppConstants.strAppName,
+                const SizedBox(height: 120,),
+                const Text(
+                  '${AppConstants.strCopyright} ${AppConstants.strAppName}',
                   style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 24,),

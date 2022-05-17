@@ -44,23 +44,23 @@ class WaitingPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DefaultTextStyle(
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 24,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
-                            child: Text(AppConstants.strThanks),
+                            child: Text('strThanks'.tr),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 32,
                           ),
                           DefaultTextStyle(
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                               color: Colors.black,
                               fontWeight: FontWeight.normal,
                             ),
-                            child: Text(AppConstants.strWaitingTxt),
+                            child: Text('strWaitingTxt'.tr),
                           ),
                           WaitingWidget(),
                         ],

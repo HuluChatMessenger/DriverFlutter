@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 
 class DialogWidget extends StatelessWidget {
@@ -62,12 +63,12 @@ class DialogWidget extends StatelessWidget {
       barrierDismissible: isDismiss,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: const Text(
-            AppConstants.errMsgUnknown,
+          content: Text(
+            'errMsgUnknown'.tr,
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text(AppConstants.strCancel),
+              child: Text('strCancel'.tr),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -89,7 +90,7 @@ class DialogWidget extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text(AppConstants.strCancel),
+              child: Text('strCancel'.tr),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -111,7 +112,7 @@ class DialogWidget extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text(AppConstants.strCancel),
+              child: Text('strCancel'.tr),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

@@ -25,6 +25,10 @@ abstract class LocalDataSource {
   ///the user had an internet connection
   Future<bool> getLogin();
 
+  ///Gets the cached [String] which was gotten the last time
+  ///the user had an internet connection
+  Future<String> getLanguage();
+
   ///Gets the cached [TokenDataModel] which was gotten the last time
   ///the user had an internet connection
   Future<TokenDataModel?> getToken();
@@ -36,6 +40,8 @@ abstract class LocalDataSource {
   Future<void> cacheLogin(bool isLogin);
 
   Future<void> cacheToken(TokenDataModel tokenToCache);
+
+  Future<void> cacheLanguage(String language);
 
   Future<void> clearData();
 }
@@ -110,6 +116,14 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
+  Future<void> cacheLanguage(String language) {
+    return sharedPreferences.setString(
+      AppConstants.prefKeyLanguage,
+      language,
+    );
+  }
+
+  @override
   Future<bool> getLogin() {
     final bool? isLogin = sharedPreferences.getBool(AppConstants.prefKeyLogin);
     if (isLogin != null) {
@@ -127,6 +141,17 @@ class LocalDataSourceImpl implements LocalDataSource {
       return Future.value(TokenDataModel.fromJson(json.decode(jsonToken)));
     } else {
       return Future.value(null);
+    }
+  }
+
+  @override
+  Future<String> getLanguage() {
+    final String? currentLanguage =
+        sharedPreferences.getString(AppConstants.prefKeyLogin);
+    if (currentLanguage != null) {
+      return Future.value(currentLanguage);
+    } else {
+      return Future.value(AppConstants.languageAm);
     }
   }
 }

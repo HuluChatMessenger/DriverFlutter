@@ -65,7 +65,7 @@ class LoginPage extends StatelessWidget {
                 );
               },
             ),
-            title: const Text(AppConstants.strBack),
+            title: Text('strBack'.tr),
             elevation: 0,
           ),
           body: SingleChildScrollView(
@@ -87,11 +87,9 @@ class LoginPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 240,),
-                Text(
-                  AppConstants.strCopyright +
-                      ' ' +
-                      AppConstants.strAppName,
+                const SizedBox(height: 240,),
+                const Text(
+                  '${AppConstants.strCopyright} ${AppConstants.strAppName}',
                   style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 24,),

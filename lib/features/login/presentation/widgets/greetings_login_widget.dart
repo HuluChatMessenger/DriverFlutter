@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:get/get.dart';
 
 Widget greetingsLoginWidget(BuildContext context) {
   return Container(
     alignment: Alignment.centerLeft,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const <Widget>[
+      children: <Widget>[
         // Greeting
-        Text(AppConstants.strGreetingFirst,
+        Text(
+          'strGreetingFirst'.tr,
           textAlign: TextAlign.start,
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         // Title
         Text(
-          AppConstants.strGreetingSecondLogin,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          'strGreetingSecondLogin'.tr,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           textAlign: TextAlign.start,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         // Desc
         Text(
-          AppConstants.strGreetingThirdLogin,
-          style: TextStyle(
+          'strGreetingThirdLogin'.tr,
+          style: const TextStyle(
             fontStyle: FontStyle.italic,
             fontSize: 12,
           ),

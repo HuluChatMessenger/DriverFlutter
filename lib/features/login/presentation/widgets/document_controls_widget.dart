@@ -100,13 +100,21 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
           visible: isSplash,
           child: MaterialButton(
             onPressed: isBtnEnabled ? onBtnClicked : null,
+            color: Colors.green,
+            disabledColor: Colors.grey.shade300,
+            textColor: Colors.white,
+            disabledTextColor: Colors.grey,
+            minWidth: MediaQuery.of(context).size.width - 100,
+            height: 44,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
             child: Container(
               height: 50,
               color: colorsBtnBack,
               child: Row(
                 children: [
-                  Text(
-                    AppConstants.strFinish,
+                  Text('strFinish'.tr,
                     style: TextStyle(fontSize: 20, color: colorsBtnTxt),
                   ),
                   const Spacer(),
@@ -116,15 +124,6 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
                   ),
                 ],
               ),
-            ),
-            color: Colors.green,
-            disabledColor: Colors.grey.shade300,
-            textColor: Colors.white,
-            disabledTextColor: Colors.grey,
-            minWidth: MediaQuery.of(context).size.width - 100,
-            height: 44,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
             ),
           ),
         ),
@@ -156,10 +155,10 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
               getCleanedStringFirst(documentType.elementAt(1)),
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
-            Spacer(),
+            const Spacer(),
             Visibility(
               visible: isDone,
-              child: Icon(
+              child: const Icon(
                 Icons.check_circle_rounded,
                 color: Colors.green,
               ),
@@ -167,8 +166,8 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
             Visibility(
               visible: isUpload,
               child: TextButton(
-                child: const Text(AppConstants.strUpload,
-                    style: TextStyle(
+                child: Text('strUpload'.tr,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
@@ -183,7 +182,7 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
           Visibility(
             visible: documentType.elementAt(2).replaceAll(' ', '') == 'true',
             child: Text(
-              AppConstants.strDocReq,
+              'strDocReq'.tr,
               style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
             ),
           ),
@@ -251,7 +250,7 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
                                       );
                                     } else {
                                       return DialogWidget(
-                                        message: AppConstants.errMsgPic,
+                                        message: 'errMsgPic'.tr,
                                         isDismiss: true,
                                         typeDialog: AppConstants.dialogTypeErr,
                                       );
@@ -355,7 +354,7 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text('strCancel'.tr),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

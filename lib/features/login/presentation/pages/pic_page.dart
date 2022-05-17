@@ -83,7 +83,7 @@ class AddPicPage extends StatelessWidget {
       children: <Widget>[
         Scaffold(
           appBar: AppBar(
-            title: const Text(AppConstants.strAddPhotoTitle),
+            title: Text('strAddPhotoTitle'.tr),
             elevation: 0,
           ),
           body: SingleChildScrollView(
@@ -100,9 +100,9 @@ class AddPicPage extends StatelessWidget {
                         selectedPic: selectedPic,
                       ),
                       const SizedBox(height: 48),
-                      const Text(
-                        AppConstants.strAddPhotoSub,
-                        style: TextStyle(
+                      Text(
+                        'strAddPhotoSub'.tr,
+                        style: const TextStyle(
                           fontSize: 20,
                           color: Colors.black,
                           fontWeight: FontWeight.normal,

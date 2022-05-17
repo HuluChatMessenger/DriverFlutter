@@ -1,8 +1,11 @@
+import 'dart:ffi';
+
 import 'package:dartz/dartz.dart';
 import 'package:hulutaxi_driver/core/error/exceptions.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/network/network_info.dart';
 import 'package:hulutaxi_driver/core/util/common_utils.dart';
+import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/data/datasources/local_data_source.dart';
 import 'package:hulutaxi_driver/features/login/data/datasources/remote_data_source.dart';
 import 'package:hulutaxi_driver/features/login/data/models/configuration_model.dart';
@@ -640,20 +643,42 @@ class RepositoryImpl implements Repository {
   @override
   Future<Either<Failure, Configuration?>> getLogout() async {
     try {
-      await localDataSource.clearData();
       final Configuration? configuration = await localDataSource.getConfig();
+      await localDataSource.clearData();
       return Right(configuration);
     } catch (e) {
-      print('LogHulu Airtime: $e');
+      print('LogHulu Logout: $e');
       if (e is LogoutException) {
         ConfigurationModel? configurationLogout =
             await localDataSource.getConfig();
-        return Right(null);
+        return Right(configurationLogout);
       } else if (e is ServerException) {
         return Left(ServerFailure(e.errMsg));
       } else {
         return Left(ServerFailure(null));
       }
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getLanguage() async {
+    try {
+      final String language = await localDataSource.getLanguage();
+      return Right(language);
+    } catch (e) {
+      print('LogHulu get language: $e');
+      return Right(AppConstants.languageAm);
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> setLanguage(String languageSelected) async {
+    try {
+      localDataSource.cacheLanguage(languageSelected);
+      return Right(true);
+    } catch (e) {
+      print('LogHulu set language: $e');
+      return Right(false);
     }
   }
 }

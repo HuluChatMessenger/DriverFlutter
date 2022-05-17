@@ -74,7 +74,7 @@ class FeedbackPage extends StatelessWidget {
                 );
               },
             ),
-            title: const Text(AppConstants.strFeedback),
+            title: Text('strFeedback'.tr),
             elevation: 0,
           ),
           body: SingleChildScrollView(

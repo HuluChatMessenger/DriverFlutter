@@ -84,7 +84,7 @@ class WalletPage extends StatelessWidget {
               },
             ),
             elevation: 0,
-            title: const Text(AppConstants.strWallet),
+            title: Text('strWallet'.tr),
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -163,9 +163,9 @@ class WalletPage extends StatelessWidget {
                                   height: 16,
                                 ),
                                 const Spacer(),
-                                const Text(
-                                  AppConstants.strWalletMember,
-                                  style: TextStyle(
+                                Text(
+                                  'strWalletMember'.tr,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 14,
@@ -180,7 +180,7 @@ class WalletPage extends StatelessWidget {
                               children: <Widget>[
                                 Text(
                                   username,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
@@ -202,19 +202,17 @@ class WalletPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  AppConstants.strWalletBalance,
-                  style: TextStyle(
+                Text(
+                  'strWalletBalance'.tr,
+                  style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.normal,
                       fontSize: 16),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  CommonUtils.formatCurrency(balance) +
-                      " " +
-                      AppConstants.strBirr,
-                  style: TextStyle(
+                  "${CommonUtils.formatCurrency(balance)} ${'strBirr'.tr}",
+                  style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 32),
@@ -228,14 +226,14 @@ class WalletPage extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(AppConstants.strSend),
-                            content: Text(AppConstants.strComingSoon),
+                            title: Text('strSend'.tr),
+                            content: Text('strComingSoon'.tr),
                             actions: [
                               ElevatedButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text(AppConstants.strCancel))
+                                  child: Text('strCancel'.tr))
                             ],
                           ),
                         );
@@ -248,26 +246,26 @@ class WalletPage extends StatelessWidget {
                             color: Colors.grey.shade100,
                           ),
                           child: Column(
-                            children: const <Widget>[
-                              SizedBox(
+                            children:  <Widget>[
+                              const SizedBox(
                                 height: 8,
                               ),
-                              Icon(
+                              const Icon(
                                 Icons.send,
                                 color: Colors.green,
                                 size: 40,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
                               Text(
-                                AppConstants.strSend,
-                                style: TextStyle(
+                                'strSend'.tr,
+                                style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 14),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
                             ],
@@ -278,14 +276,14 @@ class WalletPage extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(AppConstants.strDeposit),
-                            content: Text(AppConstants.strComingSoon),
+                            title: Text('strDeposit'.tr),
+                            content: Text('strComingSoon'.tr),
                             actions: [
                               ElevatedButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text(AppConstants.strCancel))
+                                  child: Text('strCancel'.tr))
                             ],
                           ),
                         );
@@ -298,26 +296,26 @@ class WalletPage extends StatelessWidget {
                             color: Colors.grey.shade100,
                           ),
                           child: Column(
-                            children: const <Widget>[
-                              SizedBox(
+                            children:  <Widget>[
+                              const SizedBox(
                                 height: 8,
                               ),
-                              Icon(
+                              const Icon(
                                 Icons.account_balance,
                                 color: Colors.green,
                                 size: 40,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
                               Text(
-                                AppConstants.strDeposit,
-                                style: TextStyle(
+                                'strDeposit'.tr,
+                                style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 14),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
                             ],

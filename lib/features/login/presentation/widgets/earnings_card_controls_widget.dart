@@ -1,6 +1,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/common_utils.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/earning.dart';
@@ -100,13 +101,13 @@ class _EarningsCardControlsWidgetState
             Padding(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                 child: Row(
-                  children: const <Widget>[
-                    SizedBox(
+                  children: <Widget>[
+                    const SizedBox(
                       width: 64,
                     ),
                     Text(
-                      AppConstants.strBirr,
-                      style: TextStyle(
+                      'strBirr'.tr,
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
@@ -115,10 +116,10 @@ class _EarningsCardControlsWidgetState
                   ],
                 )),
             Padding(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0),
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0),
               child: Text(
                 CommonUtils.formatCurrency(widget.totalEarning),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -141,9 +142,9 @@ class _EarningsCardControlsWidgetState
                             fontSize: 20,
                             fontWeight: FontWeight.bold),
                       ),
-                      const Text(
-                        AppConstants.strTrips,
-                        style: TextStyle(
+                      Text(
+                        'strTrips'.tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
                             fontWeight: FontWeight.bold),
@@ -168,9 +169,9 @@ class _EarningsCardControlsWidgetState
                         style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      const Text(
-                        AppConstants.strOnlineHrs,
-                        style: TextStyle(
+                      Text(
+                        'strOnlineHrs'.tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
                             fontWeight: FontWeight.bold),
@@ -205,7 +206,7 @@ class _EarningsCardControlsWidgetState
             charts.LinePointHighlighter(
               symbolRenderer: TextSymbolRenderer(() => (widget.selectedBar !=
                       null)
-                  ? (widget.selectedBar.toString() + ' ' + AppConstants.strBirr)
+                  ? ('${widget.selectedBar} ${'strBirr'.tr}')
                   : ''),
             ),
           ],
@@ -249,7 +250,7 @@ class _EarningsCardControlsWidgetState
     } else if (widget.selectedEarning == 4) {
       chartTitleStart = '6 Months';
     }
-    return chartTitleStart + ' ' + AppConstants.strEarnings;
+    return '$chartTitleStart ${'strEarnings'.tr}';
   }
 
   void earningsLoaded(List<Earnings>? earnings, int selectedEarning) {

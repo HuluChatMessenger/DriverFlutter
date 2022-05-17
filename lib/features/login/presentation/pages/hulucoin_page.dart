@@ -88,7 +88,7 @@ class HuluCoinPage extends StatelessWidget {
               },
             ),
             elevation: 0,
-            title: const Text(AppConstants.strHuluCoin),
+            title: Text('strHuluCoin'.tr),
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -129,12 +129,12 @@ class HuluCoinPage extends StatelessWidget {
                                           fit: BoxFit.fill)),
                                 ),
                                 const Spacer(),
-                                const Padding(
+                                Padding(
                                   padding:
-                                      EdgeInsets.only(right: 8.0, bottom: 24),
+                                  const EdgeInsets.only(right: 8.0, bottom: 24),
                                   child: Text(
-                                    AppConstants.strHuluCoin,
-                                    style: TextStyle(
+                                    'strHuluCoin'.tr,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
@@ -154,10 +154,10 @@ class HuluCoinPage extends StatelessWidget {
                               top: 44.0,
                             ),
                             child: Row(
-                              children: const <Widget>[
+                              children: <Widget>[
                                 Text(
-                                  AppConstants.strCurrentBalance,
-                                  style: TextStyle(
+                                  'strCurrentBalance'.tr,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 14,
@@ -165,8 +165,8 @@ class HuluCoinPage extends StatelessWidget {
                                 ),
                                 Spacer(),
                                 Text(
-                                  AppConstants.strWalletMember,
-                                  style: TextStyle(
+                                  'strWalletMember'.tr,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 14,
@@ -212,14 +212,14 @@ class HuluCoinPage extends StatelessWidget {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text(AppConstants.strBuyAirtime),
-                              content: const Text(AppConstants.errMsgAirtime),
+                              title: Text('strBuyAirtime'.tr),
+                              content: Text('errMsgAirtime'.tr),
                               actions: [
                                 ElevatedButton(
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    child: Text(AppConstants.strCancel))
+                                    child: Text('strCancel'.tr))
                               ],
                             ),
                           );
@@ -252,9 +252,9 @@ class HuluCoinPage extends StatelessWidget {
                               const SizedBox(
                                 height: 8,
                               ),
-                              const Text(
-                                AppConstants.strBuyAirtime,
-                                style: TextStyle(
+                              Text(
+                                'strBuyAirtime'.tr,
+                                style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 14),
@@ -300,14 +300,14 @@ class HuluCoinPage extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(AppConstants.strFuelCoupon),
-                            content: Text(AppConstants.strFuelCouponMsg),
+                            title: Text('strFuelCoupon'.tr),
+                            content: Text('strFuelCouponMsg'.tr),
                             actions: [
                               ElevatedButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text(AppConstants.strCancel))
+                                  child: Text('strCancel'.tr))
                             ],
                           ),
                         );
@@ -332,9 +332,9 @@ class HuluCoinPage extends StatelessWidget {
                               const SizedBox(
                                 height: 8,
                               ),
-                              const Text(
-                                AppConstants.strFuelCoupon,
-                                style: TextStyle(
+                              Text(
+                                'strFuelCoupon'.tr,
+                                style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 14),
@@ -416,7 +416,7 @@ class HuluCoinPage extends StatelessWidget {
   Widget success(bool? isSuccess, AirtimeSuccess? airtimeSuccess) {
     if (isSuccess == true) {
       String textSuccess =
-          "${airtimeSuccess?.amount} ${AppConstants.strBirr} ${AppConstants.strAirtimeSuccessStart} +${airtimeSuccess?.phoneNumber} ${AppConstants.strAirtimeSuccessEnd} ";
+          "${airtimeSuccess?.amount} ${'strBirr'.tr} ${'strAirtimeSuccessStart'.tr} +${airtimeSuccess?.phoneNumber} ${'strAirtimeSuccessEnd'.tr} ";
       return DialogWidget(
         message: textSuccess,
         isDismiss: true,

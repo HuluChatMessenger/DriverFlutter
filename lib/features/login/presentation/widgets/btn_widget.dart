@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 
 class ButtonWidget extends StatefulWidget {
   bool isBtnEnabled;
   Function btnFunction;
-  String? btnText = AppConstants.strContinue;
+  String? btnText = 'strContinue'.tr;
 
   ButtonWidget({
     Key? key,
@@ -18,7 +19,7 @@ class ButtonWidget extends StatefulWidget {
     return _ButtonWidgetState(
         isBtnEnabled: isBtnEnabled,
         btnFunction: btnFunction,
-        btnText: (btnText != null) ? btnText! : AppConstants.strContinue);
+        btnText: (btnText != null) ? btnText! : 'strContinue'.tr);
   }
 }
 
@@ -27,7 +28,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
   Function btnFunction;
   var colorsBtnBack = Colors.grey.shade300;
   Color colorsBtnTxt = Colors.grey;
-  String btnText = AppConstants.strContinue;
+  String btnText = 'strContinue'.tr;
 
   _ButtonWidgetState(
       {required this.isBtnEnabled,

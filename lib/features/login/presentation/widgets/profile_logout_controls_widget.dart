@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 
 class ProfileLogoutControlsWidget extends StatefulWidget {
@@ -34,21 +33,21 @@ class _ProfileLogoutControlsWidgetState
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(AppConstants.strLogout),
-          content: const Text(
-            AppConstants.strLogoutMsg,
+          title: Text('strLogout'.tr),
+          content: Text(
+            'strLogoutMsg'.tr,
           ),
           actions: <Widget>[
             TextButton(
               child: Text(
-                AppConstants.strLogout.toUpperCase(),
+                'strLogout'.tr,
                 style: const TextStyle(color: Colors.red),
               ),
-              onPressed: () => addLogout,
+              onPressed: () => addLogout(),
             ),
             TextButton(
               child: Text(
-                AppConstants.strCancel.toUpperCase(),
+                'strCancel'.tr,
                 style: const TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,

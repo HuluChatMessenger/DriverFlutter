@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:dartz/dartz.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver_document_request.dart';
@@ -55,4 +57,8 @@ abstract class Repository {
   Future<Either<Failure, Earnings>> getEarnings(int pos);
 
   Future<Either<Failure, Configuration?>> getLogout();
+
+  Future<Either<Failure, String>> getLanguage();
+
+  Future<Either<Failure, bool>> setLanguage(String languageSelected);
 }

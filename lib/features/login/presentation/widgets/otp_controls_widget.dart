@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
@@ -35,7 +36,7 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
   final bool isRegistration;
   bool isBtnEnabled = false;
   bool isResendCode = false;
-  String resendCodeTimer = AppConstants.strResend;
+  String resendCodeTimer = 'strResend'.tr;
   var colorsBtnBack = Colors.grey.shade300;
   MaterialColor colorsResend = Colors.grey;
   Color colorsBtnTxt = Colors.grey;
@@ -97,21 +98,17 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
             TextButton(
                 onPressed: (isResendCode) ? onBtnResendClicked : null,
                 child: Text(
-                  AppConstants.strResend,
+                  'strResend'.tr,
                   style: TextStyle(fontSize: 14, color: colorsResend),
                 )),
             const SizedBox(width: 4),
             Text(
               resendCodeTimer,
-              style: TextStyle(fontSize: 14, color: Colors.green),
+              style: const TextStyle(fontSize: 14, color: Colors.green),
             ),
             const Spacer(),
             MaterialButton(
               onPressed: (isBtnEnabled) ? onBtnClicked : null,
-              child: Icon(
-                Icons.arrow_forward,
-                color: colorsBtnTxt,
-              ),
               color: colorsBtnBack,
               disabledColor: Colors.grey.shade300,
               textColor: Colors.white,
@@ -120,6 +117,10 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
               height: 54,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100.0),
+              ),
+              child: Icon(
+                Icons.arrow_forward,
+                color: colorsBtnTxt,
               ),
             ),
           ],

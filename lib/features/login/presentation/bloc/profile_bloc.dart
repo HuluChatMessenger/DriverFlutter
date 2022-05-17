@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
@@ -82,12 +83,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             failure.errMsg!.isNotEmpty) {
           return failure.errMsg!;
         } else {
-          return AppConstants.errMsgServer;
+          return "errMsgServer".tr;
         }
       case ConnectionFailure:
-        return AppConstants.errMsgConnection;
+        return "errMsgConnection".tr;
       default:
-        return AppConstants.errMsgUnknown;
+        return "errMsgUnknown".tr;
     }
   }
 }

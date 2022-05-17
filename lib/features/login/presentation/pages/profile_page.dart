@@ -102,7 +102,7 @@ class ProfilePage extends StatelessWidget {
               ProfileLogoutControlsWidget(),
             ],
             elevation: 0,
-            title: const Text(AppConstants.strMyAccount),
+            title: Text('strMyAccount'.tr),
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -150,18 +150,18 @@ class ProfilePage extends StatelessWidget {
                                       fit: BoxFit.fill)),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(username,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.bold)),
-                              SizedBox(
+                              const SizedBox(
                                 height: 4,
                               ),
                               RatingBarIndicator(
@@ -188,7 +188,7 @@ class ProfilePage extends StatelessWidget {
                     children: <Widget>[
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
+                        children: const <Widget>[
                           Icon(
                             Icons.monetization_on_outlined,
                             size: 64,
@@ -201,24 +201,20 @@ class ProfilePage extends StatelessWidget {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Text(
-                              totalEarning.toString() +
-                                  " " +
-                                  AppConstants.strBirr,
+                              "$totalEarning ${'strBirr'.tr}",
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold)),
                           Text(
-                              totalTrips.toString() +
-                                  " " +
-                                  AppConstants.strTrips,
+                              "$totalTrips ${'strTrips'.tr}",
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20.0,
@@ -231,8 +227,8 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(AppConstants.strAccountDetailsTitle,
-                      style: TextStyle(
+                  child: Text('strAccountDetailsTitle'.tr,
+                      style: const TextStyle(
                           color: Colors.green,
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold)),
@@ -241,22 +237,22 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.phone_android_outlined,
                         size: 32,
                         color: Colors.black,
                       ),
-                      Text(AppConstants.strPhoneNoTitle,
+                      Text('strPhoneNoTitle'.tr,
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text('+${driver.phoneNumber}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
@@ -267,25 +263,25 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.qr_code_outlined,
                         size: 32,
                         color: Colors.black,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
-                      Text(AppConstants.strReferralTitle,
+                      Text('strReferralTitle'.tr,
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(driver.userIdn,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
@@ -297,7 +293,7 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(4.0),
                   child: Container(
                     height: 0.3,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.green,
                     ),
                   ),
@@ -305,8 +301,8 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 24),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(AppConstants.strVehicleDetailsTitle,
-                      style: TextStyle(
+                  child: Text('strVehicleDetailsTitle'.tr,
+                      style: const TextStyle(
                           color: Colors.green,
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold)),
@@ -315,28 +311,28 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.directions_car_outlined,
                         size: 32,
                         color: Colors.black,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
-                      Text(AppConstants.strModelTitle,
+                      Text('strModelTitle'.tr,
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(
                           driver.vehicle != null
                               ? driver.vehicle!.model.capitalize!
                               : '',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
@@ -347,28 +343,28 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.color_lens_outlined,
                         size: 32,
                         color: Colors.black,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
-                      Text(AppConstants.strColorTitle,
+                      Text('strColorTitle'.tr,
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(
                           driver.vehicle != null
                               ? driver.vehicle!.color.capitalize!
                               : '',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
@@ -379,35 +375,35 @@ class ProfilePage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.credit_card_outlined,
                         size: 32,
                         color: Colors.black,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
-                      Text(AppConstants.strPlateNoTitle,
+                      Text('strPlateNoTitle'.tr,
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(
                           driver.vehicle != null
                               ? driver.vehicle!.plateNo.toString()
                               : '',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
                     ],
                   ),
                 ),
-                SizedBox(height: 64),
+                const SizedBox(height: 64),
                 const ProfileControlsWidget(),
               ],
             ),

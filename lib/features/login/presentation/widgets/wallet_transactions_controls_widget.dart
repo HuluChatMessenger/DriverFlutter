@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/common_utils.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/wallet_transaction_item.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/wallet_transactions.dart';
@@ -72,7 +73,7 @@ class _WalletTransactionsControlsWidgetState
               Text(
                 CommonUtils.formatCurrency(transaction.amount) +
                     " " +
-                    AppConstants.strBirr,
+                    'strBirr'.tr,
                 style: const TextStyle(
                     fontSize: 20,
                     color: Colors.grey,

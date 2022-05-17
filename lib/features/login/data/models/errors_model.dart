@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/errors.dart';
 
@@ -7,7 +8,7 @@ class ErrorsModel extends Errors {
 
   factory ErrorsModel.fromJson(Map<String, dynamic> json) {
     List<String> nonFieldErrorsList = [];
-    nonFieldErrorsList.add(AppConstants.errMsgUnknown);
+    nonFieldErrorsList.add('errMsgUnknown'.tr);
     try {
       var nonFieldErrorsFromJson = json['non_field_errors'];
       nonFieldErrorsList = List<String>.from(nonFieldErrorsFromJson);

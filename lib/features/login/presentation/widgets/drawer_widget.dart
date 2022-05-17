@@ -14,22 +14,31 @@ import 'package:hulutaxi_driver/features/login/presentation/pages/profile_page.d
 import 'package:hulutaxi_driver/features/login/presentation/pages/terms_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/trip_history_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/wallet_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'language_controls_widget.dart';
 
 class AppDrawer extends StatelessWidget {
+  final GlobalKey<ScaffoldState> scaffoldKey;
   final Configuration configuration;
   final Driver driver;
   String username = AppConstants.strAppName;
   String picProfile = 'assets/images/logo_drawer.png';
   final String defaultPicProfile = 'assets/images/logo_drawer.png';
 
-  AppDrawer({required this.driver, required this.configuration}) {
+  AppDrawer(
+      {required this.driver,
+      required this.configuration,
+      required this.scaffoldKey}) {
     String name = '${driver.fName} ${driver.mName} ${driver.lName}';
     username = name.isNotEmpty ? name : username;
     picProfile = driver.profilePic?.photo ?? picProfile;
   }
 
   void goWallet() {
-    Get.to(() => WalletPage(driver: driver,));
+    Get.to(() => WalletPage(
+          driver: driver,
+        ));
   }
 
   void goTripHistory() {
@@ -67,52 +76,57 @@ class AppDrawer extends StatelessWidget {
           _createHeader(username, picProfile, driver.avgRating.toDouble()),
           _createDrawerItem(
             icon: Icons.account_balance_wallet_outlined,
-            text: AppConstants.strWallet,
+            text: 'strWallet'.tr,
             onTap: goWallet,
           ),
           _createDrawerItem(
             icon: Icons.history_outlined,
-            text: AppConstants.strTripHistory,
+            text: 'strTripHistory'.tr,
             onTap: goTripHistory,
           ),
           _createDrawerItem(
             icon: Icons.attach_money_outlined,
-            text: AppConstants.strEarnings,
+            text: 'strEarnings'.tr,
             onTap: goEarnings,
           ),
           _createDrawerItem(
             icon: Icons.attach_file_outlined,
-            text: AppConstants.strDocuments,
+            text: 'strDocuments'.tr,
             onTap: goDocuments,
           ),
           const Divider(),
           _createDrawerItem(
             icon: Icons.person_outline,
-            text: AppConstants.strMyAccount,
+            text: 'strMyAccount'.tr,
             onTap: goProfile,
           ),
           _createDrawerItemCustomIconPic(
             image: 'assets/images/hulucoin.png',
-            text: AppConstants.strHuluCoin,
+            text: 'strHuluCoin'.tr,
             onTap: goHuluCoin,
           ),
           _createDrawerItem(
             icon: Icons.contact_mail_outlined,
-            text: AppConstants.strFeedback,
+            text: 'strFeedback'.tr,
             onTap: goFeedback,
           ),
           const Divider(),
           _createDrawerItem(
-              icon: Icons.color_lens_outlined, text: AppConstants.strTheme),
+              icon: Icons.color_lens_outlined, text: 'strTheme'.tr),
           _createDrawerItem(
-              icon: Icons.language_outlined, text: AppConstants.strLanguage),
-          SizedBox(height: 32),
+              icon: Icons.language_outlined,
+              text: 'strLanguage'.tr,
+              onTap: () async {
+                scaffoldKey.currentState!.closeDrawer();
+                await goLanguages();
+              }),
+          const SizedBox(height: 32),
           const Divider(),
           ListTile(
-            title: const Text(
-              AppConstants.strTerms,
+            title: Text(
+              'strTerms'.tr,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                   color: Colors.green,
                   fontSize: 12,
                   fontWeight: FontWeight.bold),
@@ -175,7 +189,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 4,
                   ),
                   RatingBarIndicator(
@@ -188,11 +202,11 @@ class AppDrawer extends StatelessWidget {
                     itemSize: 16.0,
                     direction: Axis.horizontal,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 4,
                   ),
                   Text(username,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold)),
@@ -253,5 +267,14 @@ class AppDrawer extends StatelessWidget {
 
   void goTerms() {
     Get.to(() => const TermsPage());
+  }
+
+  Future<void> goLanguages() async {
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    scaffoldKey.currentState?.showBottomSheet(
+      (context) => LanguageControlsWidget(
+        sharedPreferences: preference,
+      ),
+    );
   }
 }

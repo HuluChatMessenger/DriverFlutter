@@ -37,7 +37,7 @@ class TripDetailPage extends StatelessWidget {
               },
             ),
             elevation: 0,
-            title: const Text(AppConstants.strTripDetail),
+            title: Text('strTripDetail'.tr),
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -69,11 +69,11 @@ class TripDetailPage extends StatelessWidget {
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.normal,
                                       )),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 8,
                                   ),
                                   Text(tripItem.pickUpDisplayName,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 20.0,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black)),
@@ -81,7 +81,7 @@ class TripDetailPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                           ),
                           Padding(
@@ -112,11 +112,11 @@ class TripDetailPage extends StatelessWidget {
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.normal,
                                         )),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 8,
                                     ),
                                     Text(tripItem.dropOffDisplayName,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black)),
@@ -125,7 +125,7 @@ class TripDetailPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                           ),
                         ],
@@ -133,7 +133,7 @@ class TripDetailPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 32,
                 ),
                 Padding(
@@ -141,12 +141,12 @@ class TripDetailPage extends StatelessWidget {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: 0.5,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.green,
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 32,
                 ),
                 Padding(
@@ -156,17 +156,17 @@ class TripDetailPage extends StatelessWidget {
                     children: [
                       Column(
                         children: <Widget>[
-                          Text(AppConstants.strTime,
+                          Text('strTime'.tr,
                               style: TextStyle(
                                 color: Colors.grey.shade400,
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.normal,
                               )),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(tripItem.durationText,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black)),
@@ -177,41 +177,39 @@ class TripDetailPage extends StatelessWidget {
                       ),
                       Column(
                         children: <Widget>[
-                          Text(AppConstants.strPrice,
+                          Text('strPrice'.tr,
                               style: TextStyle(
                                 color: Colors.grey.shade400,
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.normal,
                               )),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(
-                              CommonUtils.formatCurrency(tripItem.price) +
-                                  " " +
-                                  AppConstants.strBirr,
-                              style: TextStyle(
+                              "${CommonUtils.formatCurrency(tripItem.price)} ${'strBirr'.tr}",
+                              style: const TextStyle(
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black)),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Column(
                         children: <Widget>[
-                          Text(AppConstants.strDistance,
+                          Text('strDistance'.tr,
                               style: TextStyle(
                                 color: Colors.grey.shade400,
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.normal,
                               )),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(tripItem.distanceText,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black)),
@@ -220,53 +218,53 @@ class TripDetailPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppConstants.strDate,
+                      Text('strDate'.tr,
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(tripItem.createdAt.split("T")[0],
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.black)),
                     ],
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppConstants.strStatus,
+                      Text('strStatus'.tr,
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,
                           )),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(tripItem.status.toUpperCase(),
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.black)),
                     ],
                   ),
                 ),
-                SizedBox(height: 64),
+                const SizedBox(height: 64),
               ],
             ),
           ),

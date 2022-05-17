@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/core/util/input_converter.dart';
@@ -29,7 +30,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       await inputEither.fold(
         (failure) async {
           emit(ErrorRegistration(
-              message: AppConstants.errMsgPhone,
+              message: 'errMsgPhone'.tr,
               registration: event.registration));
         },
         (string) async {
@@ -63,12 +64,12 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
             failure.errMsg!.isNotEmpty) {
           return failure.errMsg!;
         } else {
-          return AppConstants.errMsgServer;
+          return "errMsgServer".tr;
         }
       case ConnectionFailure:
-        return AppConstants.errMsgConnection;
+        return "errMsgConnection".tr;
       default:
-        return AppConstants.errMsgUnknown;
+        return "errMsgUnknown".tr;
     }
   }
 }

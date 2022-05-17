@@ -7,8 +7,6 @@ import 'package:hulutaxi_driver/features/login/domain/entities/trip_item.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/trip_detail_page.dart';
 
-import '../../../../core/util/constants.dart';
-
 class TripItemsControlsWidget extends StatefulWidget {
   final Trip trip;
 
@@ -88,7 +86,7 @@ class _TripItemsControlsWidgetState extends State<TripItemsControlsWidget> {
                   ),
                   Text(
                     tripItem.createdAt.split("T")[0],
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                         fontStyle: FontStyle.italic),
@@ -180,9 +178,9 @@ class _TripItemsControlsWidgetState extends State<TripItemsControlsWidget> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(children: <Widget>[
-            const Text(
-              AppConstants.strToday + ", ",
-              style: TextStyle(
+            Text(
+              "${'strToday'.tr}, ",
+              style: const TextStyle(
                   fontSize: 32,
                   color: Colors.green,
                   fontWeight: FontWeight.bold),
@@ -200,11 +198,11 @@ class _TripItemsControlsWidgetState extends State<TripItemsControlsWidget> {
         decoration: BoxDecoration(
           color: Colors.grey.shade200,
         ),
-        child: const Padding(
-          padding: EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Text(
-            AppConstants.strToday,
-            style: TextStyle(
+            'strToday'.tr,
+            style: const TextStyle(
                 fontSize: 32, color: Colors.green, fontWeight: FontWeight.bold),
           ),
         ),

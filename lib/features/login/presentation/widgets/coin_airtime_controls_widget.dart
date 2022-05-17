@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/service.dart';
 
@@ -45,9 +46,9 @@ class _CoinAirtimeControlsWidgetState extends State<CoinAirtimeControlsWidget> {
           ),
           Column(
             children: <Widget>[
-              const Text(
-                AppConstants.strBuyAirtime,
-                style: TextStyle(
+               Text(
+                'strBuyAirtime'.tr,
+                style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 14),
@@ -65,9 +66,9 @@ class _CoinAirtimeControlsWidgetState extends State<CoinAirtimeControlsWidget> {
               const SizedBox(
                 height: 16,
               ),
-              const Text(
-                AppConstants.strCoinDesc,
-                style: TextStyle(
+              Text(
+                'strCoinDesc'.tr,
+                style: const TextStyle(
                     color: Colors.grey,
                     fontStyle: FontStyle.italic,
                     fontSize: 14),
@@ -95,17 +96,17 @@ class _CoinAirtimeControlsWidgetState extends State<CoinAirtimeControlsWidget> {
                   });
                 },
                 color: colorsBtnBackSelection50,
+                height: 32,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
                 child: Text(
-                  AppConstants.strCoin50,
-                  style: TextStyle(
+                  'strCoin50'.tr,
+                  style:  TextStyle(
                     fontSize: 14,
                     color: colorsBtnTxtSelection50,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                height: 32,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
               MaterialButton(
@@ -123,17 +124,17 @@ class _CoinAirtimeControlsWidgetState extends State<CoinAirtimeControlsWidget> {
                   });
                 },
                 color: colorsBtnBackSelection100,
+                height: 32,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
                 child: Text(
-                  AppConstants.strCoin100,
+                  'strCoin100'.tr,
                   style: TextStyle(
                     fontSize: 14,
                     color: colorsBtnTxtSelection100,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                height: 32,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
             ],
@@ -145,20 +146,20 @@ class _CoinAirtimeControlsWidgetState extends State<CoinAirtimeControlsWidget> {
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16),
             child: MaterialButton(
               onPressed: (isBtnEnabled) ? onBtnClicked : null,
-              child: Text(
-                AppConstants.strSubmit,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colorsBtnTxt,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               color: colorsBtnBack,
               disabledColor: colorsBtnBack,
               minWidth: MediaQuery.of(context).size.width - 100,
               height: 40,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Text(
+                'strSubmit'.tr,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: colorsBtnTxt,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -171,18 +172,18 @@ class _CoinAirtimeControlsWidgetState extends State<CoinAirtimeControlsWidget> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text(
-                AppConstants.strCancel,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               minWidth: MediaQuery.of(context).size.width - 100,
               height: 40,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Text(
+                'strCancel'.tr,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

@@ -74,7 +74,7 @@ class TripHistoryPage extends StatelessWidget {
               },
             ),
             elevation: 0,
-            title: const Text(AppConstants.strTripHistory),
+            title: Text('strTripHistory'.tr),
           ),
           body: SingleChildScrollView(
             child: Column(

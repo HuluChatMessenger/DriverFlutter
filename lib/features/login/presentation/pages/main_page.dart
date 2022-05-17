@@ -62,8 +62,11 @@ class MainPage extends StatelessWidget {
           drawer: AppDrawer(
             driver: driver,
             configuration: configuration,
+            scaffoldKey: _key,
           ),
-          body: SingleChildScrollView(
+          body: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             child: Column(
               children: <Widget>[
                 const SizedBox(
@@ -102,8 +105,8 @@ class MainPage extends StatelessWidget {
                     const SizedBox(width: 16),
                   ],
                 ),
-                Container(),
-                const SizedBox(height: 4),
+                Spacer(),
+                MainCardControlsWidget(driver: driver),
                 mainLoading(),
               ],
             ),

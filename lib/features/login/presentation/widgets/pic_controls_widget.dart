@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -86,11 +87,11 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Container(
+          content: SizedBox(
             height: 108,
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 44,
                 ),
                 Center(
@@ -118,7 +119,7 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
                                       );
                                     } else {
                                       return DialogWidget(
-                                        message: AppConstants.errMsgPic,
+                                        message: 'errMsgPic'.tr,
                                         isDismiss: true,
                                         typeDialog: AppConstants.dialogTypeErr,
                                       );
@@ -134,7 +135,7 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
                     Container(
                       height: 64,
                       width: 64,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.green,
                         shape: BoxShape.circle,
                       ),
@@ -157,13 +158,13 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 24,
                     ),
                     Container(
                       height: 64,
                       width: 64,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.green,
                         shape: BoxShape.circle,
                       ),
