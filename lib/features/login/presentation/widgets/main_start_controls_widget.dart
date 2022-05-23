@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hulutaxi_driver/core/util/common_utils.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:swipeable_button_view/swipeable_button_view.dart';
 
@@ -12,11 +12,15 @@ import '../bloc/bloc.dart';
 
 class MainStartControlsWidget extends StatefulWidget {
   final Driver driver;
+  LatLng locationLatLng;
+  bool isTraffic;
   String time = '00:00:00';
   String estimatedPrice = '0.0';
   String estimatedDistance = '0';
 
-  MainStartControlsWidget({Key? key, required this.driver}) : super(key: key);
+  MainStartControlsWidget(
+      {Key? key, required this.driver, required this.locationLatLng, required this.isTraffic})
+      : super(key: key);
 
   @override
   _MainStartControlsWidgetState createState() =>
@@ -24,7 +28,6 @@ class MainStartControlsWidget extends StatefulWidget {
 }
 
 class _MainStartControlsWidgetState extends State<MainStartControlsWidget> {
-
   bool isFinished = false;
 
   @override
@@ -135,12 +138,12 @@ class _MainStartControlsWidgetState extends State<MainStartControlsWidget> {
         const SizedBox(
           height: 24,
         ),
-
         Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 8),
           child: SwipeableButtonView(
             buttonText: 'strSwipeStart'.tr,
-            buttonWidget: const Icon(Icons.arrow_forward_ios_rounded,
+            buttonWidget: const Icon(
+              Icons.arrow_forward_ios_rounded,
               color: Colors.green,
             ),
             activeColor: Colors.green,
@@ -168,6 +171,6 @@ class _MainStartControlsWidgetState extends State<MainStartControlsWidget> {
   }
 
   void addMainStart() {
-    BlocProvider.of<MainBloc>(context).add(GetMainStart());
+    BlocProvider.of<MainBloc>(context).add(GetMainStart(widget.locationLatLng, widget.isTraffic));
   }
 }

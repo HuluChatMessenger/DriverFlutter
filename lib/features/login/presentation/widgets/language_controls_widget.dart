@@ -13,12 +13,10 @@ class LanguageControlsWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  _LanguageControlsWidgetState createState() =>
-      _LanguageControlsWidgetState();
+  _LanguageControlsWidgetState createState() => _LanguageControlsWidgetState();
 }
 
-class _LanguageControlsWidgetState
-    extends State<LanguageControlsWidget> {
+class _LanguageControlsWidgetState extends State<LanguageControlsWidget> {
   bool isInitialLanguageSet = true;
   String currentLanguage = AppConstants.languageAm;
   LanguageValues selectedValue = LanguageValues.am;
@@ -83,59 +81,7 @@ class _LanguageControlsWidgetState
             languageRadioButton(
                 AppConstants.titleEn, LanguageValues.en, radioBtnSelection),
             const SizedBox(
-              height: 32,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16),
-              child: MaterialButton(
-                onPressed: () async {
-                  setLanguage();
-                  Navigator.pop(context);
-                },
-                color: Colors.green,
-                minWidth: MediaQuery.of(context).size.width - 100,
-                height: 40,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: Text(
-                  'strSave'.tr,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8),
-              child: MaterialButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                minWidth: MediaQuery.of(context).size.width - 100,
-                height: 40,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: Text(
-                  'strCancel'.tr,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 16,
+              height: 48,
             ),
           ],
         ),
@@ -147,6 +93,8 @@ class _LanguageControlsWidgetState
     setState(() {
       isInitialLanguageSet = false;
       selectedValue = value;
+      setLanguage();
+      Navigator.pop(context);
     });
   }
 

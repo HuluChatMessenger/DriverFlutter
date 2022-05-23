@@ -118,7 +118,7 @@ class AppDrawer extends StatelessWidget {
               text: 'strLanguage'.tr,
               onTap: () async {
                 scaffoldKey.currentState!.closeDrawer();
-                await goLanguages();
+                await goLanguages(context);
               }),
           const SizedBox(height: 32),
           const Divider(),
@@ -269,12 +269,16 @@ class AppDrawer extends StatelessWidget {
     Get.to(() => const TermsPage());
   }
 
-  Future<void> goLanguages() async {
+  Future<void> goLanguages(BuildContext context) async {
     SharedPreferences preference = await SharedPreferences.getInstance();
-    scaffoldKey.currentState?.showBottomSheet(
-      (context) => LanguageControlsWidget(
-        sharedPreferences: preference,
-      ),
-    );
+
+    showModalBottomSheet(
+        context: context,
+        elevation: 0,
+        barrierColor: Colors.black.withAlpha(1),
+        backgroundColor: Colors.transparent,
+        builder: (context) => LanguageControlsWidget(
+              sharedPreferences: preference,
+            ));
   }
 }

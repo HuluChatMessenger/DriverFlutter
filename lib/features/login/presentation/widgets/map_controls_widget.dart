@@ -4,37 +4,40 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapControlsWidget extends StatefulWidget {
-  final double lat;
-  final double long;
+  LatLng currentLatLng;
+  bool isTraffic;
 
-  MapControlsWidget(this.lat, this.long);
+  MapControlsWidget({required this.currentLatLng, required this.isTraffic});
 
   @override
-  State<MapControlsWidget> createState() => MapControlsWidgetState(lat: lat, long: long);
+  State<MapControlsWidget> createState() => MapControlsWidgetState();
 }
 
 class MapControlsWidgetState extends State<MapControlsWidget> {
-  final double lat;
-  final double long;
   Completer<GoogleMapController> _controller = Completer();
 
-  MapControlsWidgetState({required this.lat, required this.long});
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    setState(() {
+      LatLng latLng = widget.currentLatLng;
+      widget.currentLatLng = latLng;
+    });
+
     return Scaffold(
       body: GoogleMap(
-        mapType: MapType.hybrid,
+        mapType: MapType.normal,
         initialCameraPosition:
-            CameraPosition(target: LatLng(lat, long), zoom: 14.4746),
+            CameraPosition(target: widget.currentLatLng, zoom: 14.4746),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
+        trafficEnabled: widget.isTraffic,
       ),
     );
   }

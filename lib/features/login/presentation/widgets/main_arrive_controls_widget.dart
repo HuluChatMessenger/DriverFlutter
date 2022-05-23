@@ -3,18 +3,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hulutaxi_driver/core/util/common_utils.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 
 import '../bloc/bloc.dart';
 
 class MainArriveControlsWidget extends StatefulWidget {
   final Driver driver;
+  LatLng locationLatLng;
+  bool isTraffic;
   String estimatedPrice = '0.0';
   String estimatedDistance = '0';
 
-  MainArriveControlsWidget({Key? key, required this.driver}) : super(key: key);
+  MainArriveControlsWidget(
+      {Key? key, required this.driver, required this.locationLatLng, required this.isTraffic})
+      : super(key: key);
 
   @override
   _MainArriveControlsWidgetState createState() =>
@@ -211,6 +215,7 @@ class _MainArriveControlsWidgetState extends State<MainArriveControlsWidget> {
   }
 
   void addMainArrived(bool isArrived) {
-    BlocProvider.of<MainBloc>(context).add(GetMainArrived(isArrived));
+    BlocProvider.of<MainBloc>(context)
+        .add(GetMainArrived(isArrived, widget.locationLatLng, widget.isTraffic));
   }
 }

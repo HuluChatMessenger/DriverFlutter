@@ -1,8 +1,12 @@
 // @dart=2.9
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:hulutaxi_driver/core/util/LanguageTranslate.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hulutaxi_driver/core/util/languageTranslate.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/splash_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +30,10 @@ void main() async {
   }
 
   print('LogHulu Launch: $currentLanguage === $currentLanguageType');
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.white,
+  ));
 
   runApp(GetMaterialApp(
     title: 'HuluTaxi',

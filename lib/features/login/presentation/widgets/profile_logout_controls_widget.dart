@@ -35,7 +35,7 @@ class _ProfileLogoutControlsWidgetState
         return AlertDialog(
           title: Text('strLogout'.tr),
           content: Text(
-            'strLogoutMsg'.tr,
+            'msgLogout'.tr,
           ),
           actions: <Widget>[
             TextButton(

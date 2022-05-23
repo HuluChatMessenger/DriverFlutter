@@ -109,6 +109,7 @@ Future<void> init() async {
         getEarningsInitial: sl(),
         getEarnings: sl(),
       ));
+  sl.registerFactory(() => NetworkBloc());
 
   //Use cases
   sl.registerLazySingleton(() => PostRegistrationOTP(sl()));

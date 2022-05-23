@@ -8,7 +8,20 @@ abstract class MainEvent extends Equatable {
 }
 
 class GetMain extends MainEvent {
-  const GetMain() : super();
+  final LatLng? currentLatLng;
+  final bool isTraffic;
+
+  GetMain(this.currentLatLng, this.isTraffic) : super([currentLatLng, isTraffic]);
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetTraffic extends MainEvent {
+  final LatLng? currentLatLng;
+  final bool isTraffic;
+
+  GetTraffic(this.currentLatLng, this.isTraffic) : super([currentLatLng, isTraffic]);
 
   @override
   List<Object> get props => [];
@@ -16,8 +29,11 @@ class GetMain extends MainEvent {
 
 class GetMainOnOffline extends MainEvent {
   final bool isSetOnline;
+  final LatLng? currentLatLng;
+  final bool isTraffic;
 
-  GetMainOnOffline(this.isSetOnline) : super([isSetOnline]);
+  GetMainOnOffline(this.isSetOnline, this.currentLatLng, this.isTraffic)
+      : super([isSetOnline, currentLatLng, isTraffic]);
 
   @override
   List<Object> get props => [];
@@ -26,8 +42,11 @@ class GetMainOnOffline extends MainEvent {
 class GetMainPickup extends MainEvent {
   final String phoneNumber;
   final LatLng dropOffLatLng;
+  final LatLng? currentLatLng;
+  final bool isTraffic;
 
-  GetMainPickup(this.phoneNumber, this.dropOffLatLng) : super([phoneNumber, dropOffLatLng]);
+  GetMainPickup(this.phoneNumber, this.dropOffLatLng, this.currentLatLng, this.isTraffic)
+      : super([phoneNumber, dropOffLatLng, currentLatLng, isTraffic]);
 
   @override
   List<Object> get props => [];
@@ -35,8 +54,11 @@ class GetMainPickup extends MainEvent {
 
 class GetMainAccept extends MainEvent {
   final bool isAccept;
+  final LatLng? currentLatLng;
+  final bool isTraffic;
 
-  GetMainAccept(this.isAccept) : super([isAccept]);
+  GetMainAccept(this.isAccept, this.currentLatLng, this.isTraffic)
+      : super([isAccept, currentLatLng, isTraffic]);
 
   @override
   List<Object> get props => [];
@@ -44,22 +66,31 @@ class GetMainAccept extends MainEvent {
 
 class GetMainArrived extends MainEvent {
   final bool isArrived;
+  final LatLng? currentLatLng;
+  final bool isTraffic;
 
-  GetMainArrived(this.isArrived) : super([isArrived]);
+  GetMainArrived(this.isArrived, this.currentLatLng, this.isTraffic)
+      : super([isArrived, currentLatLng, isTraffic]);
 
   @override
   List<Object> get props => [];
 }
 
 class GetMainStart extends MainEvent {
-  GetMainStart() : super([]);
+  final LatLng? currentLatLng;
+  final bool isTraffic;
+
+  GetMainStart(this.currentLatLng, this.isTraffic) : super([currentLatLng]);
 
   @override
   List<Object> get props => [];
 }
 
 class GetMainDrivingComplete extends MainEvent {
-  GetMainDrivingComplete() : super([]);
+  final LatLng? currentLatLng;
+  final bool isTraffic;
+
+  GetMainDrivingComplete(this.currentLatLng, this.isTraffic) : super([currentLatLng]);
 
   @override
   List<Object> get props => [];

@@ -301,7 +301,7 @@ class HuluCoinPage extends StatelessWidget {
                           context: context,
                           builder: (context) => AlertDialog(
                             title: Text('strFuelCoupon'.tr),
-                            content: Text('strFuelCouponMsg'.tr),
+                            content: Text('msgFuelCoupon'.tr),
                             actions: [
                               ElevatedButton(
                                   onPressed: () {
@@ -416,7 +416,7 @@ class HuluCoinPage extends StatelessWidget {
   Widget success(bool? isSuccess, AirtimeSuccess? airtimeSuccess) {
     if (isSuccess == true) {
       String textSuccess =
-          "${airtimeSuccess?.amount} ${'strBirr'.tr} ${'strAirtimeSuccessStart'.tr} +${airtimeSuccess?.phoneNumber} ${'strAirtimeSuccessEnd'.tr} ";
+          "${airtimeSuccess?.amount} ${'strBirr'.tr} ${'msgAirtimeSuccessStart'.tr} +${airtimeSuccess?.phoneNumber} ${'msgAirtimeSuccessEnd'.tr} ";
       return DialogWidget(
         message: textSuccess,
         isDismiss: true,

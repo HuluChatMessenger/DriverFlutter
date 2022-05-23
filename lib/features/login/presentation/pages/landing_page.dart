@@ -10,7 +10,6 @@ import '../../../../core/util/constants.dart';
 import '../widgets/widgets.dart';
 
 class LandingPage extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final bool isReferral;
   final Configuration configuration;
 
@@ -19,9 +18,7 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      body: Stack(
+    return Stack(
         children: <Widget>[
           backgroundLandingWidget(context),
           Positioned(
@@ -80,11 +77,15 @@ class LandingPage extends StatelessWidget {
                             onPressed: () async {
                               SharedPreferences preference =
                                   await getSharedPreference();
-                              scaffoldKey.currentState?.showBottomSheet(
-                                (context) => LanguageControlsWidget(
-                                  sharedPreferences: preference,
-                                ),
-                              );
+
+                              showModalBottomSheet(
+                                  context: context,
+                                  elevation: 0,
+                                  barrierColor: Colors.black.withAlpha(1),
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) => LanguageControlsWidget(
+                                        sharedPreferences: preference,
+                                      ));
                             },
                           ),
                           const SizedBox(width: 4),
@@ -92,11 +93,14 @@ class LandingPage extends StatelessWidget {
                             onTap: () async {
                               SharedPreferences preference =
                                   await getSharedPreference();
-                              scaffoldKey.currentState?.showBottomSheet(
-                                (context) => LanguageControlsWidget(
-                                  sharedPreferences: preference,
-                                ),
-                              );
+                              showModalBottomSheet(
+                                  context: context,
+                                  elevation: 0,
+                                  barrierColor: Colors.black.withAlpha(1),
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) => LanguageControlsWidget(
+                                        sharedPreferences: preference,
+                                      ));
                             },
                             child: SizedBox(
                               height: 24,
@@ -114,7 +118,6 @@ class LandingPage extends StatelessWidget {
             ),
           ),
         ],
-      ),
     );
   }
 

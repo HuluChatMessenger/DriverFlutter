@@ -1,5 +1,8 @@
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
@@ -12,6 +15,8 @@ import '../widgets/widgets.dart';
 class MainPage extends StatelessWidget {
   Driver driver;
   Configuration configuration;
+  LatLng locationLatLng = const LatLng(9.005401, 38.763611);
+  bool trafficEnabled = false;
   bool isFirst = true;
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
@@ -32,14 +37,21 @@ class MainPage extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is LoadingMain) {
-            return buildMainWidget(context, false, null);
+            locationLatLng = state.currentLatLng;
+            trafficEnabled = state.isTraffic;
+            return buildMainWidget(context, false, null, state.currentLatLng, state.isTraffic);
           } else if (state is LoadedMain) {
             driver = state.driver;
-            return buildMainWidget(context, false, null);
+            locationLatLng = state.currentLatLng;
+            trafficEnabled = state.isTraffic;
+            return buildMainWidget(context, false, null, state.currentLatLng, state.isTraffic);
           } else if (state is ErrorMain) {
-            return buildMainWidget(context, false, state.message);
+            locationLatLng = state.currentLatLng;
+            trafficEnabled = state.isTraffic;
+            return buildMainWidget(
+                context, false, state.message, state.currentLatLng, state.isTraffic);
           } else {
-            return buildMainWidget(context, false, null);
+            return buildMainWidget(context, false, null, locationLatLng, trafficEnabled);
           }
         },
       ),
@@ -50,13 +62,11 @@ class MainPage extends StatelessWidget {
     BuildContext context,
     bool isLoading,
     String? errMsg,
+    LatLng currentLocation,
+    bool isTraffic,
   ) {
     return Stack(
       children: <Widget>[
-        SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: MapControlsWidget(37.43296265331129, -122.08832357078792)),
         Scaffold(
           key: _key,
           drawer: AppDrawer(
@@ -64,52 +74,72 @@ class MainPage extends StatelessWidget {
             configuration: configuration,
             scaffoldKey: _key,
           ),
-          body: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: <Widget>[
-                const SizedBox(
-                  height: 52,
-                ),
-                Row(
-                  children: <Widget>[
-                    const SizedBox(width: 16),
-                    MaterialButton(
-                      onPressed: () => _key.currentState!.openDrawer(),
-                      child: const Icon(
-                        Icons.menu_open_rounded,
-                        color: Colors.green,
+          body: Stack(
+            children: [
+              SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: MapControlsWidget(
+                    currentLatLng: currentLocation,
+                    isTraffic: isTraffic,
+                  )),
+              Column(
+                children: <Widget>[
+                  const SizedBox(
+                    height: 52,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      const SizedBox(width: 16),
+                      MaterialButton(
+                        onPressed: () => _key.currentState!.openDrawer(),
+                        child: const Icon(
+                          Icons.menu_open_rounded,
+                          color: Colors.green,
+                        ),
+                        color: Colors.white,
+                        minWidth: 48,
+                        height: 54,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(54.0),
+                        ),
                       ),
-                      color: Colors.white,
-                      minWidth: 48,
-                      height: 54,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(54.0),
+                      const Spacer(),
+                      MaterialButton(
+                        onPressed: () async {
+                          bool isPhoneCallAllowed =
+                              await Permission.phone.request().isGranted;
+
+                          if (isPhoneCallAllowed) {
+                            contactCallCenter();
+                          } else {
+                            Permission.phone.request();
+                          }
+                        },
+                        child: const Icon(
+                          Icons.phone,
+                          color: Colors.red,
+                        ),
+                        color: Colors.white,
+                        minWidth: 48,
+                        height: 54,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(54.0),
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    MaterialButton(
-                      onPressed: () => {},
-                      child: const Icon(
-                        Icons.phone,
-                        color: Colors.red,
-                      ),
-                      color: Colors.white,
-                      minWidth: 48,
-                      height: 54,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(54.0),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                  ],
-                ),
-                Spacer(),
-                MainCardControlsWidget(driver: driver),
-                mainLoading(),
-              ],
-            ),
+                      const SizedBox(width: 16),
+                    ],
+                  ),
+                  Spacer(),
+                  MainCardControlsWidget(
+                    driver: driver,
+                    locationLatLng: currentLocation,
+                    isTraffic: isTraffic,
+                  ),
+                  mainLoading(currentLocation, isTraffic),
+                ],
+              ),
+            ],
           ),
         ),
         loading(isLoading),
@@ -118,12 +148,14 @@ class MainPage extends StatelessWidget {
     );
   }
 
-  Widget mainLoading() {
+  Widget mainLoading(LatLng latLng, bool isTraffic) {
     checkPermission();
     bool isFirstTime = isFirst;
     isFirst = false;
     return MainControlsWidget(
       isFirst: isFirstTime,
+      locationLatLng: latLng,
+      isTraffic: isTraffic,
     );
   }
 
@@ -156,5 +188,16 @@ class MainPage extends StatelessWidget {
     } else {
       return Container();
     }
+  }
+
+  contactCallCenter() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      AndroidIntent intent = AndroidIntent(
+        action: 'android.intent.action.DIAL',
+        data: "tel:${AppConstants.phoneNumberCallCenter}",
+      );
+      await intent.launch();
+    }
+    ;
   }
 }

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 
 class MainControlsWidget extends StatefulWidget {
+  LatLng locationLatLng;
+  bool isTraffic;
   final bool isFirst;
-  const MainControlsWidget({
-    Key? key, required this.isFirst
-  }) : super(key: key);
+
+  MainControlsWidget(
+      {Key? key, required this.isFirst, required this.locationLatLng, required this.isTraffic})
+      : super(key: key);
 
   @override
-  _MainControlsWidgetState createState() => _MainControlsWidgetState(isFirst: isFirst);
+  _MainControlsWidgetState createState() =>
+      _MainControlsWidgetState(isFirst: isFirst);
 }
 
 class _MainControlsWidgetState extends State<MainControlsWidget> {
@@ -29,6 +34,6 @@ class _MainControlsWidgetState extends State<MainControlsWidget> {
   }
 
   void addMain() {
-    BlocProvider.of<MainBloc>(context).add(GetMain());
+    BlocProvider.of<MainBloc>(context).add(GetMain(widget.locationLatLng, widget.isTraffic));
   }
 }

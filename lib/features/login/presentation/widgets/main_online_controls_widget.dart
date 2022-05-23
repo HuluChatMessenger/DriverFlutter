@@ -15,9 +15,13 @@ import 'package:swipeable_button_view/swipeable_button_view.dart';
 
 class MainOnlineControlsWidget extends StatefulWidget {
   final Driver driver;
+  LatLng locationLatLng;
+  bool isTraffic;
   String balance = '0.0';
 
-  MainOnlineControlsWidget({Key? key, required this.driver}) : super(key: key);
+  MainOnlineControlsWidget(
+      {Key? key, required this.driver, required this.locationLatLng, required this.isTraffic})
+      : super(key: key);
 
   @override
   _MainOnlineControlsWidgetState createState() =>
@@ -477,11 +481,12 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
   }
 
   void addMainOnOffLine(bool isSetOnline) {
-    BlocProvider.of<MainBloc>(context).add(GetMainOnOffline(isSetOnline));
+    BlocProvider.of<MainBloc>(context)
+        .add(GetMainOnOffline(isSetOnline, widget.locationLatLng, widget.isTraffic));
   }
 
   void addMainPickUp(String phoneNumber, LatLng dropOffLocation) {
-    BlocProvider.of<MainBloc>(context)
-        .add(GetMainPickup(phoneNumber, dropOffLocation));
+    BlocProvider.of<MainBloc>(context).add(
+        GetMainPickup(phoneNumber, dropOffLocation, widget.locationLatLng, widget.isTraffic));
   }
 }

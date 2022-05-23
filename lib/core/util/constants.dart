@@ -70,6 +70,9 @@ abstract class AppConstants {
   //Date Format
   static const isoDateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
+  //Date Format
+  static const phoneNumberCallCenter = "9399";
+
   //Strings
   static const String strAppName = 'HuluTaxi';
   static const String strCopyright = '©';

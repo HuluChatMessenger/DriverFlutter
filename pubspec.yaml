@@ -31,8 +31,6 @@ dependencies:
   flutter_svg:
   # Loading
   flutter_spinkit:
-  # Splash
-  flutter_native_splash:
   #Slider
   carousel_slider:
   #OTP
@@ -53,6 +51,10 @@ dependencies:
   flutter_rating_bar:
   #Google Maps
   google_maps_flutter:
+  #Google locator
+  geolocator:
+#  #Google location
+#  location:
   #permission
   permission_handler:
   #Image cache
@@ -65,6 +67,8 @@ dependencies:
   swipeable_button_view:
   #Scanner
 #  qr_code_scanner:
+  #Intent
+  android_intent_plus:
 
   cupertino_icons:
   stacked:
@@ -99,3 +103,5 @@ dependency_overrides:
   source_span: ^1.9.0
   string_scanner: ^1.1.1
   xml: ^6.0.1
+  meta: ^1.7.0
+  path: ^1.8.1

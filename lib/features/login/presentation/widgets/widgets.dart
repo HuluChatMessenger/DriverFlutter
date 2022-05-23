@@ -38,3 +38,4 @@ export 'waiting_widget.dart';
 export 'wallet_controls_widget.dart';
 export 'wallet_transactions_controls_widget.dart';
 export 'language_controls_widget.dart';
+export 'splash_reload_controls_widget.dart';

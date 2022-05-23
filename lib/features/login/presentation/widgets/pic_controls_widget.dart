@@ -30,7 +30,7 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
   String? retrieveDataError;
   var pickedImage = CircleAvatar(
     radius: 104, // Image radius
-    child: Image.asset('assets/images/logo_drawer.png'),
+    child: Image.asset('assets/images/place_holder_profile.png'),
   );
   String? pic;
 

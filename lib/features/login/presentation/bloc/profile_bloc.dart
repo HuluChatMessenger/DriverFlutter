@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
@@ -69,6 +71,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         },
         (success) {
           print('LogHulu Logout Response success: $success  ===|||=== result.');
+          var locale = const Locale(AppConstants.languageAm, AppConstants.languageTypeAm);
+          Get.updateLocale(locale);
           return LogoutProfile(configuration: success);
         },
       ));
