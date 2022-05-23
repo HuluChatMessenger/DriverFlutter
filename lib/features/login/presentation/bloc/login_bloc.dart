@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/util/input_converter.dart';
 
@@ -23,21 +24,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final inputEither = inputConverter.stringValidPhone(event.phoneNumber);
       await inputEither.fold(
         (failure) async {
-          emit(const ErrorLogin(message: AppConstants.errMsgPhone));
+          emit(ErrorLogin(
+              message: 'errMsgPhone'.tr,
+              phoneNumber: event.phoneNumber));
         },
         (string) async {
-          print('Request started');
-          emit(LoadingLogin());
+          print('LogHulu Request started');
+          emit(LoadingLogin(phoneNumber: event.phoneNumber));
 
           final failureOrSuccess =
               await postLoginOTP(Params(phoneNumber: string));
           emit(failureOrSuccess.fold(
             (failure) {
-              print('Response error');
-              return ErrorLogin(message: _mapFailureToMessage(failure));
+              print('LogHulu Response error');
+              return ErrorLogin(
+                  message: _mapFailureToMessage(failure),
+                  phoneNumber: event.phoneNumber);
             },
             (success) {
-              print('Response received');
+              print('LogHulu Response received');
               return LoadedLogin(phoneNumber: event.phoneNumber);
             },
           ));
@@ -54,12 +59,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             failure.errMsg!.isNotEmpty) {
           return failure.errMsg!;
         } else {
-          return AppConstants.errMsgServer;
+          return "errMsgServer".tr;
         }
       case ConnectionFailure:
-        return AppConstants.errMsgConnection;
+        return "errMsgConnection".tr;
       default:
-        return AppConstants.errMsgUnknown;
+        return "errMsgUnknown".tr;
     }
   }
 }

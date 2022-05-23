@@ -51,20 +51,6 @@ class ConfigurationModel extends Configuration {
     );
   }
 
-  factory ConfigurationModel.fromJsonCache(Map<String, dynamic> json) {
-    return ConfigurationModel(
-      referralProgramEnabled: json['referral_program_enabled'],
-      supportedVersion: json['supported_version'],
-      currentVersion: json['current_version'],
-      documentTypes:
-          DataConverter.jsonToListOfListString(json, 'document_types'),
-      feedbackTypes:
-          DataConverter.jsonToListOfListString(json, 'feedback_types'),
-      feedbackUrgencyLevels:
-          DataConverter.jsonToListOfListString(json, 'feedback_urgency_levels'),
-    );
-  }
-
   Map<String, dynamic> toJson() {
     return {
       "isLoggedIn": isLoggedIn,

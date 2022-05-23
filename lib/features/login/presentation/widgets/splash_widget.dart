@@ -14,44 +14,36 @@ class SplashWidget extends StatefulWidget {
 }
 
 class _SplashWidgetState extends State<SplashWidget> {
-  _SplashWidgetState() {
-    Future.delayed(const Duration(microseconds: 100), () {
-      addConfig();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height,
       decoration: const BoxDecoration(
         color: Colors.white,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height -
-                MediaQuery.of(context).size.height * 0.35,
-            width: 124,
-            child: Image.asset('assets/images/loader_icon.png'),
-          ),
-          const SizedBox(
-            height: 64,
-          ),
-          const SizedBox(
-            height: 36,
-            child: SpinKitFadingCircle(
-              color: Colors.green,
-              size: 36.0,
+      child: Center(
+        child: ListView(
+          shrinkWrap: true,
+          primary: false,
+          children: <Widget>[
+            Image.asset(
+              'assets/images/loader_icon.png',
+              height: 150,
+              width: 150,
             ),
-          ),
-        ],
+            const SizedBox(
+              height: 24,
+            ),
+            const SizedBox(
+              height: 36,
+              child: SpinKitFadingCircle(
+                color: Colors.green,
+                size: 24.0,
+              ),
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  void addConfig() {
-    BlocProvider.of<SplashBloc>(context).add(GetSplash());
   }
 }

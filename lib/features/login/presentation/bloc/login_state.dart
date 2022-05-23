@@ -15,11 +15,19 @@ class LoginInitial extends LoginState {
 }
 
 class EmptyLogin extends LoginState {
+  String? phoneNumber;
+
+  EmptyLogin({this.phoneNumber});
+
   @override
   List<Object?> get props => [];
 }
 
 class LoadingLogin extends LoginState {
+  String? phoneNumber;
+
+  LoadingLogin({this.phoneNumber});
+
   @override
   List<Object?> get props => [];}
 
@@ -34,8 +42,9 @@ class LoadedLogin extends LoginState {
 
 class ErrorLogin extends LoginState {
   final String message;
+  String? phoneNumber;
 
-  const ErrorLogin({required this.message});
+  ErrorLogin({required this.message, this.phoneNumber});
 
   @override
   List<Object> get props => [];

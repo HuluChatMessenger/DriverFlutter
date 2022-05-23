@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/document_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/landing_page.dart';
@@ -9,23 +13,29 @@ import 'package:hulutaxi_driver/features/login/presentation/pages/pic_page.dart'
 import 'package:hulutaxi_driver/features/login/presentation/pages/vehicle_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/waiting_page.dart';
 import 'package:hulutaxi_driver/injection_container.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../widgets/widgets.dart';
 
 class SplashPage extends StatelessWidget {
-  const SplashPage({Key? key}) : super(key: key);
+  SplashPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return buildBody(context);
+    return Stack(
+      children: [
+        buildBody(context),
+        buildBodyNtk(context),
+      ],
+    );
   }
 
   BlocProvider<SplashBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<SplashBloc>(),
+      create: (_) => sl<SplashBloc>()..add(GetSplash()),
       child: Stack(
         children: <Widget>[
-          const SplashWidget(),
+          SplashWidget(),
           BlocConsumer<SplashBloc, SplashState>(
             builder: (context, state) {
               if (state is ErrorSplash) {
@@ -35,7 +45,7 @@ class SplashPage extends StatelessWidget {
                   left: 16,
                   child: Center(
                     child: DefaultTextStyle(
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.green,
                         fontStyle: FontStyle.italic,
@@ -51,20 +61,25 @@ class SplashPage extends StatelessWidget {
             listener: (context, state) {
               print('LogHulu : $state');
               if (state is EmptySplash) {
-              } else if (state is LoadingSplash) {
               } else if (state is LoadedLandingSplash) {
-                // openPagePic();
-                openPageLanding(state.configuration.referralProgramEnabled);
+                setNavBar();
+                openPageLanding(state.configuration.referralProgramEnabled,
+                    state.configuration);
               } else if (state is LoadedPicSplash) {
-                openPagePic();
+                setNavBar();
+                openPagePic(state.driver.vehicle == null);
               } else if (state is LoadedVehicleSplash) {
-                openPageVehicle();
+                setNavBar();
+                openPageVehicle(state.configuration);
               } else if (state is LoadedDocumentsSplash) {
-                openPageDocuments();
+                setNavBar();
+                openPageDocuments(state.configuration, state.documents);
               } else if (state is LoadedWaitingSplash) {
-                openPageWaiting();
+                setNavBar();
+                openPageWaiting(state.configuration);
               } else if (state is LoadedLoginSplash) {
-                openPageMain();
+                setNavBar();
+                onLogin(state.driver, state.configuration);
               }
             },
           ),
@@ -73,27 +88,90 @@ class SplashPage extends StatelessWidget {
     );
   }
 
-  void openPageLanding(bool isReferral) {
-    Get.offAll(() => LandingPage(isReferral: isReferral));
+  BlocProvider<NetworkBloc> buildBodyNtk(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<NetworkBloc>()..add(ListenConnection()),
+      child: Stack(
+        children: <Widget>[
+          BlocBuilder<NetworkBloc, NetworkState>(
+            builder: (context, state) {
+              print('LogHulu Network : $state');
+              if (state is NetworkFailure) {
+
+              }
+
+              return Container();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
-  void openPagePic() {
-    Get.offAll(() => AddPicPage());
+  void setNavBar() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
   }
 
-  void openPageVehicle() {
-    Get.offAll(() => const VehiclePage());
+  void openPageLanding(bool isReferral, Configuration configuration) {
+    Get.offAll(() => LandingPage(
+          isReferral: isReferral,
+          configuration: configuration,
+        ));
   }
 
-  void openPageDocuments() {
-    Get.offAll(() => const DocumentsPage());
+  void openPagePic(bool isNextVehicle) {
+    Get.offAll(() => AddPicPage(
+          isNextVehicle: isNextVehicle,
+        ));
   }
 
-  void openPageWaiting() {
-    Get.offAll(() => const WaitingPage());
+  void openPageVehicle(Configuration configuration) {
+    Get.offAll(() => VehiclePage(
+          configuration: configuration,
+        ));
   }
 
-  void openPageMain() {
-    Get.offAll(() => const MainPage());
+  void openPageDocuments(
+      Configuration configuration, List<DriverDocuments> documents) {
+    Get.offAll(() => DocumentPage(
+          documentTypes: configuration.documentTypes,
+          documents: documents,
+          isSplash: true,
+          configuration: configuration,
+        ));
+  }
+
+  void openPageWaiting(Configuration configuration) {
+    Get.offAll(() => WaitingPage(
+          configuration: configuration,
+        ));
+  }
+
+  void onLogin(Driver driver, Configuration configuration) async {
+    bool isLocationAllowed = await Permission.location.request().isGranted;
+    bool isLocationAlwaysAllowed =
+        await Permission.locationAlways.request().isGranted;
+    bool isBatteryAllowed =
+        await Permission.ignoreBatteryOptimizations.request().isGranted;
+
+    if (isLocationAllowed) {
+      if (isLocationAlwaysAllowed) {
+        if (isBatteryAllowed) {
+          openPageMain(driver, configuration);
+        } else if (!isBatteryAllowed) {
+          Permission.ignoreBatteryOptimizations.request();
+        }
+      } else if (!isBatteryAllowed) {
+        Permission.locationAlways.request();
+      }
+    } else if (!isLocationAllowed) {
+      Permission.location.request();
+    }
+  }
+
+  void openPageMain(Driver driver, Configuration configuration) {
+    Get.offAll(() => MainPage(driver: driver, configuration: configuration));
   }
 }

@@ -1,19 +1,30 @@
+import 'dart:ffi';
+
 import 'package:dartz/dartz.dart';
 import 'package:hulutaxi_driver/core/error/exceptions.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/network/network_info.dart';
 import 'package:hulutaxi_driver/core/util/common_utils.dart';
+import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/data/datasources/local_data_source.dart';
 import 'package:hulutaxi_driver/features/login/data/datasources/remote_data_source.dart';
 import 'package:hulutaxi_driver/features/login/data/models/configuration_model.dart';
 import 'package:hulutaxi_driver/features/login/data/models/driver_model.dart';
+import 'package:hulutaxi_driver/features/login/data/models/token_model.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/airtime_success.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
-import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_document_request.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/earning.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/earnings.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/feedbacks.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/login.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/service.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/trip.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/vehicle.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/wallet_transactions.dart';
 import 'package:hulutaxi_driver/features/login/domain/repositories/repositories.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -80,27 +91,22 @@ class RepositoryImpl implements Repository {
         try {
           ConfigurationModel? configuration = await localDataSource.getConfig();
           configuration.isLoggedIn = true;
-
           print(
               'LogHulu Config OTP: ${configuration.isLoggedIn} |||====||| $configuration');
           localDataSource.cacheConfig(configuration);
         } catch (e) {
           print('LogHulu Config OTP: $e');
         }
+
         otpResponse.isLoggedIn = true;
-        localDataSource.cacheDriver(otpResponse);
-
-        try {
-          ConfigurationModel configurationModel =
-              await localDataSource.getConfig();
-          DriverModel driver = await localDataSource.getDriver();
-          print(
-              'LogHulu Config OTP: ${configurationModel.isLoggedIn} |||====||| $configurationModel');
-          print('LogHulu Driver OTP: ${driver.isLoggedIn} |||====||| $driver');
-        } catch (e) {
-          print('LogHulu Config Driver OTP: $e');
+        localDataSource.cacheLogin(true);
+        if (otpResponse.tokenData != null &&
+            otpResponse.tokenData?.access != null) {
+          TokenDataModel tokenDataModel =
+              TokenDataModel(access: otpResponse.tokenData?.access);
+          localDataSource.cacheToken(tokenDataModel);
         }
-
+        localDataSource.cacheDriver(otpResponse);
         return Right(otpResponse);
       } catch (e) {
         print("LogHulu OTP: $e");
@@ -141,23 +147,14 @@ class RepositoryImpl implements Repository {
       ConfigurationModel? configuration;
       try {
         configuration = await remoteDataSource.getConfiguration();
-
-        bool isLoggedIn = false;
-        try {
-          Driver? driver = await localDataSource.getDriver();
-          isLoggedIn = driver.isLoggedIn == true;
-          print(
-              'LogHulu Driver Config: ${driver.isLoggedIn} |||====||| $driver ======result. ');
-        } catch (e) {
-          print('LogHulu DriverConfig: $e');
-        }
-        configuration.isLoggedIn = isLoggedIn;
+        configuration.isLoggedIn = await localDataSource.getLogin();
         localDataSource.cacheConfig(configuration);
         return Right(configuration);
       } on LogoutException {
         try {
           ConfigurationModel? configurationLogout =
               await localDataSource.getConfig();
+          localDataSource.cacheLogin(false);
           return Left(LogoutFailure(configuration: configurationLogout));
         } on CacheException {
           return Left(ServerFailure(null));
@@ -185,25 +182,16 @@ class RepositoryImpl implements Repository {
           final configuration = await localDataSource.getConfig();
           driver.isDocumentSubmitted = CommonUtils().checkDocsSubmitted(
               configuration.documentTypes, driver.driverDocuments);
-          driver.isPicSubmitted = driver.profilePic?.photo != null;
         } catch (e) {
           print('LogHulu CacheExceptionDriver: $e');
         }
-        bool isLoggedIn = false;
-        try {
-          Driver? driverCache = await localDataSource.getDriver();
-          isLoggedIn = driverCache.isLoggedIn == true;
-        } catch (e) {
-          print('LogHulu Driver: $e');
-        }
-        driver.isLoggedIn = isLoggedIn;
         localDataSource.cacheDriver(driver);
         return Right(driver);
       } on LogoutException {
         try {
           ConfigurationModel? configurationLogout =
               await localDataSource.getConfig();
-          configurationLogout.isLoggedIn = false;
+          localDataSource.cacheLogin(false);
           return Left(LogoutFailure(configuration: configurationLogout));
         } on CacheException {
           return Left(ServerFailure(null));
@@ -227,7 +215,8 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, Driver>> postDocument(DriverDocuments document) async {
+  Future<Either<Failure, Driver>> postDocument(
+      DriverDocumentRequest document) async {
     if (await networkInfo.isConnected) {
       try {
         final driver = await remoteDataSource.postDocument(document);
@@ -236,7 +225,6 @@ class RepositoryImpl implements Repository {
           final configuration = await localDataSource.getConfig();
           driver.isDocumentSubmitted = CommonUtils().checkDocsSubmitted(
               configuration.documentTypes, driver.driverDocuments);
-          driver.isPicSubmitted = driver.profilePic?.photo != null;
         } catch (e, s) {
           print('LogHulu CacheExceptionDriver: ' +
               e.toString() +
@@ -262,17 +250,12 @@ class RepositoryImpl implements Repository {
         }
       }
     } else {
-      try {
-        final localDriver = await localDataSource.getDriver();
-        return Right(localDriver);
-      } on CacheException {
-        return Left(CacheFailure());
-      }
+      return Left(ConnectionFailure());
     }
   }
 
   @override
-  Future<Either<Failure, Driver>> putDriver(Driver driverRequest) async {
+  Future<Either<Failure, Configuration>> putDriver(Driver driverRequest) async {
     if (await networkInfo.isConnected) {
       try {
         final driver = await remoteDataSource.putDriver(driverRequest);
@@ -281,7 +264,6 @@ class RepositoryImpl implements Repository {
           final configuration = await localDataSource.getConfig();
           driver.isDocumentSubmitted = CommonUtils().checkDocsSubmitted(
               configuration.documentTypes, driver.driverDocuments);
-          driver.isPicSubmitted = driver.profilePic?.photo != null;
         } catch (e, s) {
           print('LogHulu CacheExceptionDriver: ' +
               e.toString() +
@@ -289,11 +271,28 @@ class RepositoryImpl implements Repository {
               s.toString());
         }
         localDataSource.cacheDriver(driver);
-        return Right(driver);
+        try {
+          final failureOrSuccessConfig = await getConfiguration();
+          failureOrSuccessConfig.fold(
+            (failure) {
+              return Left(ServerFailure(null));
+            },
+            (success) {
+              return Right(success);
+            },
+          );
+        } on CacheException {
+          return Left(CacheFailure());
+        }
+        final configuration = await localDataSource.getConfig();
+        configuration.isLoggedIn = await localDataSource.getLogin();
+
+        return Right(configuration);
       } on LogoutException {
         try {
           ConfigurationModel? configurationLogout =
               await localDataSource.getConfig();
+          localDataSource.cacheLogin(false);
           return Left(LogoutFailure(configuration: configurationLogout));
         } on CacheException {
           return Left(ServerFailure(null));
@@ -307,12 +306,7 @@ class RepositoryImpl implements Repository {
         }
       }
     } else {
-      try {
-        final localDriver = await localDataSource.getDriver();
-        return Right(localDriver);
-      } on CacheException {
-        return Left(CacheFailure());
-      }
+      return Left(ConnectionFailure());
     }
   }
 
@@ -320,36 +314,13 @@ class RepositoryImpl implements Repository {
   Future<Either<Failure, Driver>> postPic(XFile pic) async {
     if (await networkInfo.isConnected) {
       try {
-        final driver = await remoteDataSource.postPic(pic);
-
+        final picResult = await remoteDataSource.postPic(pic);
+        final driver = await localDataSource.getDriver();
+        driver.profilePic = picResult;
         try {
           final configuration = await localDataSource.getConfig();
-          bool documentSubmitted = false;
-          int docsSize = configuration.documentTypes.length - 1;
-          List<String> reqType = [];
-          int allSubmitted = 0;
-          for (int i = 0; i < docsSize; i++) {
-            int posReq = configuration.documentTypes.elementAt(i).length - 1;
-            if (configuration.documentTypes.elementAt(i).elementAt(posReq) ==
-                "true") {
-              reqType
-                  .add(configuration.documentTypes.elementAt(i).elementAt(0));
-            }
-          }
-          if (driver.driverDocuments != null) {
-            for (DriverDocuments document in driver.driverDocuments!) {
-              for (String typeRequired in reqType) {
-                if (document.documentType == typeRequired) {
-                  allSubmitted++;
-                }
-              }
-            }
-          }
-          if (reqType.length == allSubmitted) {
-            documentSubmitted = true;
-          }
-          driver.isDocumentSubmitted = documentSubmitted;
-          driver.isPicSubmitted = driver.profilePic != null;
+          driver.isDocumentSubmitted = CommonUtils().checkDocsSubmitted(
+              configuration.documentTypes, driver.driverDocuments);
         } catch (e, s) {
           print('LogHulu CacheExceptionDriver: ' +
               e.toString() +
@@ -375,12 +346,7 @@ class RepositoryImpl implements Repository {
         }
       }
     } else {
-      try {
-        final localDriver = await localDataSource.getDriver();
-        return Right(localDriver);
-      } on CacheException {
-        return Left(CacheFailure());
-      }
+      return Left(ConnectionFailure());
     }
   }
 
@@ -388,20 +354,19 @@ class RepositoryImpl implements Repository {
   Future<Either<Failure, Driver>> postVehicle(Vehicle vehicle) async {
     if (await networkInfo.isConnected) {
       try {
-        final driver = await remoteDataSource.postVehicle(vehicle);
-
+        final vehicleResult = await remoteDataSource.postVehicle(vehicle);
+        final driver = await localDataSource.getDriver();
+        driver.vehicle = vehicleResult;
         try {
           final configuration = await localDataSource.getConfig();
           driver.isDocumentSubmitted = CommonUtils().checkDocsSubmitted(
               configuration.documentTypes, driver.driverDocuments);
-          driver.isPicSubmitted = driver.profilePic?.photo != null;
         } catch (e, s) {
           print('LogHulu CacheExceptionDriver: ' +
               e.toString() +
               " | " +
               s.toString());
         }
-        localDataSource.cacheDriver(driver);
         return Right(driver);
       } on LogoutException {
         try {
@@ -420,12 +385,300 @@ class RepositoryImpl implements Repository {
         }
       }
     } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Feedbacks>> postFeedback(Feedbacks feedback) async {
+    if (await networkInfo.isConnected) {
       try {
-        final localDriver = await localDataSource.getDriver();
-        return Right(localDriver);
-      } on CacheException {
-        return Left(CacheFailure());
+        final feedbackResult = await remoteDataSource.postFeedback(feedback);
+        return Right(feedbackResult);
+      } on LogoutException {
+        try {
+          ConfigurationModel? configurationLogout =
+              await localDataSource.getConfig();
+          return Left(LogoutFailure(configuration: configurationLogout));
+        } on CacheException {
+          return Left(ServerFailure(null));
+        }
+      } catch (e) {
+        print('LogHulu Driver: ' + e.toString());
+        if (e is ServerException) {
+          return Left(ServerFailure(e.errMsg));
+        } else {
+          return Left(ServerFailure(null));
+        }
       }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, WalletTransactions>> getWallet(String? next) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final transactions = await remoteDataSource.getWallet(next);
+        return Right(transactions);
+      } catch (e) {
+        print('LogHulu Wallet: $e');
+        if (e is ServerException) {
+          return Left(ServerFailure(e.errMsg));
+        } else {
+          return Left(ServerFailure(null));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Earning>> getEarningsSixMonth() async {
+    if (await networkInfo.isConnected) {
+      try {
+        final earnings = await remoteDataSource.getEarningMonthSix();
+        return Right(earnings);
+      } catch (e) {
+        print('LogHulu Wallet: $e');
+        if (e is ServerException) {
+          return Left(ServerFailure(e.errMsg));
+        } else {
+          return Left(ServerFailure(null));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Trip>> getTrip(String? next) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final trips = await remoteDataSource.getTrip(next);
+        return Right(trips);
+      } catch (e) {
+        print('LogHulu Trips: $e');
+        if (e is ServerException) {
+          return Left(ServerFailure(e.errMsg));
+        } else {
+          return Left(ServerFailure(null));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, double>> getHuluCoinBalance() async {
+    if (await networkInfo.isConnected) {
+      try {
+        final balance = await remoteDataSource.getHuluCoinBalance();
+        return Right(balance);
+      } catch (e) {
+        print('LogHulu HuluCoin balance: $e');
+        if (e is ServerException) {
+          return Left(ServerFailure(e.errMsg));
+        } else {
+          return Left(ServerFailure(null));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> getService() async {
+    if (await networkInfo.isConnected) {
+      try {
+        final services = await remoteDataSource.getServices();
+        return Right(services);
+      } catch (e) {
+        print('LogHulu Services: $e');
+        if (e is ServerException) {
+          return Left(ServerFailure(e.errMsg));
+        } else {
+          return Left(ServerFailure(null));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, AirtimeSuccess>> postAirtime(
+      Service service, double amount) async {
+    if (await networkInfo.isConnected) {
+      try {
+        String? phoneNumber;
+        final Driver? driver = await localDataSource.getDriver();
+
+        if (driver?.phoneNumber != null) {
+          phoneNumber = driver?.phoneNumber;
+        } else {
+          throw LogoutException();
+        }
+        final updatedBalance =
+            await remoteDataSource.postAirtime(service, amount, phoneNumber!);
+        AirtimeSuccess success = AirtimeSuccess(
+            balance: updatedBalance, amount: amount, phoneNumber: phoneNumber);
+        return Right(success);
+      } catch (e) {
+        print('LogHulu Airtime: $e');
+        if (e is LogoutException) {
+          ConfigurationModel? configurationLogout =
+              await localDataSource.getConfig();
+          return Left(LogoutFailure(configuration: configurationLogout));
+        } else if (e is ServerException) {
+          return Left(ServerFailure(e.errMsg));
+        } else {
+          return Left(ServerFailure(null));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Earnings>> getEarnings(int pos) async {
+    if (await networkInfo.isConnected) {
+      try {
+        Earnings earningsResult = Earnings(earning: null, earningItem: []);
+        if (pos == 0) {
+          final earnings = await remoteDataSource.getEarningWeek();
+          earningsResult.earning = earnings;
+          try {
+            final earningItems = await remoteDataSource.getEarningsListWeek();
+            earningsResult.earningItem = earningItems;
+          } catch (e) {
+            print('LogHulu Earnings Week: $e');
+            if (e is ServerException) {
+              return Left(ServerFailure(e.errMsg));
+            } else {
+              return Left(ServerFailure(null));
+            }
+          }
+        } else if (pos == 1) {
+          final earnings = await remoteDataSource.getEarningWeekTwo();
+          earningsResult.earning = earnings;
+          try {
+            final earningItems =
+                await remoteDataSource.getEarningsListWeekTwo();
+            earningsResult.earningItem = earningItems;
+          } catch (e) {
+            print('LogHulu Earnings Week Two: $e');
+            if (e is ServerException) {
+              return Left(ServerFailure(e.errMsg));
+            } else {
+              return Left(ServerFailure(null));
+            }
+          }
+        } else if (pos == 2) {
+          final earnings = await remoteDataSource.getEarningMonth();
+          earningsResult.earning = earnings;
+          try {
+            final earningItems = await remoteDataSource.getEarningsListMonth();
+            earningsResult.earningItem = earningItems;
+          } catch (e) {
+            print('LogHulu Earnings Month: $e');
+            if (e is ServerException) {
+              return Left(ServerFailure(e.errMsg));
+            } else {
+              return Left(ServerFailure(null));
+            }
+          }
+        } else if (pos == 3) {
+          final earnings = await remoteDataSource.getEarningMonthThree();
+          earningsResult.earning = earnings;
+          try {
+            final earningItems =
+                await remoteDataSource.getEarningsListMonthThree();
+            earningsResult.earningItem = earningItems;
+          } catch (e) {
+            print('LogHulu Earnings Month Three: $e');
+            if (e is ServerException) {
+              return Left(ServerFailure(e.errMsg));
+            } else {
+              return Left(ServerFailure(null));
+            }
+          }
+        } else if (pos == 4) {
+          final earnings = await remoteDataSource.getEarningMonthSix();
+          earningsResult.earning = earnings;
+          try {
+            final earningItems =
+                await remoteDataSource.getEarningsListMonthSix();
+            earningsResult.earningItem = earningItems;
+          } catch (e) {
+            print('LogHulu Earnings Month Six: $e');
+            if (e is ServerException) {
+              return Left(ServerFailure(e.errMsg));
+            } else {
+              return Left(ServerFailure(null));
+            }
+          }
+        }
+        print('LogHulu Earning result: $earningsResult');
+        return Right(earningsResult);
+      } catch (e) {
+        print('LogHulu Earnings: $e');
+        if (e is ServerException) {
+          return Left(ServerFailure(e.errMsg));
+        } else {
+          return Left(ServerFailure(null));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Configuration?>> getLogout() async {
+    try {
+      final Configuration? configuration = await localDataSource.getConfig();
+      await localDataSource.clearData();
+      return Right(configuration);
+    } catch (e) {
+      print('LogHulu Logout: $e');
+      if (e is LogoutException) {
+        ConfigurationModel? configurationLogout =
+            await localDataSource.getConfig();
+        return Right(configurationLogout);
+      } else if (e is ServerException) {
+        return Left(ServerFailure(e.errMsg));
+      } else {
+        return Left(ServerFailure(null));
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getLanguage() async {
+    try {
+      final String language = await localDataSource.getLanguage();
+      return Right(language);
+    } catch (e) {
+      print('LogHulu get language: $e');
+      return Right(AppConstants.languageAm);
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> setLanguage(String languageSelected) async {
+    try {
+      localDataSource.cacheLanguage(languageSelected);
+      return Right(true);
+    } catch (e) {
+      print('LogHulu set language: $e');
+      return Right(false);
     }
   }
 }

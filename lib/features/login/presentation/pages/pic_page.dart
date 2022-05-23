@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
+import 'package:hulutaxi_driver/features/login/presentation/pages/splash_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/vehicle_page.dart';
 import 'package:hulutaxi_driver/injection_container.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../widgets/widgets.dart';
 
 class AddPicPage extends StatelessWidget {
+  Configuration? configuration;
+  bool isBtnEnabled = false;
+  final bool isNextVehicle;
+
   AddPicPage({
     Key? key,
+    required this.isNextVehicle,
   }) : super(key: key);
 
   @override
@@ -19,65 +27,120 @@ class AddPicPage extends StatelessWidget {
   }
 
   BlocProvider<PicBloc> buildBody(BuildContext context) {
-    bool isBtnEnabled = false;
-    var colorsBtnBack = Colors.grey.shade300;
-    Color colorsBtnTxt = Colors.grey;
     return BlocProvider(
       create: (_) => sl<PicBloc>(),
-      child: Stack(
-        children: <Widget>[
-          Scaffold(
-            appBar: AppBar(
-              title: const Text(AppConstants.strAddPhotoTitle),
-              elevation: 0,
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  backgroundTopCurveWidget(context),
-                  const SizedBox(height: 32),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: Column(
-                      children: <Widget>[
-                        PicControlsWidget(),
-                        const SizedBox(height: 48),
-                        const Text(
-                          AppConstants.strAddPhotoSub,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        const SizedBox(height: 64),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          BlocBuilder<PicBloc, PicState>(
-            builder: (context, state) {
-              if (state is LoadingPic) {
-                return const LoadingWidget();
-              } else if (state is ErrorPic) {
-                return DialogWidget(
-                  message: state.message,
-                  isDismiss: true,
-                  typeDialog: AppConstants.dialogTypeErr,
-                );
-              } else if (state is LoadedPic) {
-                return setBtnContinue(true);
-              } else {
-                return setBtnContinue(false);
-              }
-            },
-          ),
-        ],
+      child: BlocBuilder<PicBloc, PicState>(
+        builder: (context, state) {
+          if (state is LoadingPic) {
+            return buildPicWidget(
+              context,
+              true,
+              isBtnEnabled,
+              null,
+              state.selcetedPic,
+            );
+          } else if (state is ErrorPic) {
+            return buildPicWidget(
+              context,
+              false,
+              isBtnEnabled,
+              state.message,
+              state.selcetedPic,
+            );
+          } else if (state is LoadedPic) {
+            isBtnEnabled = true;
+            configuration = state.configuration;
+            return buildPicWidget(
+              context,
+              false,
+              isBtnEnabled,
+              null,
+              state.selcetedPic,
+            );
+          } else {
+            isBtnEnabled = false;
+            return buildPicWidget(
+              context,
+              false,
+              isBtnEnabled,
+              null,
+              null,
+            );
+          }
+        },
       ),
     );
+  }
+
+  Widget buildPicWidget(
+    BuildContext context,
+    bool isLoading,
+    bool isBtnEnabled,
+    String? errMsg,
+    XFile? selectedPic,
+  ) {
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+          appBar: AppBar(
+            title: Text('strAddPhotoTitle'.tr),
+            elevation: 0,
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                backgroundTopCurveWidget(context, null),
+                // Content
+                const SizedBox(height: 32),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  child: Column(
+                    children: <Widget>[
+                      PicControlsWidget(
+                        selectedPic: selectedPic,
+                      ),
+                      const SizedBox(height: 48),
+                      Text(
+                        'strAddPhotoSub'.tr,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      const SizedBox(height: 64),
+                      setBtnContinue(isBtnEnabled),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        loading(isLoading),
+        error(errMsg),
+      ],
+    );
+  }
+
+  Widget loading(bool isLoading) {
+    if (isLoading) {
+      return const LoadingWidget();
+    } else {
+      return Container();
+    }
+  }
+
+  Widget error(String? errMsg) {
+    if (errMsg != null && errMsg.isNotEmpty) {
+      return DialogWidget(
+        message: errMsg,
+        isDismiss: true,
+        typeDialog: AppConstants.dialogTypeErr,
+      );
+    } else {
+      return Container();
+    }
   }
 
   Widget setBtnContinue(bool isBtnEnabled) {
@@ -93,14 +156,22 @@ class AddPicPage extends StatelessWidget {
   }
 
   void onBtnContinueClicked() {
-    openPageVehicle();
+    if (isNextVehicle) {
+      openPageVehicle();
+    } else {
+      openPageSplash();
+    }
   }
 
   void openPageVehicle() {
-    Get.offAll(() => const VehiclePage());
+    if (configuration != null) {
+      Get.offAll(() => VehiclePage(
+            configuration: configuration!,
+          ));
+    }
   }
 
-// void openPageSplash() {
-//   Get.offAll(() => const SplashPage());
-// }
+  void openPageSplash() {
+    Get.offAll(() => SplashPage());
+  }
 }

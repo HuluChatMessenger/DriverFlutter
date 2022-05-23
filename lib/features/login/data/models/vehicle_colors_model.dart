@@ -2,9 +2,9 @@ import 'package:hulutaxi_driver/features/login/domain/entities/vehicle_colors.da
 
 class VehicleColorsModel extends VehicleColors {
   const VehicleColorsModel(
-      {required String vehicleColorKey,
-      required String vehicleColorLabel,
-      required String vehicleColorCode})
+      {required vehicleColorKey,
+      required vehicleColorLabel,
+      required vehicleColorCode})
       : super(
             vehicleColorKey: vehicleColorKey,
             vehicleColorLabel: vehicleColorLabel,

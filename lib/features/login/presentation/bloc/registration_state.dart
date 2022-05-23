@@ -13,11 +13,19 @@ class RegistrationInitial extends RegistrationState {
 }
 
 class EmptyRegistration extends RegistrationState {
+  Registration? registration;
+
+  EmptyRegistration({this.registration});
+
   @override
   List<Object?> get props => [];
 }
 
 class LoadingRegistration extends RegistrationState {
+  Registration? registration;
+
+  LoadingRegistration({this.registration});
+
   @override
   List<Object?> get props => [];
 }
@@ -32,9 +40,10 @@ class LoadedRegistration extends RegistrationState {
 }
 
 class ErrorRegistration extends RegistrationState {
+  Registration? registration;
   final String message;
 
-  const ErrorRegistration({required this.message});
+  ErrorRegistration({required this.message, this.registration});
 
   @override
   List<Object> get props => [];

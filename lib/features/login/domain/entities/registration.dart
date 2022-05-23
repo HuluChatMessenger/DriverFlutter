@@ -7,6 +7,7 @@ class Registration extends Equatable {
   final String grandfatherName;
   final String phoneNumber;
   String? referralCode;
+  bool? isTerms;
 
   Registration({
     required this.id,
@@ -15,6 +16,7 @@ class Registration extends Equatable {
     required this.grandfatherName,
     required this.phoneNumber,
     this.referralCode,
+    this.isTerms,
   });
 
   @override
@@ -25,5 +27,6 @@ class Registration extends Equatable {
         grandfatherName,
         phoneNumber,
         referralCode,
+        isTerms,
       ];
 }

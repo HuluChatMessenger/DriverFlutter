@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -18,14 +19,19 @@ class EmptyPic extends PicState {
 }
 
 class LoadingPic extends PicState {
+  XFile? selcetedPic;
+
+  LoadingPic({this.selcetedPic});
+
   @override
   List<Object?> get props => [];
 }
 
 class LoadedPic extends PicState {
-  final Driver driver;
+  final Configuration configuration;
+  XFile? selcetedPic;
 
-  const LoadedPic({required this.driver});
+  LoadedPic({required this.configuration, this.selcetedPic});
 
   @override
   List<Object> get props => [];
@@ -33,8 +39,9 @@ class LoadedPic extends PicState {
 
 class ErrorPic extends PicState {
   final String message;
+  XFile? selcetedPic;
 
-  const ErrorPic({required this.message});
+  ErrorPic({required this.message, this.selcetedPic});
 
   @override
   List<Object> get props => [];

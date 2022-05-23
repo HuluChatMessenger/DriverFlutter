@@ -1,3 +1,4 @@
+import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -25,8 +26,9 @@ class LoadingOtp extends OtpState {
 
 class LoadedOtp extends OtpState {
   final Driver driver;
+  final Configuration? configuration;
 
-  const LoadedOtp({required this.driver});
+  const LoadedOtp({required this.driver, required this.configuration});
 
   @override
   List<Object> get props => [];

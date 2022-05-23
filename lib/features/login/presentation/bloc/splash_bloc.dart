@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
 
@@ -44,23 +46,32 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
             emit(failureOrSuccessDriver.fold(
               (failureDriver) {
                 print('LogHulu: Driver Response error $failureDriver');
-                return ErrorSplash(
-                    message: _mapFailureToMessage(failureDriver));
+                if (failureDriver is LogoutFailure)
+                  return LoadedLandingSplash(configuration: config);
+                else
+                  return ErrorSplash(
+                      message: _mapFailureToMessage(failureDriver));
               },
               (successDriver) {
-                print('LogHulu: Driver Response received');
-                if (successDriver.isLoggedIn == false) {
+                print(
+                    'LogHulu: Driver Response received ${successDriver.isLoggedIn}  $successDriver  ===|||=== result');
+                if (successDriver.isLoggedIn != true) {
                   return LoadedLandingSplash(configuration: config);
-                } else if (successDriver.isPicSubmitted == false) {
+                } else if (successDriver.isPicSubmitted != true) {
                   return LoadedPicSplash(driver: successDriver);
                 } else if (successDriver.vehicle == null) {
-                  return LoadedVehicleSplash(driver: successDriver);
-                } else if (successDriver.isDocumentSubmitted == false) {
-                  return LoadedDocumentsSplash(driver: successDriver);
+                  return LoadedVehicleSplash(configuration: config);
+                } else if (successDriver.isDocumentSubmitted != true) {
+                  List<DriverDocuments> documents = [];
+                  if (successDriver.driverDocuments != null) {
+                    documents = successDriver.driverDocuments!;
+                  }
+                  return LoadedDocumentsSplash(
+                      configuration: config, documents: documents);
                 } else if (!successDriver.isApproved) {
-                  return LoadedWaitingSplash(driver: successDriver);
+                  return LoadedWaitingSplash(driver: successDriver, configuration: config);
                 } else {
-                  return LoadedLoginSplash(driver: successDriver);
+                  return LoadedLoginSplash(driver: successDriver, configuration: config);
                 }
               },
             ));
@@ -75,19 +86,19 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   String _mapFailureToMessage(Failure? failure) {
     switch (failure.runtimeType) {
       case LogoutFailure:
-        return AppConstants.errMsgLogout;
+        return 'errMsgLogout'.tr;
       case ServerFailure:
         if (failure is ServerFailure &&
             failure.errMsg != null &&
             failure.errMsg!.isNotEmpty) {
           return failure.errMsg!;
         } else {
-          return AppConstants.errMsgServer;
+          return "errMsgServer".tr;
         }
       case ConnectionFailure:
-        return AppConstants.errMsgConnection;
+        return "errMsgConnection".tr;
       default:
-        return AppConstants.errMsgUnknown;
+        return "errMsgUnknown".tr;
     }
   }
 }

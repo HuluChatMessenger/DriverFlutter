@@ -1,7 +1,7 @@
 import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 
 class DriverDocumentsModel extends DriverDocuments {
-  const DriverDocumentsModel({required int id, required int documentType})
+  const DriverDocumentsModel({required id, required documentType})
       : super(id: id, documentType: documentType);
 
   factory DriverDocumentsModel.fromJson(json) {

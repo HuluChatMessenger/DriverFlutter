@@ -14,10 +14,45 @@ abstract class AppConstants {
   static const apiEndpointPic = 'photo.upload/';
   static const apiEndpointVehicle = 'huluride/driver/vehicle/';
   static const apiEndpointDocument = 'huluride/driver/document/';
+  static const apiEndpointFeedback = 'huluride/driver/feedback/';
+  static const apiEndpointWallet = 'huluride/wallet/transactions/';
+  static const apiEndpointTrip = 'huluride/driver/trips/';
+  static const apiEndpointHuluCoinBalance = 'huluride/hulucoin/balance/';
+  static const apiEndpointService = 'hulupay/services/';
+  static const apiEndpointServiceRequest = 'hulupay/service-requests/';
+  static const apiEndpointEarningWeek = 'huluride/driver/earnings/last7days/';
+  static const apiEndpointEarningWeekTwo =
+      'huluride/driver/earnings/last14days/';
+  static const apiEndpointEarningMonth = 'huluride/driver/earnings/thismonth/';
+  static const apiEndpointEarningMonthThree =
+      'huluride/driver/earnings/threemonth/';
+  static const apiEndpointEarningMonthSix =
+      'huluride/driver/earnings/sixmonth/';
+  static const apiEndpointEarningsListWeek =
+      'huluride/driver/earnings.bytime/last7days/';
+  static const apiEndpointEarningsListWeekTwo =
+      'huluride/driver/earnings.bytime/last14days/';
+  static const apiEndpointEarningsListMonth =
+      'huluride/driver/earnings.bytime/thismonth/';
+  static const apiEndpointEarningsListMonthThree =
+      'huluride/driver/earnings.bytime/threemonth/';
+  static const apiEndpointEarningsListMonthSix =
+      'huluride/driver/earnings.bytime/sixmonth/';
 
   // Prefs
   static const prefKeyConfig = 'PREF_KEY_CONFIG';
   static const prefKeyDriver = 'PREF_KEY_DRIVER';
+  static const prefKeyLogin = 'PREF_KEY_LOGIN';
+  static const prefKeyToken = 'PREF_KEY_TOKEN';
+  static const prefKeyLanguage = 'PREF_KEY_LANGUAGE';
+
+  // Prefs
+  static const languageEn = 'en';
+  static const languageTypeEn = 'US';
+  static const languageAm = 'am';
+  static const languageTypeAm = 'ET';
+  static const titleEn = 'ENGLISH';
+  static const titleAm = 'አማርኛ';
 
   // Splash
   static const splashLanding = 'SPLASH_LANDING';
@@ -32,49 +67,19 @@ abstract class AppConstants {
   static const dialogTypeErr = 'DIALOG_ERROR';
   static const dialogTypeMsg = 'DIALOG_MESSAGE';
 
-  //Errors
-  static const String errMsgServer = 'Server Failure';
-  static const String errMsgCache = 'Cache Failure';
-  static const String errMsgConnection =
-      'Unable to connect to the internet. Please check your connection.';
-  static const String errMsgUnknown = 'Some error occurred. Please, try again!';
-  static const String errMsgLogout =
-      'Sorry, your account has been logged out of. Please login!';
-  static const String errMsgPhone =
-      'Phone number starts with the digit 9 or 7!';
-  static const String errMsgFirstEmpty = 'Please enter first name!';
-  static const String errMsgFatherEmpty = "Please enter father's name!";
-  static const String errMsgGrandfatherEmpty =
-      "Please enter grandfather's name!";
-  static const String errMsgPhoneEmpty = 'Please enter a phone number!';
-  static const String errTerms = 'Please accept terms and conditions!';
+  //Date Format
+  static const isoDateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+  //Date Format
+  static const phoneNumberCallCenter = "9399";
 
   //Strings
-  static const String strRegister = 'REGISTER';
-  static const String strLogin = 'LOGIN';
+  static const String strAppName = 'HuluTaxi';
+  static const String strCopyright = '©';
   static const String strChooseLanguage = 'ቋንቋ ይምረጡ / Choose Language';
-  static const String strAddPhotoTitle = 'Profile Photo';
-  static const String strAddPhotoSub = 'Add Your Photo';
-  static const String strBack = 'Back';
-  static const String strContinue = 'Continue';
-  static const String strResend = 'Resend Code';
-  static const String strResendTimer = 'in 0 seconds';
-  static const String strGreetingFirst = 'Hello, nice to meet you';
-  static const String strGreetingSecondLogin = 'Login To HuluTaxi!';
-  static const String strGreetingThirdLogin =
-      'Please enter the phone number that you registered with.';
-  static const String strGreetingSecondRegistration = 'Join HuluTaxi!';
-  static const String strOtpFirst = 'Phone Verification';
-  static const String strOtpSecond = 'Enter your OTP code';
-  static const String strOtpThird = 'Enter the 5-digit code sent to you at ';
-  static const String strPromptPhone = 'Phone Number';
-  static const String strPromptFirstName = 'First Name';
-  static const String strPromptFatherName = "Father's Name";
-  static const String strPromptGFatherName = "Grandfather's Name";
-  static const String strPromptReferralCode = "Referral Code";
-  static const String strAgree = 'I agree to the';
-  static const String strTerms = 'Terms & Conditions';
-  static const String strThanks = 'Thank You!';
-  static const String strWaitingTxt =
-      'Thank you for submitting the required documents. We are evaluating your documents, you will receive notification when your account is activated.';
+  static const String strPromptPlateNo = 'AA-01-A12345';
+  static const String strWalletNo = '9834 7502 1684 2984';
+  static const String strWalletDate = '05/22';
+  static const String str0 = '0';
+  static const String strBalanceHidden = "***";
 }

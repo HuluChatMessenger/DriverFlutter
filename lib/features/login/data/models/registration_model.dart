@@ -2,12 +2,11 @@ import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart
 
 class RegistrationModel extends Registration {
   RegistrationModel(
-      {required int id,
-        required String firstName,
-      required String fatherName,
-      required String grandfatherName,
-      required String phoneNumber,
-      String? referralCode})
+      {required id,
+        required firstName,
+      required fatherName,
+      required grandfatherName,
+      required phoneNumber, referralCode})
       : super(
             id: id,
             firstName: firstName,

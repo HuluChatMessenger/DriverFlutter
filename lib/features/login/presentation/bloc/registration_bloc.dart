@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/core/util/input_converter.dart';
@@ -13,7 +14,8 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   final PostRegistrationOTP postRegistrationOTP;
   final InputConverter inputConverter;
 
-  RegistrationBloc({required this.postRegistrationOTP, required this.inputConverter})
+  RegistrationBloc(
+      {required this.postRegistrationOTP, required this.inputConverter})
       : super(RegistrationInitial()) {
     on<RegistrationEvent>(mapRegistrationOTPState);
   }
@@ -27,21 +29,25 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           inputConverter.stringValidPhone(event.registration.phoneNumber);
       await inputEither.fold(
         (failure) async {
-          emit(const ErrorRegistration(message: AppConstants.errMsgPhone));
+          emit(ErrorRegistration(
+              message: 'errMsgPhone'.tr,
+              registration: event.registration));
         },
         (string) async {
-          print('Request started');
-          emit(LoadingRegistration());
+          print('LogHulu Request started');
+          emit(LoadingRegistration(registration: event.registration));
 
           final failureOrSuccess = await postRegistrationOTP(
               Params(registration: event.registration));
           emit(failureOrSuccess.fold(
             (failure) {
-              print('Response error');
-              return ErrorRegistration(message: _mapFailureToMessage(failure));
+              print('LogHulu Response error');
+              return ErrorRegistration(
+                  message: _mapFailureToMessage(failure),
+                  registration: event.registration);
             },
             (success) {
-              print('Response received');
+              print('LogHulu Response received');
               return LoadedRegistration(registration: success);
             },
           ));
@@ -58,12 +64,12 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
             failure.errMsg!.isNotEmpty) {
           return failure.errMsg!;
         } else {
-          return AppConstants.errMsgServer;
+          return "errMsgServer".tr;
         }
       case ConnectionFailure:
-        return AppConstants.errMsgConnection;
+        return "errMsgConnection".tr;
       default:
-        return AppConstants.errMsgUnknown;
+        return "errMsgUnknown".tr;
     }
   }
 }

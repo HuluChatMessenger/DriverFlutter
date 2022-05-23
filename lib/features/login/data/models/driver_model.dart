@@ -56,9 +56,8 @@ class DriverModel extends Driver {
         );
 
   factory DriverModel.fromJson(Map<String, dynamic> json) {
-
     DriverWallet driverWallet =
-    DriverWalletModel.fromJson(json['driver_wallet']);
+        DriverWalletModel.fromJson(json['driver_wallet']);
 
     print('LogHulu CheckWallet: $driverWallet');
 
@@ -82,8 +81,7 @@ class DriverModel extends Driver {
     Vehicle? vehicle;
     var vehicleData = json['vehicle'];
 
-    if (vehicleData != null)
-      vehicle = VehicleModel.fromJson(vehicleData);
+    if (vehicleData != null) vehicle = VehicleModel.fromJson(vehicleData);
 
     print('LogHulu CheckVehicle: $vehicle');
 
@@ -95,13 +93,21 @@ class DriverModel extends Driver {
     }
     print('LogHulu CheckDoc: $driverDocumentsList');
 
-    return DriverModel(
+    bool isPicSubmitted = false;
+
+    if (profilePic?.photo != null) {
+      isPicSubmitted = true;
+    }
+
+    print('LogHulu Pic: $isPicSubmitted');
+    DriverModel driverModel = DriverModel(
       id: json['id'],
       isApproved: json['is_approved'],
       isContactConfirmed: json['contact_confirmed'],
       isDocumentSubmitted: json['document_submited'],
       isActive: json['is_active'],
       isLoggedIn: json['is_logged_in'],
+      isPicSubmitted: isPicSubmitted,
       profilePic: profilePic,
       fName: json['first_name'],
       mName: json['middle_name'],
@@ -116,6 +122,9 @@ class DriverModel extends Driver {
       driverWallet: driverWallet,
       driverDocuments: driverDocumentsList,
     );
+    driverModel.isPicSubmitted = isPicSubmitted == true;
+    print('LogHulu json: $driverModel');
+    return driverModel;
   }
 
   Map<String, dynamic> toJson() {

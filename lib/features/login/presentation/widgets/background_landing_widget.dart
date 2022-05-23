@@ -5,7 +5,7 @@ Widget backgroundLandingWidget(BuildContext context) {
   return Container(
     alignment: Alignment.centerLeft,
     height: MediaQuery.of(context).size.height,
-    decoration: BoxDecoration(
+    decoration: const BoxDecoration(
       color: Colors.white,
     ),
     child: ListView(
@@ -13,7 +13,7 @@ Widget backgroundLandingWidget(BuildContext context) {
         CarouselSlider(
           items: [
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/landing_1.png'),
                   fit: BoxFit.cover,
@@ -21,7 +21,7 @@ Widget backgroundLandingWidget(BuildContext context) {
               ),
             ),
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/landing_2.png'),
                   fit: BoxFit.cover,
@@ -29,7 +29,7 @@ Widget backgroundLandingWidget(BuildContext context) {
               ),
             ),
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/landing_3.png'),
                   fit: BoxFit.cover,

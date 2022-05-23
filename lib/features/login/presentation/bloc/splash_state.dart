@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 
 import '../../domain/entities/driver.dart';
 
@@ -43,18 +44,19 @@ class LoadedPicSplash extends SplashState {
 }
 
 class LoadedVehicleSplash extends SplashState {
-  final Driver driver;
+  final Configuration configuration;
 
-  const LoadedVehicleSplash({required this.driver});
+  const LoadedVehicleSplash({required this.configuration});
 
   @override
   List<Object> get props => [];
 }
 
 class LoadedDocumentsSplash extends SplashState {
-  final Driver driver;
+  final Configuration configuration;
+  final List<DriverDocuments> documents;
 
-  const LoadedDocumentsSplash({required this.driver});
+  const LoadedDocumentsSplash({required this.configuration, required this.documents});
 
   @override
   List<Object> get props => [];
@@ -62,8 +64,9 @@ class LoadedDocumentsSplash extends SplashState {
 
 class LoadedWaitingSplash extends SplashState {
   final Driver driver;
+  final Configuration configuration;
 
-  const LoadedWaitingSplash({required this.driver});
+  const LoadedWaitingSplash({required this.driver, required this.configuration});
 
   @override
   List<Object> get props => [];
@@ -71,8 +74,9 @@ class LoadedWaitingSplash extends SplashState {
 
 class LoadedLoginSplash extends SplashState {
   final Driver driver;
+  final Configuration configuration;
 
-  const LoadedLoginSplash({required this.driver});
+  const LoadedLoginSplash({required this.driver, required this.configuration});
 
   @override
   List<Object> get props => [];
