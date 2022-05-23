@@ -14,28 +14,37 @@ class LoginInitial extends LoginState {
   List<Object> get props => [];
 }
 
-class Empty extends LoginState {
+class EmptyLogin extends LoginState {
+  String? phoneNumber;
+
+  EmptyLogin({this.phoneNumber});
+
   @override
   List<Object?> get props => [];
 }
 
-class Loading extends LoginState {
+class LoadingLogin extends LoginState {
+  String? phoneNumber;
+
+  LoadingLogin({this.phoneNumber});
+
   @override
   List<Object?> get props => [];}
 
-class Loaded extends LoginState {
-  final Login login;
+class LoadedLogin extends LoginState {
+  final String phoneNumber;
 
-  const Loaded({required this.login});
+  const LoadedLogin({required this.phoneNumber});
 
   @override
   List<Object> get props => [];
 }
 
-class Error extends LoginState {
+class ErrorLogin extends LoginState {
   final String message;
+  String? phoneNumber;
 
-  const Error({required this.message});
+  ErrorLogin({required this.message, this.phoneNumber});
 
   @override
   List<Object> get props => [];
