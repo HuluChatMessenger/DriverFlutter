@@ -25,10 +25,6 @@ class LoadingOtp extends OtpState {
   List<Object?> get props => [];}
 
 class LoadedOtp extends OtpState {
-  final Driver driver;
-  final Configuration? configuration;
-
-  const LoadedOtp({required this.driver, required this.configuration});
 
   @override
   List<Object> get props => [];

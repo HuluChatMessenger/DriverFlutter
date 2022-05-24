@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/common_utils.dart';
@@ -11,7 +12,6 @@ import '../bloc/bloc.dart';
 import '../widgets/widgets.dart';
 
 class WalletPage extends StatelessWidget {
-  bool isFirst = true;
   Driver driver;
   String username = AppConstants.strAppName;
   String balance = "0.0";
@@ -24,12 +24,15 @@ class WalletPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return buildBody(context);
   }
 
   BlocProvider<WalletBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<WalletBloc>(),
+      create: (_) => sl<WalletBloc>()..add(GetWalletFirst()),
       child: BlocBuilder<WalletBloc, WalletState>(
         builder: (context, state) {
           if (state is LoadingWallet) {
@@ -246,7 +249,7 @@ class WalletPage extends StatelessWidget {
                             color: Colors.grey.shade100,
                           ),
                           child: Column(
-                            children:  <Widget>[
+                            children: <Widget>[
                               const SizedBox(
                                 height: 8,
                               ),
@@ -296,7 +299,7 @@ class WalletPage extends StatelessWidget {
                             color: Colors.grey.shade100,
                           ),
                           child: Column(
-                            children:  <Widget>[
+                            children: <Widget>[
                               const SizedBox(
                                 height: 8,
                               ),
@@ -327,7 +330,6 @@ class WalletPage extends StatelessWidget {
                   height: 32,
                 ),
                 walletLoaded(transactions),
-                walletLoading(),
               ],
             ),
           ),
@@ -345,14 +347,6 @@ class WalletPage extends StatelessWidget {
     } else {
       return Container();
     }
-  }
-
-  Widget walletLoading() {
-    bool isFirstTime = isFirst;
-    isFirst = false;
-    return WalletControlsWidget(
-      isFirst: isFirstTime,
-    );
   }
 
   Widget loading(bool isLoading) {

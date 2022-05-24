@@ -1,5 +1,5 @@
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
@@ -32,7 +32,7 @@ class SplashPage extends StatelessWidget {
 
   BlocProvider<SplashBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<SplashBloc>()..add(GetSplash()),
+      create: (_) => sl<SplashBloc>()..add(const GetSplash()),
       child: Stack(
         children: <Widget>[
           SplashWidget(),
@@ -54,6 +54,22 @@ class SplashPage extends StatelessWidget {
                     ),
                   ),
                 );
+              } else if (state is LoadedReconnectSplash) {
+                return Positioned(
+                  bottom: 32,
+                  right: 16,
+                  left: 16,
+                  child: Center(
+                    child: DefaultTextStyle(
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.green,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      child: Text("errMsgConnection".tr),
+                    ),
+                  ),
+                );
               } else {
                 return Container();
               }
@@ -61,24 +77,35 @@ class SplashPage extends StatelessWidget {
             listener: (context, state) {
               print('LogHulu : $state');
               if (state is EmptySplash) {
+              } else if (state is LoadedReconnectSplash) {
+                if (state.connectionStatus != null) {
+                  try {
+                    Stream<DataConnectionStatus> value =
+                        state.connectionStatus!;
+                    value.listen((connectionState) {
+                      if (DataConnectionStatus.connected == connectionState) {
+                        Get.offAll(() => SplashPage());
+                      } else {
+                        print('LogHulu Connection Unavailable: $value');
+                      }
+                    });
+                  } catch (e) {
+                    print('LogHulu Connection: $e');
+                  }
+                }
               } else if (state is LoadedLandingSplash) {
-                setNavBar();
                 openPageLanding(state.configuration.referralProgramEnabled,
                     state.configuration);
               } else if (state is LoadedPicSplash) {
-                setNavBar();
                 openPagePic(state.driver.vehicle == null);
               } else if (state is LoadedVehicleSplash) {
-                setNavBar();
-                openPageVehicle(state.configuration);
+                openPagePic(true);
+                // openPageVehicle(state.configuration);
               } else if (state is LoadedDocumentsSplash) {
-                setNavBar();
                 openPageDocuments(state.configuration, state.documents);
               } else if (state is LoadedWaitingSplash) {
-                setNavBar();
                 openPageWaiting(state.configuration);
               } else if (state is LoadedLoginSplash) {
-                setNavBar();
                 onLogin(state.driver, state.configuration);
               }
             },
@@ -96,22 +123,13 @@ class SplashPage extends StatelessWidget {
           BlocBuilder<NetworkBloc, NetworkState>(
             builder: (context, state) {
               print('LogHulu Network : $state');
-              if (state is NetworkFailure) {
-
-              }
-
+              if (state is NetworkFailure) {}
               return Container();
             },
           ),
         ],
       ),
     );
-  }
-
-  void setNavBar() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.green,
-    ));
   }
 
   void openPageLanding(bool isReferral, Configuration configuration) {

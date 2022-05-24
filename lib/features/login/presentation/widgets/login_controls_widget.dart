@@ -18,12 +18,11 @@ class LoginControlsWidget extends StatefulWidget {
 
   @override
   _LoginControlsWidgetState createState() =>
-      _LoginControlsWidgetState(enteredPhone: enteredPhone);
+      _LoginControlsWidgetState();
 }
 
 class _LoginControlsWidgetState extends State<LoginControlsWidget> {
   String? inputStr;
-  String? enteredPhone;
   bool isValid = false;
   bool isBtnEnabled = false;
   var colorsBtnBack = Colors.grey.shade300;
@@ -32,10 +31,12 @@ class _LoginControlsWidgetState extends State<LoginControlsWidget> {
 
   final _formKey = GlobalKey<FormState>();
 
-  _LoginControlsWidgetState({this.enteredPhone}) {
-    if (enteredPhone != null && enteredPhone?.isNotEmpty == true) {
-      controllerPhone.text = enteredPhone!;
-    }
+  _LoginControlsWidgetState() {
+    Future.delayed(const Duration(microseconds: 5), () {
+      if (widget.enteredPhone != null && widget.enteredPhone?.isNotEmpty == true) {
+        controllerPhone.text = widget.enteredPhone!;
+      }
+    });
   }
 
   @override

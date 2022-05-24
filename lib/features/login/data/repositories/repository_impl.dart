@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:dartz/dartz.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:hulutaxi_driver/core/error/exceptions.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/core/network/network_info.dart';
@@ -152,6 +151,7 @@ class RepositoryImpl implements Repository {
         return Right(configuration);
       } on LogoutException {
         try {
+          await localDataSource.clearData();
           ConfigurationModel? configurationLogout =
               await localDataSource.getConfig();
           localDataSource.cacheLogin(false);
@@ -189,6 +189,7 @@ class RepositoryImpl implements Repository {
         return Right(driver);
       } on LogoutException {
         try {
+          await localDataSource.clearData();
           ConfigurationModel? configurationLogout =
               await localDataSource.getConfig();
           localDataSource.cacheLogin(false);
@@ -675,10 +676,16 @@ class RepositoryImpl implements Repository {
   Future<Either<Failure, bool>> setLanguage(String languageSelected) async {
     try {
       localDataSource.cacheLanguage(languageSelected);
-      return Right(true);
+      return const Right(true);
     } catch (e) {
       print('LogHulu set language: $e');
-      return Right(false);
+      return const Right(false);
     }
+  }
+
+  @override
+  Future<Either<Failure, Stream<DataConnectionStatus>>>
+      getConnectionState() async {
+    return Right(networkInfo.isConnectionState);
   }
 }

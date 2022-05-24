@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
@@ -10,12 +11,14 @@ import '../../../../core/util/constants.dart';
 import '../widgets/widgets.dart';
 
 class LoginPage extends StatelessWidget {
-  final Configuration configuration;
 
-  LoginPage({Key? key, required this.configuration}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return buildBody(context);
   }
 
@@ -127,7 +130,6 @@ class LoginPage extends StatelessWidget {
     Get.to(() => OTPPage(
           isRegistration: false,
           phoneNumber: phoneNumber,
-          configuration: configuration,
         ));
   }
 }

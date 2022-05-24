@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
@@ -6,8 +7,8 @@ import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dar
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/otp_bloc.dart';
-import 'package:hulutaxi_driver/features/login/presentation/pages/main_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/pic_page.dart';
+import 'package:hulutaxi_driver/features/login/presentation/pages/splash_page.dart';
 import 'package:hulutaxi_driver/features/login/presentation/widgets/title_otp_widget.dart';
 import 'package:hulutaxi_driver/injection_container.dart';
 
@@ -19,18 +20,19 @@ class OTPPage extends StatelessWidget {
   Registration? registration;
   String user = '';
   final bool isRegistration;
-  final Configuration configuration;
 
   OTPPage({
     Key? key,
     required this.isRegistration,
     required this.phoneNumber,
     this.registration,
-    required this.configuration,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return buildBody(context);
   }
 
@@ -40,11 +42,7 @@ class OTPPage extends StatelessWidget {
       child: BlocConsumer<OtpBloc, OtpState>(
         listener: (context, state) {
           if (state is LoadedOtp) {
-            openPageOTP(
-                state.driver,
-                state.configuration != null
-                    ? state.configuration!
-                    : configuration);
+            openPageOTP();
           }
         },
         builder: (context, state) {
@@ -104,12 +102,19 @@ class OTPPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 120,),
+                const SizedBox(
+                  height: 120,
+                ),
                 const Text(
                   '${AppConstants.strCopyright} ${AppConstants.strAppName}',
-                  style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 24,),
+                SizedBox(
+                  height: 24,
+                ),
               ],
             ),
           ),
@@ -155,16 +160,13 @@ class OTPPage extends StatelessWidget {
     }
   }
 
-  void openPageOTP(Driver driver, Configuration configuration) {
+  void openPageOTP() {
     if (isRegistration) {
       Get.offAll(() => AddPicPage(
             isNextVehicle: true,
           ));
     } else {
-      Get.offAll(() => MainPage(
-            driver: driver,
-            configuration: configuration,
-          ));
+      Get.offAll(() => SplashPage());
     }
   }
 }

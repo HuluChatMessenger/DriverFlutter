@@ -13,7 +13,6 @@ class HuluCoinPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String balanceCoin = AppConstants.str0;
   String balanceFuel = AppConstants.str0;
-  bool isFirst = true;
 
   HuluCoinPage({Key? key}) : super(key: key);
 
@@ -24,7 +23,7 @@ class HuluCoinPage extends StatelessWidget {
 
   BlocProvider<CoinBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<CoinBloc>(),
+      create: (_) => sl<CoinBloc>()..add(GetCoinBalance()),
       child: BlocBuilder<CoinBloc, CoinState>(
         builder: (context, state) {
           if (state is LoadingCoinBalance) {
@@ -377,7 +376,6 @@ class HuluCoinPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                huluCoinLoading(),
               ],
             ),
           ),
@@ -386,14 +384,6 @@ class HuluCoinPage extends StatelessWidget {
         error(errMsg),
         success(isSuccess, airtimeSuccess)
       ],
-    );
-  }
-
-  Widget huluCoinLoading() {
-    bool isFirstTime = isFirst;
-    isFirst = false;
-    return HuluCoinControlsWidget(
-      isFirst: isFirstTime,
     );
   }
 

@@ -11,7 +11,6 @@ import '../bloc/bloc.dart';
 import '../widgets/widgets.dart';
 
 class EarningsPage extends StatelessWidget {
-  bool isFirst = true;
   String selectedEarningType = 'Last 7 Days';
   List<String> earningTypes = [
     'Last 7 Days',
@@ -30,7 +29,7 @@ class EarningsPage extends StatelessWidget {
 
   BlocProvider<EarningsBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<EarningsBloc>(),
+      create: (_) => sl<EarningsBloc>()..add(GetEarningsFirst()),
       child: BlocBuilder<EarningsBloc, EarningsState>(
         builder: (context, state) {
           if (state is LoadingEarningsFirst) {
@@ -124,7 +123,6 @@ class EarningsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 earningValues(context, earnings, selectedEarning),
-                earningLoading(),
               ],
             ),
           ),
@@ -192,14 +190,6 @@ class EarningsPage extends StatelessWidget {
     }
 
     return earningRows;
-  }
-
-  Widget earningLoading() {
-    bool isFirstTime = isFirst;
-    isFirst = false;
-    return EarningsControlsWidget(
-      isFirst: isFirstTime,
-    );
   }
 
   Widget loading(bool isLoading) {

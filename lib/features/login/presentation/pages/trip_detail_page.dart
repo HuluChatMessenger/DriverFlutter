@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/trip_item.dart';
@@ -13,6 +14,9 @@ class TripDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return buildBody(context);
   }
 
@@ -60,24 +64,26 @@ class TripDetailPage extends StatelessWidget {
                                 size: 48,
                               ),
                               const SizedBox(height: 8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(tripItem.pickUpStreetName,
-                                      style: TextStyle(
-                                        color: Colors.grey.shade400,
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.normal,
-                                      )),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(tripItem.pickUpDisplayName,
-                                      style: const TextStyle(
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black)),
-                                ],
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(tripItem.pickUpStreetName,
+                                        style: TextStyle(
+                                          color: Colors.grey.shade400,
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.normal,
+                                        )),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(tripItem.pickUpDisplayName,
+                                        style: const TextStyle(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black)),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

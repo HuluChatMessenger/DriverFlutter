@@ -27,23 +27,12 @@ class VehicleControlsWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _VehicleControlsWidgetState createState() => _VehicleControlsWidgetState(
-        configuration: configuration,
-        selectedModel: selectedModel,
-        selectedColor: selectedColor,
-        enteredPlate: enteredPlate,
-        enteredMakeYear: enteredMakeYear,
-      );
+  _VehicleControlsWidgetState createState() => _VehicleControlsWidgetState();
 }
 
 class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
-  final Configuration configuration;
   final controllerPlate = TextEditingController();
   final controllerMakeYear = TextEditingController();
-  VehicleModels? selectedModel;
-  VehicleColors? selectedColor;
-  String? enteredPlate;
-  String? enteredMakeYear;
   String? inputModel;
   String? inputColor;
   String? inputPlateNo;
@@ -56,20 +45,17 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
 
   final _formKey = GlobalKey<FormState>();
 
-  _VehicleControlsWidgetState({
-    required this.configuration,
-    this.selectedModel,
-    this.selectedColor,
-    this.enteredPlate,
-    this.enteredMakeYear,
-  }) {
-    if (enteredPlate != null && enteredPlate?.isNotEmpty == true) {
-      controllerPlate.text = enteredPlate!;
-    }
-
-    if (enteredMakeYear != null && enteredMakeYear?.isNotEmpty == true) {
-      controllerMakeYear.text = enteredMakeYear!;
-    }
+  _VehicleControlsWidgetState() {
+    Future.delayed(const Duration(microseconds: 5), () {
+      if (widget.enteredPlate != null &&
+          widget.enteredPlate?.isNotEmpty == true) {
+        controllerPlate.text = widget.enteredPlate!;
+      }
+      if (widget.enteredMakeYear != null &&
+          widget.enteredMakeYear?.isNotEmpty == true) {
+        controllerMakeYear.text = widget.enteredMakeYear!;
+      }
+    });
   }
 
   @override
@@ -83,7 +69,8 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
             children: <Widget>[
               Text(
                 'strAddVehicleTitle'.tr,
-                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.start,
               ),
             ],
@@ -94,7 +81,7 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
           DropdownButton<VehicleModels>(
             hint: Text('strModel'.tr),
             isExpanded: true,
-            items: configuration.vehicleModels.map((List<String> value) {
+            items: widget.configuration.vehicleModels.map((List<String> value) {
               String key = '';
               String label = '';
               if (value.length > 1) {
@@ -112,12 +99,12 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
               setState(() {
                 if (value != null) {
                   inputModel = value.vehicleModelKey;
-                  selectedModel = value;
+                  widget.selectedModel = value;
                 }
               });
               setBtnEnabled();
             },
-            value: selectedModel,
+            value: widget.selectedModel,
           ),
           const SizedBox(height: 8),
           Visibility(
@@ -138,7 +125,7 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
           DropdownButton<VehicleColors>(
             hint: Text('strColor'.tr),
             isExpanded: true,
-            items: configuration.vehicleColors.map((VehicleColors value) {
+            items: widget.configuration.vehicleColors.map((VehicleColors value) {
               return DropdownMenuItem<VehicleColors>(
                 value: value,
                 child: Text(value.vehicleColorLabel),
@@ -148,12 +135,12 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
               setState(() {
                 if (value != null) {
                   inputColor = value.vehicleColorKey;
-                  selectedColor = value;
+                  widget.selectedColor = value;
                 }
               });
               setBtnEnabled();
             },
-            value: selectedColor,
+            value: widget.selectedColor,
           ),
           const SizedBox(height: 8),
           Visibility(
@@ -192,10 +179,9 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
               String? errorValue;
               if (inputPlateNo == null || inputPlateNo?.isEmpty == true) {
                 errorValue = 'errMsgEmptyPlateNo'.tr;
+              } else if (inputPlateNo != null && inputPlateNo!.length < 10) {
+                errorValue = 'errMsgValidPlateNo'.tr;
               }
-              // else if (inputPlateNo != null && inputPlateNo!.length < 10) {
-              //   errorValue = AppConstants.errMsgValidPlateNo;
-              // }
               return errorValue;
             },
           ),
@@ -218,10 +204,9 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
               String? errorValue;
               if (inputMakeYear == null || inputMakeYear?.isEmpty == true) {
                 errorValue = 'errMsgEmptyMakeYear'.tr;
+              } else if (inputMakeYear != null && inputMakeYear!.length < 4) {
+                errorValue = 'errMsgValidMakeYear'.tr;
               }
-              // else if (inputMakeYear != null && inputMakeYear!.length < 4) {
-              //   errorValue = AppConstants.errMsgValidMakeYear;
-              // }
               return errorValue;
             },
           ),
@@ -315,8 +300,8 @@ class _VehicleControlsWidgetState extends State<VehicleControlsWidget> {
           plateNo: inputPlateNo,
           makeYear: int.parse(inputMakeYear),
         ),
-        selectedModel!,
-        selectedColor!,
+        widget.selectedModel!,
+        widget.selectedColor!,
       ),
     );
   }

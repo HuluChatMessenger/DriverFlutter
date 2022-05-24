@@ -36,60 +36,27 @@ class DocumentControlsWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DocumentControlsWidgetState createState() => _DocumentControlsWidgetState(
-        documentTypes: documentTypes,
-        documents: documents,
-        isBtnEnabled: isBtnEnabled,
-        isSplash: isSplash,
-        countRequired: countRequired,
-        countUploaded: countUploaded,
-        configuration: configuration,
-      );
+  _DocumentControlsWidgetState createState() => _DocumentControlsWidgetState();
 }
 
 class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
-  List<List<String>> documentTypes = [];
-  List<DriverDocuments> documents = [];
-  final bool isBtnEnabled;
-  final bool isSplash;
-  final Configuration configuration;
   bool isPic = false;
   XFile? picFile;
   File? pdfFile;
   final ImagePicker picker = ImagePicker();
   String? retrieveDataError;
 
-  final int countRequired;
-  final int countUploaded;
-  var colorsBtnBack = Colors.grey.shade300;
-  Color colorsBtnTxt = Colors.grey;
-
-  _DocumentControlsWidgetState({
-    required this.documentTypes,
-    required this.documents,
-    required this.isBtnEnabled,
-    required this.isSplash,
-    required this.countRequired,
-    required this.countUploaded,
-    required this.configuration,
-  }) {
-    if (isBtnEnabled) {
-      colorsBtnBack = Colors.green;
-      colorsBtnTxt = Colors.white;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
-          '$countUploaded out of $countRequired uploaded',
+          '${widget.countUploaded} out of ${widget.countRequired} uploaded',
           style: TextStyle(fontSize: 16, color: Colors.green),
         ),
         const SizedBox(height: 16),
         Container(
-          height: (isSplash || countUploaded != countRequired) ? 400 : 550,
+          height: (widget.isSplash || widget.countUploaded != widget.countRequired) ? 400 : 550,
           child: ListView(
               // Important: Remove any padding from the ListView.
               padding: EdgeInsets.zero,
@@ -97,9 +64,9 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
         ),
         const SizedBox(height: 40),
         Visibility(
-          visible: isSplash,
+          visible: widget.isSplash,
           child: MaterialButton(
-            onPressed: isBtnEnabled ? onBtnClicked : null,
+            onPressed: widget.isBtnEnabled ? onBtnClicked : null,
             color: Colors.green,
             disabledColor: Colors.grey.shade300,
             textColor: Colors.white,
@@ -111,16 +78,16 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
             ),
             child: Container(
               height: 50,
-              color: colorsBtnBack,
+              color: widget.isBtnEnabled ?  Colors.green :  Colors.grey.shade300,
               child: Row(
                 children: [
                   Text('strFinish'.tr,
-                    style: TextStyle(fontSize: 20, color: colorsBtnTxt),
+                    style: TextStyle(fontSize: 20, color: widget.isBtnEnabled ?  Colors.white :  Colors.grey),
                   ),
                   const Spacer(),
                   Icon(
                     Icons.arrow_forward,
-                    color: colorsBtnTxt,
+                    color: widget.isBtnEnabled ?  Colors.white :  Colors.grey,
                   ),
                 ],
               ),
@@ -134,11 +101,11 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
   List<Widget> documentRows(BuildContext context) {
     var documentRows = <Widget>[];
 
-    for (List<String> documentType in documentTypes) {
+    for (List<String> documentType in widget.documentTypes) {
       String typeDocument = documentType.elementAt(0);
       bool isUpload = true;
       bool isDone = false;
-      for (DriverDocuments document in documents) {
+      for (DriverDocuments document in widget.documents) {
         if (document.documentType.toString().replaceAll(' ', '') ==
             typeDocument) {
           isDone = true;
@@ -415,14 +382,14 @@ class _DocumentControlsWidgetState extends State<DocumentControlsWidget> {
   }
 
   void onBtnClicked() {
-    if (isBtnEnabled) {
+    if (widget.isBtnEnabled) {
       onNext();
     }
   }
 
   void onNext() {
-    if (isSplash) {
-      Get.offAll(() => WaitingPage(configuration: configuration,));
+    if (widget.isSplash) {
+      Get.offAll(() => WaitingPage(configuration: widget.configuration,));
     } else {
       Get.back();
     }

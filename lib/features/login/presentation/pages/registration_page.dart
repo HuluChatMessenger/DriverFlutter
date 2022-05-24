@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
@@ -27,6 +28,9 @@ class RegistrationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return buildBody(context);
   }
 
@@ -148,7 +152,6 @@ class RegistrationPage extends StatelessWidget {
       isRegistration: true,
       phoneNumber: registration.phoneNumber,
       registration: registration,
-      configuration: configuration,
     );
     otpPage.user = registration.id.toString();
     Get.offAll(() => otpPage);
