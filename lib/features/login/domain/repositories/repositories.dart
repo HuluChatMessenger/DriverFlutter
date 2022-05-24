@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:dartz/dartz.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:hulutaxi_driver/core/error/failures.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver_document_request.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/airtime_success.dart';
@@ -61,4 +62,6 @@ abstract class Repository {
   Future<Either<Failure, String>> getLanguage();
 
   Future<Either<Failure, bool>> setLanguage(String languageSelected);
+
+  Future<Either<Failure, Stream<DataConnectionStatus>>> getConnectionState();
 }

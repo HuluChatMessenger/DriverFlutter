@@ -1,6 +1,7 @@
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
@@ -25,12 +26,16 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return buildBody(context);
   }
 
   BlocProvider<MainBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<MainBloc>(),
+      create: (_) =>
+          sl<MainBloc>()..add(GetMain(const LatLng(9.005401, 38.763611))),
       child: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
           if (state is LoadedMain) {}
@@ -39,19 +44,40 @@ class MainPage extends StatelessWidget {
           if (state is LoadingMain) {
             locationLatLng = state.currentLatLng;
             trafficEnabled = state.isTraffic;
-            return buildMainWidget(context, false, null, state.currentLatLng, state.isTraffic);
+            return buildMainWidget(context, false, null, state.currentLatLng,
+                state.isTraffic, false);
           } else if (state is LoadedMain) {
             driver = state.driver;
             locationLatLng = state.currentLatLng;
             trafficEnabled = state.isTraffic;
-            return buildMainWidget(context, false, null, state.currentLatLng, state.isTraffic);
+            return buildMainWidget(context, false, null, state.currentLatLng,
+                state.isTraffic, false);
+          } else if (state is LoadedMainTraffic) {
+            driver = state.driver;
+            locationLatLng = state.currentLatLng;
+            trafficEnabled = state.isTraffic;
+            return buildMainWidget(context, false, null, state.currentLatLng,
+                state.isTraffic, false);
+          } else if (state is LoadedMainLocation) {
+            driver = state.driver;
+            locationLatLng = state.currentLatLng;
+            trafficEnabled = state.isTraffic;
+            return buildMainWidget(context, false, null, state.currentLatLng,
+                state.isTraffic, state.isLocation);
+          } else if (state is LoadedMainLocationUpdate) {
+            driver = state.driver;
+            locationLatLng = state.currentLatLng;
+            trafficEnabled = state.isTraffic;
+            return buildMainWidget(context, false, null, state.currentLatLng,
+                state.isTraffic, false);
           } else if (state is ErrorMain) {
             locationLatLng = state.currentLatLng;
             trafficEnabled = state.isTraffic;
-            return buildMainWidget(
-                context, false, state.message, state.currentLatLng, state.isTraffic);
+            return buildMainWidget(context, false, state.message,
+                state.currentLatLng, state.isTraffic, false);
           } else {
-            return buildMainWidget(context, false, null, locationLatLng, trafficEnabled);
+            return buildMainWidget(
+                context, false, null, locationLatLng, trafficEnabled, false);
           }
         },
       ),
@@ -64,6 +90,7 @@ class MainPage extends StatelessWidget {
     String? errMsg,
     LatLng currentLocation,
     bool isTraffic,
+    bool isLocation,
   ) {
     return Stack(
       children: <Widget>[
@@ -82,6 +109,7 @@ class MainPage extends StatelessWidget {
                   child: MapControlsWidget(
                     currentLatLng: currentLocation,
                     isTraffic: isTraffic,
+                    isLocation: isLocation,
                   )),
               Column(
                 children: <Widget>[
@@ -136,7 +164,7 @@ class MainPage extends StatelessWidget {
                     locationLatLng: currentLocation,
                     isTraffic: isTraffic,
                   ),
-                  mainLoading(currentLocation, isTraffic),
+                  // mainLoading(currentLocation, isTraffic),
                 ],
               ),
             ],

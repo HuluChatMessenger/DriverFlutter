@@ -4,16 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/registration_bloc.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/registration_event.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/terms_page.dart';
-// import 'package:hulutaxi_driver/features/login/presentation/widgets/qr_controls_widget.dart';
 
 import '../../../../core/util/input_converter.dart';
-import 'widgets.dart';
 
 class RegistrationControlsWidget extends StatefulWidget {
   final bool isReferral;
@@ -29,11 +26,7 @@ class RegistrationControlsWidget extends StatefulWidget {
 
   @override
   _RegistrationControlsWidgetState createState() =>
-      _RegistrationControlsWidgetState(
-        isReferral: isReferral,
-        registration: registration,
-        configuration: configuration,
-      );
+      _RegistrationControlsWidgetState();
 }
 
 class _RegistrationControlsWidgetState
@@ -41,15 +34,11 @@ class _RegistrationControlsWidgetState
   bool isErrVisible = false;
   bool isTerms = false;
   bool isBtnEnabled = false;
-  bool isReferral;
   String? inputStrFirstName;
   String? inputStrFatherName;
   String? inputStrGrandFatherName;
   String? inputStrPhone;
   String? inputStrReferral;
-
-  Registration? registration;
-  final Configuration configuration;
 
   var colorsBtnBack = Colors.grey.shade300;
   Color colorsBtnTxt = Colors.grey;
@@ -61,25 +50,23 @@ class _RegistrationControlsWidgetState
 
   final _formKey = GlobalKey<FormState>();
 
-  _RegistrationControlsWidgetState({
-    required this.isReferral,
-    this.registration,
-    required this.configuration,
-  }) {
-    if (registration != null) {
-      controllerNameFirst.text = registration!.firstName;
-      controllerNameMiddle.text = registration!.fatherName;
-      controllerNameLast.text = registration!.grandfatherName;
-      controllerPhone.text = registration!.phoneNumber;
-      if (registration?.isTerms != null) {
-        isTerms = registration!.isTerms == true;
+  _RegistrationControlsWidgetState() {
+    Future.delayed(const Duration(microseconds: 5), () {
+      if (widget.registration != null) {
+        controllerNameFirst.text = widget.registration!.firstName;
+        controllerNameMiddle.text = widget.registration!.fatherName;
+        controllerNameLast.text = widget.registration!.grandfatherName;
+        controllerPhone.text = widget.registration!.phoneNumber;
+        if (widget.registration?.isTerms != null) {
+          isTerms = widget.registration!.isTerms == true;
+        }
+        if (widget.isReferral &&
+            widget.registration!.referralCode != null &&
+            widget.registration!.referralCode?.isNotEmpty == true) {
+          controllerReferral.text = widget.registration!.referralCode!;
+        }
       }
-      if (isReferral &&
-          registration!.referralCode != null &&
-          registration!.referralCode?.isNotEmpty == true) {
-        controllerReferral.text = registration!.referralCode!;
-      }
-    }
+    });
   }
 
   @override
@@ -221,7 +208,7 @@ class _RegistrationControlsWidgetState
           },
         ),
         referralFieldSpacing(),
-        referralField(configuration),
+        referralField(widget.configuration),
         const SizedBox(
           height: 16,
         ),
@@ -367,7 +354,7 @@ class _RegistrationControlsWidgetState
   }
 
   Widget referralFieldSpacing() {
-    if (isReferral) {
+    if (widget.isReferral) {
       return const SizedBox(height: 16);
     } else {
       return Container();
@@ -375,7 +362,7 @@ class _RegistrationControlsWidgetState
   }
 
   Widget referralField(Configuration configuration) {
-    if (isReferral) {
+    if (widget.isReferral) {
       return TextFormField(
         keyboardType: TextInputType.text,
         inputFormatters: [LengthLimitingTextInputFormatter(9)],

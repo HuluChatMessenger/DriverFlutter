@@ -99,6 +99,7 @@ class _TripItemsControlsWidgetState extends State<TripItemsControlsWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           const Icon(
                             Icons.location_on_sharp,

@@ -28,6 +28,7 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
   ) async* {
     if (event is ListenConnection) {
       _subscription = DataConnectionChecker().onStatusChange.listen((status) {
+        print('LogHulu Connection: $status');
         add(ConnectionChanged(status == DataConnectionStatus.disconnected
             ? NetworkFailure()
             : NetworkSuccess()));

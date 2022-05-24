@@ -1,3 +1,4 @@
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
@@ -29,6 +30,15 @@ class LoadedLandingSplash extends SplashState {
   final Configuration configuration;
 
   const LoadedLandingSplash({required this.configuration});
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoadedReconnectSplash extends SplashState {
+  final dynamic connectionStatus;
+
+  const LoadedReconnectSplash({required this.connectionStatus});
 
   @override
   List<Object> get props => [];

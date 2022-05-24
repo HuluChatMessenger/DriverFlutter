@@ -9,23 +9,23 @@ class MainControlsWidget extends StatefulWidget {
   final bool isFirst;
 
   MainControlsWidget(
-      {Key? key, required this.isFirst, required this.locationLatLng, required this.isTraffic})
+      {Key? key,
+      required this.isFirst,
+      required this.locationLatLng,
+      required this.isTraffic})
       : super(key: key);
 
   @override
-  _MainControlsWidgetState createState() =>
-      _MainControlsWidgetState(isFirst: isFirst);
+  _MainControlsWidgetState createState() => _MainControlsWidgetState();
 }
 
 class _MainControlsWidgetState extends State<MainControlsWidget> {
-  final bool isFirst;
-
-  _MainControlsWidgetState({required this.isFirst}) {
-    if (isFirst) {
-      Future.delayed(const Duration(microseconds: 15), () {
-        addMain();
-      });
-    }
+  _MainControlsWidgetState() {
+    Future.delayed(const Duration(microseconds: 5), () {
+      if (widget.isFirst) {
+        addMainLocationUpdates();
+      }
+    });
   }
 
   @override
@@ -33,7 +33,8 @@ class _MainControlsWidgetState extends State<MainControlsWidget> {
     return Container();
   }
 
-  void addMain() {
-    BlocProvider.of<MainBloc>(context).add(GetMain(widget.locationLatLng, widget.isTraffic));
+  void addMainLocationUpdates() {
+    BlocProvider.of<MainBloc>(context)
+        .add(GetLocationUpdate(widget.locationLatLng, widget.isTraffic));
   }
 }

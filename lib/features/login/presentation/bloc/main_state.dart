@@ -47,6 +47,50 @@ class LoadedMain extends MainState {
   List<Object> get props => [];
 }
 
+class LoadedMainTraffic extends MainState {
+  final Driver driver;
+  final LatLng currentLatLng;
+  final bool isTraffic;
+
+  const LoadedMainTraffic(
+      {required this.driver,
+      required this.currentLatLng,
+      required this.isTraffic});
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoadedMainLocation extends MainState {
+  final Driver driver;
+  final LatLng currentLatLng;
+  final bool isTraffic;
+  final bool isLocation;
+
+  const LoadedMainLocation(
+      {required this.driver,
+      required this.currentLatLng,
+      required this.isTraffic,
+      required this.isLocation});
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoadedMainLocationUpdate extends MainState {
+  final Driver driver;
+  final LatLng currentLatLng;
+  final bool isTraffic;
+
+  const LoadedMainLocationUpdate(
+      {required this.driver,
+      required this.currentLatLng,
+      required this.isTraffic});
+
+  @override
+  List<Object> get props => [];
+}
+
 class ErrorMain extends MainState {
   final String message;
   final LatLng currentLatLng;

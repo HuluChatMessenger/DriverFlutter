@@ -781,7 +781,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           " | " +
           response.body);
 
-      if (response.statusCode == 403) {
+      if (response.statusCode == 403|| response.statusCode == 401) {
         throw LogoutException();
       } else if (response.statusCode == 200) {
         DriverModel driverModelResult =
@@ -875,6 +875,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         tokenAccess.access.isNotEmpty &&
         isLogin == true) {
       String token = 'Token ${tokenAccess.access}';
+      Map<String, String> header = {'content-Type': 'application/json', 'Authorization': token};
       final body = jsonEncode({
         'type': feedback.feedbackType,
         'urgency': feedback.urgencyLevel,
@@ -883,7 +884,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
       final response = await client.post(
         Uri.parse(AppConstants.baseUrl + AppConstants.apiEndpointFeedback),
-        headers: {'content-Type': 'application/json', 'Authorization': token},
+        headers: header,
         body: body,
       );
 
@@ -892,9 +893,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           " | " +
           response.body);
 
-      if (response.statusCode == 403) {
-        throw LogoutException();
-      } else if (response.statusCode == 201) {
+      if (response.statusCode == 201) {
         return FeedbacksModel.fromJson(json.decode(response.body));
       } else {
         print('LogHulu Feedback Exception: ' +

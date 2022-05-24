@@ -167,43 +167,54 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
 
   Widget pickUpBtn() {
     if (isSwitchValue) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: MaterialButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('strStreetPickUp'.tr),
-                  content: onClickStreetPickup(),
-                  backgroundColor: Colors.grey.shade200,
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: MaterialButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('strStreetPickUp'.tr),
+                      content: onClickStreetPickup(),
+                      backgroundColor: Colors.grey.shade200,
+                    ),
+                  );
+                },
+                color: Colors.green,
+                textColor: Colors.white,
+                minWidth: MediaQuery.of(context).size.width,
+                height: 64,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0.0),
                 ),
-              );
-            },
-            color: Colors.green,
-            textColor: Colors.white,
-            minWidth: MediaQuery.of(context).size.width,
-            height: 64,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'strStreetPickUp'.tr,
+                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    const Icon(
+                      Icons.person_add_alt_1,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ],
+                )),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 1,
+            decoration: BoxDecoration(
+              color: Colors.green.shade600,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'strStreetPickUp'.tr,
-                  style: const TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                const Icon(
-                  Icons.person_add_alt_1,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ],
-            )),
+          ),
+        ],
       );
     } else {
       return const SizedBox(

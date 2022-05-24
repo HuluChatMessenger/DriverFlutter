@@ -7,6 +7,7 @@ import 'package:hulutaxi_driver/features/login/data/datasources/remote_data_sour
 import 'package:hulutaxi_driver/features/login/data/repositories/repository_impl.dart';
 import 'package:hulutaxi_driver/features/login/domain/repositories/repositories.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_connection.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_earning_six.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_earnings.dart';
@@ -49,6 +50,7 @@ Future<void> init() async {
   sl.registerFactory(() => SplashBloc(
         getConfiguration: sl(),
         getDriver: sl(),
+        getConnection: sl(),
       ));
   sl.registerFactory(() => LoginBloc(
         postLoginOTP: sl(),
@@ -58,7 +60,6 @@ Future<void> init() async {
         postOtp: sl(),
         postLoginOTP: sl(),
         postRegistrationOTP: sl(),
-        getConfiguration: sl(),
       ));
   sl.registerFactory(() => RegistrationBloc(
         postRegistrationOTP: sl(),
@@ -136,6 +137,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetEarnings(sl()));
   sl.registerLazySingleton(() => GetEarningsInitial(sl()));
   sl.registerLazySingleton(() => GetLogout(sl()));
+  sl.registerLazySingleton(() => GetConnection(sl()));
 
   //Repository
   sl.registerLazySingleton<Repository>(
