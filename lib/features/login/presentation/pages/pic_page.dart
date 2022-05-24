@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
@@ -23,6 +24,9 @@ class AddPicPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return buildBody(context);
   }
 
@@ -151,6 +155,7 @@ class AddPicPage extends StatelessWidget {
       child: ButtonWidget(
         isBtnEnabled: isBtnEnabled,
         btnFunction: onBtnContinueClicked,
+        btnText: 'strContinue'.tr,
       ),
     );
   }

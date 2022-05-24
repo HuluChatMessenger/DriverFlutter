@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:get/get.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
+import 'package:hulutaxi_driver/core/util/common_utils.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver_documents.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_configuration.dart';
+import 'package:hulutaxi_driver/features/login/domain/usecases/get_connection.dart';
 import 'package:hulutaxi_driver/features/login/domain/usecases/get_driver.dart';
 
 import '../../../../core/error/failures.dart';
@@ -13,8 +14,12 @@ import 'bloc.dart';
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   final GetConfiguration getConfiguration;
   final GetDriver getDriver;
+  final GetConnection getConnection;
 
-  SplashBloc({required this.getConfiguration, required this.getDriver})
+  SplashBloc(
+      {required this.getConfiguration,
+      required this.getDriver,
+      required this.getConnection})
       : super(SplashInitial()) {
     on<SplashEvent>(mapSplashState);
   }
@@ -31,6 +36,17 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
           print('LogHulu: Config Response error');
           if (failure is LogoutFailure) {
             return LoadedLandingSplash(configuration: failure.configuration);
+          } else if (failure is ConnectionFailure) {
+            final failureOrSuccessConnection = await getConnection(null);
+            await failureOrSuccessConnection.fold((failure) async {
+              print('LogHulu: Connection Response error');
+              emit(ErrorSplash(message: _mapFailureToMessage(failure)));
+            }, (success) async {
+              emit(LoadedReconnectSplash(connectionStatus: success));
+              // emit.forEach(success,
+              //     onData: (connectionStatus) => LoadedReconnectSplash(
+              //         connectionStatus: connectionStatus));
+            });
           } else {
             emit(ErrorSplash(message: _mapFailureToMessage(failure)));
           }
@@ -46,11 +62,12 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
             emit(failureOrSuccessDriver.fold(
               (failureDriver) {
                 print('LogHulu: Driver Response error $failureDriver');
-                if (failureDriver is LogoutFailure)
+                if (failureDriver is LogoutFailure) {
                   return LoadedLandingSplash(configuration: config);
-                else
+                } else {
                   return ErrorSplash(
                       message: _mapFailureToMessage(failureDriver));
+                }
               },
               (successDriver) {
                 print(
@@ -69,9 +86,17 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
                   return LoadedDocumentsSplash(
                       configuration: config, documents: documents);
                 } else if (!successDriver.isApproved) {
-                  return LoadedWaitingSplash(driver: successDriver, configuration: config);
+                  if (config.documentTypes.length !=
+                      successDriver.driverDocuments!.length) {
+                    return LoadedDocumentsSplash(
+                        configuration: config,
+                        documents: successDriver.driverDocuments!);
+                  }
+                  return LoadedWaitingSplash(
+                      driver: successDriver, configuration: config);
                 } else {
-                  return LoadedLoginSplash(driver: successDriver, configuration: config);
+                  return LoadedLoginSplash(
+                      driver: successDriver, configuration: config);
                 }
               },
             ));

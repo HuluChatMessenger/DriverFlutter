@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/otp.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/registration.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -23,17 +22,11 @@ class OtpControlsWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _OtpControlsWidgetState createState() => _OtpControlsWidgetState(
-      phoneNumber: phoneNumber,
-      registration: registration,
-      isRegistration: isRegistration);
+  _OtpControlsWidgetState createState() => _OtpControlsWidgetState();
 }
 
 class _OtpControlsWidgetState extends State<OtpControlsWidget> {
-  Registration? registration;
-  final String phoneNumber;
   String? inputStr;
-  final bool isRegistration;
   bool isBtnEnabled = false;
   bool isResendCode = false;
   String resendCodeTimer = 'strResend'.tr;
@@ -42,9 +35,7 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
   Color colorsBtnTxt = Colors.grey;
   int _start = 60;
 
-  _OtpControlsWidgetState(
-      {required this.phoneNumber, this.registration,
-      required this.isRegistration}) {
+  _OtpControlsWidgetState() {
     startTimer();
   }
 
@@ -181,8 +172,8 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
     FocusManager.instance.primaryFocus?.unfocus();
     final Otp otp = Otp(
       otp: input,
-      phoneNumber: phoneNumber,
-      isRegistration: isRegistration,
+      phoneNumber: widget.phoneNumber,
+      isRegistration: widget.isRegistration,
     );
 
     BlocProvider.of<OtpBloc>(context).add(GetOTP(otp));
@@ -190,11 +181,11 @@ class _OtpControlsWidgetState extends State<OtpControlsWidget> {
 
   void addResendOtp() {
     FocusManager.instance.primaryFocus?.unfocus();
-    if (isRegistration && registration != null) {
+    if (widget.isRegistration && widget.registration != null) {
       BlocProvider.of<OtpBloc>(context)
-          .add(ResendOTPRegistration(registration!));
-    } else if (!isRegistration) {
-      BlocProvider.of<OtpBloc>(context).add(ResendOTPLogin(phoneNumber));
+          .add(ResendOTPRegistration(widget.registration!));
+    } else if (!widget.isRegistration) {
+      BlocProvider.of<OtpBloc>(context).add(ResendOTPLogin(widget.phoneNumber));
     }
   }
 }

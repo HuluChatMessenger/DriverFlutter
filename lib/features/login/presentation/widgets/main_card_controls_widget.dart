@@ -35,28 +35,28 @@ class _MainCardControlsWidgetState extends State<MainCardControlsWidget> {
           padding: const EdgeInsets.only(right: 16.0, bottom: 24.0),
           child: MaterialButton(
             onPressed: () => addMainTraffic(),
-            child: const Icon(
-              Icons.traffic,
-              color: Colors.black,
-            ),
             color: Colors.white,
             minWidth: 48,
             height: 54,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(54.0),
             ),
+            child: Icon(
+              Icons.traffic,
+              color: widget.isTraffic ? Colors.green : Colors.black,
+            ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
           child: MaterialButton(
-            onPressed: () => addMain(),
+            onPressed: () => addMainLocation(),
             child: const Icon(
               Icons.my_location,
               color: Colors.black,
             ),
             color: Colors.white,
-            minWidth: 48,
+            minWidth: 2,
             height: 54,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(54.0),
@@ -80,13 +80,13 @@ class _MainCardControlsWidgetState extends State<MainCardControlsWidget> {
     );
   }
 
-  void addMain() {
+  void addMainLocation() {
     BlocProvider.of<MainBloc>(context)
-        .add(GetMain(widget.locationLatLng, widget.isTraffic));
+        .add(GetLocation(widget.locationLatLng, widget.isTraffic, true));
   }
 
   void addMainTraffic() {
     BlocProvider.of<MainBloc>(context)
-        .add(GetMain(widget.locationLatLng, !widget.isTraffic));
+        .add(GetTraffic(widget.locationLatLng, !widget.isTraffic));
   }
 }

@@ -6,8 +6,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class MapControlsWidget extends StatefulWidget {
   LatLng currentLatLng;
   bool isTraffic;
+  bool isLocation;
 
-  MapControlsWidget({required this.currentLatLng, required this.isTraffic});
+  MapControlsWidget(
+      {required this.currentLatLng,
+      required this.isTraffic,
+      required this.isLocation});
 
   @override
   State<MapControlsWidget> createState() => MapControlsWidgetState();
@@ -19,16 +23,16 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(const Duration(seconds: 6), () {
+      setLocation();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    setState(() {
-      LatLng latLng = widget.currentLatLng;
-      widget.currentLatLng = latLng;
-    });
-
+    if (widget.isLocation) {
+      setLocation();
+    }
     return Scaffold(
       body: GoogleMap(
         mapType: MapType.normal,
@@ -42,8 +46,18 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
     );
   }
 
-  Future<void> _goToTheLake() async {
-    // final GoogleMapController controller = await _controller.future;
-    // controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+  void setLocation() async {
+    await goToCurrentPosition();
+  }
+
+  Future<void> goToCurrentPosition() async {
+    CameraPosition position = CameraPosition(
+        bearing: 192.8334901395799,
+        target: widget.currentLatLng,
+        tilt: 59.440717697143555,
+        zoom: 19.151926040649414);
+
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(position));
   }
 }

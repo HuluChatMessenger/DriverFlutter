@@ -15,13 +15,11 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
   final PostOtp postOtp;
   final PostResendOTPLogin postLoginOTP;
   final PostResendOTPRegistration postRegistrationOTP;
-  final GetConfiguration getConfiguration;
 
   OtpBloc({
     required this.postOtp,
     required this.postLoginOTP,
     required this.postRegistrationOTP,
-    required this.getConfiguration,
   }) : super(OtpInitial()) {
     on<OtpEvent>(mapOTPState);
   }
@@ -42,21 +40,7 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
         },
         (success) async {
           print('LogHulu Response received');
-          final failureOrSuccessConfiguration = await getConfiguration(null);
-          emit(
-            failureOrSuccessConfiguration.fold(
-              (failureConfig) {
-                print(
-                    'LogHulu Waiting: Config Response error $failureConfig ||| == result');
-                return LoadedOtp(driver: success, configuration: null);
-              },
-              (successConfig) {
-                print('LogHulu Waiting: Driver Response received');
-
-                return LoadedOtp(driver: success, configuration: successConfig);
-              },
-            ),
-          );
+          emit(LoadedOtp());
         },
       );
     } else if (event is ResendOTPLogin) {

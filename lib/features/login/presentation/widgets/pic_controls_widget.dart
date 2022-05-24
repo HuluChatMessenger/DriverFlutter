@@ -19,14 +19,12 @@ class PicControlsWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PicControlsWidgetState createState() =>
-      _PicControlsWidgetState(selectedPic: selectedPic);
+  _PicControlsWidgetState createState() => _PicControlsWidgetState();
 }
 
 class _PicControlsWidgetState extends State<PicControlsWidget> {
   final ImagePicker picker = ImagePicker();
   XFile? imageFile;
-  XFile? selectedPic;
   String? retrieveDataError;
   var pickedImage = CircleAvatar(
     radius: 104, // Image radius
@@ -34,15 +32,17 @@ class _PicControlsWidgetState extends State<PicControlsWidget> {
   );
   String? pic;
 
-  _PicControlsWidgetState({this.selectedPic}) {
-    if (selectedPic != null) {
-      imageFile = selectedPic;
-      pic = selectedPic?.path;
-      pickedImage = CircleAvatar(
-        radius: 104,
-        backgroundImage: FileImage(File(pic!)),
-      );
-    }
+  _PicControlsWidgetState() {
+    Future.delayed(const Duration(microseconds: 5), () {
+      if (widget.selectedPic != null) {
+        imageFile = widget.selectedPic;
+        pic = widget.selectedPic?.path;
+        pickedImage = CircleAvatar(
+          radius: 104,
+          backgroundImage: FileImage(File(pic!)),
+        );
+      }
+    });
   }
 
   @override

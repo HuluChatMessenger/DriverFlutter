@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
@@ -9,18 +10,20 @@ import '../bloc/bloc.dart';
 import '../widgets/widgets.dart';
 
 class TripHistoryPage extends StatelessWidget {
-  bool isFirst = true;
 
   TripHistoryPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return buildBody(context);
   }
 
   BlocProvider<HistoryBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<HistoryBloc>(),
+      create: (_) => sl<HistoryBloc>()..add(GetHistoryFirst()),
       child: BlocBuilder<HistoryBloc, HistoryState>(
         builder: (context, state) {
           if (state is LoadingHistory) {
@@ -80,7 +83,6 @@ class TripHistoryPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 tripLoaded(trip),
-                tripLoading(),
               ],
             ),
           ),
@@ -98,14 +100,6 @@ class TripHistoryPage extends StatelessWidget {
     } else {
       return Container();
     }
-  }
-
-  Widget tripLoading() {
-    bool isFirstTime = isFirst;
-    isFirst = false;
-    return TripControlsWidget(
-      isFirst: isFirstTime,
-    );
   }
 
   Widget loading(bool isLoading) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/presentation/pages/login_page.dart';
@@ -18,16 +19,22 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.green,
+    ));
     return Stack(
-        children: <Widget>[
-          backgroundLandingWidget(context),
-          Positioned(
-            bottom: 24,
-            right: 16,
-            left: 16,
-            child: Center(
-              child: Column(
-                children: [
+      children: <Widget>[
+        backgroundLandingWidget(context),
+        Positioned(
+          bottom: 24,
+          right: 16,
+          left: 16,
+          child: Center(
+            child: Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                primary: false,
+                children: <Widget>[
                   MaterialButton(
                     onPressed: () {
                       openPageRegistration();
@@ -64,32 +71,34 @@ class LandingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 36),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          TextButton(
-                            child: const Text(AppConstants.strChooseLanguage,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.black,
-                                )),
-                            onPressed: () async {
-                              SharedPreferences preference =
-                                  await getSharedPreference();
+                      TextButton(
+                        child: const Text(AppConstants.strChooseLanguage,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                            )),
+                        onPressed: () async {
+                          SharedPreferences preference =
+                              await getSharedPreference();
 
-                              showModalBottomSheet(
-                                  context: context,
-                                  elevation: 0,
-                                  barrierColor: Colors.black.withAlpha(1),
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) => LanguageControlsWidget(
-                                        sharedPreferences: preference,
-                                      ));
-                            },
-                          ),
-                          const SizedBox(width: 4),
-                          InkWell(
+                          showModalBottomSheet(
+                              context: context,
+                              elevation: 0,
+                              barrierColor: Colors.black.withAlpha(1),
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => LanguageControlsWidget(
+                                    sharedPreferences: preference,
+                                  ));
+                        },
+                      ),
+                      const SizedBox(width: 4),
+                      SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: Material(
+                          child: InkWell(
                             onTap: () async {
                               SharedPreferences preference =
                                   await getSharedPreference();
@@ -102,22 +111,19 @@ class LandingPage extends StatelessWidget {
                                         sharedPreferences: preference,
                                       ));
                             },
-                            child: SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: SvgPicture.asset('assets/icons/et.svg',
-                                  semanticsLabel: 'Top Curve'),
-                            ),
+                            child: SvgPicture.asset('assets/icons/et.svg',
+                                semanticsLabel: 'Top Curve'),
                           ),
-                        ],
+                        ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
           ),
-        ],
+        ),
+      ],
     );
   }
 
@@ -134,8 +140,6 @@ class LandingPage extends StatelessWidget {
   }
 
   void openPageLogin() {
-    Get.to(() => LoginPage(
-          configuration: configuration,
-        ));
+    Get.to(() => LoginPage());
   }
 }

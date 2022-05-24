@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/feedbacks.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
@@ -16,13 +15,10 @@ class FeedbackControlsWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FeedbackControlsWidgetState createState() => _FeedbackControlsWidgetState(
-        configuration: configuration,
-      );
+  _FeedbackControlsWidgetState createState() => _FeedbackControlsWidgetState();
 }
 
 class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
-  final Configuration configuration;
   String? inputFeedbackType;
   String? inputUrgencyLevel;
   String? inputFeedback;
@@ -34,9 +30,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
 
   final _formKey = GlobalKey<FormState>();
 
-  _FeedbackControlsWidgetState({
-    required this.configuration,
-  });
+  _FeedbackControlsWidgetState();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +45,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
           DropdownButton<String>(
             hint: Text('strFeedbackType'.tr),
             isExpanded: true,
-            items: configuration.feedbackTypes.map((List<String> value) {
+            items: widget.configuration.feedbackTypes.map((List<String> value) {
               String valueFeedBackType = '';
               if (value.length > 0) {
                 valueFeedBackType = value.elementAt(1);
@@ -69,6 +63,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
               });
               setBtnEnabled();
             },
+            value: inputFeedbackType,
           ),
           const SizedBox(height: 8),
           Visibility(
@@ -89,8 +84,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
           DropdownButton<String>(
             hint: Text('strUrgencyLevel'.tr),
             isExpanded: true,
-            items:
-                configuration.feedbackUrgencyLevels.map((List<String> value) {
+            items: widget.configuration.feedbackUrgencyLevels.map((List<String> value) {
               String valueUrgencyLevel = '';
               if (value.length > 0) {
                 valueUrgencyLevel = value.elementAt(1);
@@ -108,6 +102,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
               });
               setBtnEnabled();
             },
+            value: inputUrgencyLevel,
           ),
           const SizedBox(height: 8),
           Visibility(
@@ -191,7 +186,7 @@ class _FeedbackControlsWidgetState extends State<FeedbackControlsWidget> {
   void setBtnEnabled() {
     setState(() {
       isErrVisibleFeedbackType =
-          !(inputFeedback != null || inputFeedback?.isNotEmpty == true);
+          !(inputFeedbackType != null || inputFeedbackType?.isNotEmpty == true);
       isErrVisibleUrgencyLevel =
           !(inputUrgencyLevel != null || inputUrgencyLevel?.isNotEmpty == true);
 

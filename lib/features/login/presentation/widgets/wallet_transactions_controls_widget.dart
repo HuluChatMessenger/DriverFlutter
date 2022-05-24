@@ -6,8 +6,6 @@ import 'package:hulutaxi_driver/features/login/domain/entities/wallet_transactio
 import 'package:hulutaxi_driver/features/login/domain/entities/wallet_transactions.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 
-import '../../../../core/util/constants.dart';
-
 class WalletTransactionsControlsWidget extends StatefulWidget {
   final WalletTransactions walletTransactions;
 
