@@ -22,12 +22,7 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        buildBody(context),
-        buildBodyNtk(context),
-      ],
-    );
+    return buildBody(context);
   }
 
   BlocProvider<SplashBloc> buildBody(BuildContext context) {
@@ -108,23 +103,6 @@ class SplashPage extends StatelessWidget {
               } else if (state is LoadedLoginSplash) {
                 onLogin(state.driver, state.configuration);
               }
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  BlocProvider<NetworkBloc> buildBodyNtk(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<NetworkBloc>()..add(ListenConnection()),
-      child: Stack(
-        children: <Widget>[
-          BlocBuilder<NetworkBloc, NetworkState>(
-            builder: (context, state) {
-              print('LogHulu Network : $state');
-              if (state is NetworkFailure) {}
-              return Container();
             },
           ),
         ],

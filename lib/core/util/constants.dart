@@ -2,6 +2,7 @@ abstract class AppConstants {
   //Url
   static const baseUrl = "https://api.huluchat.com/";
   static const urlTerms = 'https://hulugram.org/hulutaxi/termsandconditions';
+  static const apiKey = 'AIzaSyDywlkflWqYCy3_bQHu0lka5Ybr3YUN5s0';
 
   //EndPoints
   static const apiEndpointConfiguration = 'huluride/configurations/';
@@ -72,6 +73,11 @@ abstract class AppConstants {
 
   //Date Format
   static const phoneNumberCallCenter = "9399";
+
+  //MAP
+  static const double cameraZoom = 19.151926040649414;
+  static const double cameraTilt = 59.440717697143555;
+  static const double cameraBearing = 192.8334901395799;
 
   //Strings
   static const String strAppName = 'HuluTaxi';

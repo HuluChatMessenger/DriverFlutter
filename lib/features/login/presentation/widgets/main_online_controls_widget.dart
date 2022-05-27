@@ -15,12 +15,13 @@ import 'package:swipeable_button_view/swipeable_button_view.dart';
 
 class MainOnlineControlsWidget extends StatefulWidget {
   final Driver driver;
-  LatLng locationLatLng;
+  LatLng? pickUpLatLng;
+  LatLng? destinationLatLng;
   bool isTraffic;
   String balance = '0.0';
 
   MainOnlineControlsWidget(
-      {Key? key, required this.driver, required this.locationLatLng, required this.isTraffic})
+      {Key? key, required this.driver, required this.isTraffic, this.pickUpLatLng, this.destinationLatLng})
       : super(key: key);
 
   @override
@@ -157,9 +158,6 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 8,
-        ),
         pickUpBtn(),
       ],
     );
@@ -217,9 +215,7 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
         ],
       );
     } else {
-      return const SizedBox(
-        height: 16,
-      );
+      return Container();
     }
   }
 
@@ -493,11 +489,11 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
 
   void addMainOnOffLine(bool isSetOnline) {
     BlocProvider.of<MainBloc>(context)
-        .add(GetMainOnOffline(isSetOnline, widget.locationLatLng, widget.isTraffic));
+        .add(GetMainOnOffline(isSetOnline, widget.isTraffic, widget.pickUpLatLng, widget.destinationLatLng));
   }
 
   void addMainPickUp(String phoneNumber, LatLng dropOffLocation) {
     BlocProvider.of<MainBloc>(context).add(
-        GetMainPickup(phoneNumber, dropOffLocation, widget.locationLatLng, widget.isTraffic));
+        GetMainPickup(phoneNumber, widget.isTraffic, widget.pickUpLatLng, widget.destinationLatLng));
   }
 }

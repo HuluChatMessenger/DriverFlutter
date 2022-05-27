@@ -1,8 +1,10 @@
 import 'package:android_intent_plus/android_intent.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/configuration.dart';
@@ -16,7 +18,8 @@ import '../widgets/widgets.dart';
 class MainPage extends StatelessWidget {
   Driver driver;
   Configuration configuration;
-  LatLng locationLatLng = const LatLng(9.005401, 38.763611);
+  LatLng? pickUpLatLng;
+  LatLng? destinationLatLng;
   bool trafficEnabled = false;
   bool isFirst = true;
   final GlobalKey<ScaffoldState> _key = GlobalKey();
@@ -34,50 +37,89 @@ class MainPage extends StatelessWidget {
 
   BlocProvider<MainBloc> buildBody(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          sl<MainBloc>()..add(GetMain(const LatLng(9.005401, 38.763611))),
+      create: (_) => sl<MainBloc>()..add(GetMain(null, null)),
       child: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
-          if (state is LoadedMain) {}
+          if (state is LoadedMain) {
+          } else if (state is LoadedMainConnection) {
+            print('LogHulu Main Connection: state received');
+            if (state.connectionStatus != null) {
+              try {
+                Stream<DataConnectionStatus> value = state.connectionStatus!;
+                value.listen((connectionState) {
+                  print('LogHulu Main Connection: $connectionState');
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      if (DataConnectionStatus.connected == connectionState) {
+                        Navigator.of(context).pop(true);
+                      }
+                      return AlertDialog(
+                        content: Text(
+                          'errMsgConnection'.tr,
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('strCancel'.tr),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                });
+              } catch (e) {
+                print('LogHulu Main Connection: $e');
+              }
+            }
+          }
         },
         builder: (context, state) {
           if (state is LoadingMain) {
-            locationLatLng = state.currentLatLng;
+            pickUpLatLng = state.pickUpLatLng;
+            destinationLatLng = state.destinationLatLng;
             trafficEnabled = state.isTraffic;
-            return buildMainWidget(context, false, null, state.currentLatLng,
-                state.isTraffic, false);
+            return buildMainWidget(context, false, null, state.isTraffic, false,
+                state.pickUpLatLng, state.destinationLatLng);
           } else if (state is LoadedMain) {
             driver = state.driver;
-            locationLatLng = state.currentLatLng;
+            pickUpLatLng = state.pickUpLatLng;
+            destinationLatLng = state.destinationLatLng;
             trafficEnabled = state.isTraffic;
-            return buildMainWidget(context, false, null, state.currentLatLng,
-                state.isTraffic, false);
+            return buildMainWidget(context, false, null, state.isTraffic, false,
+                state.pickUpLatLng, state.destinationLatLng);
           } else if (state is LoadedMainTraffic) {
             driver = state.driver;
-            locationLatLng = state.currentLatLng;
+            pickUpLatLng = state.pickUpLatLng;
+            destinationLatLng = state.destinationLatLng;
             trafficEnabled = state.isTraffic;
-            return buildMainWidget(context, false, null, state.currentLatLng,
-                state.isTraffic, false);
+            return buildMainWidget(context, false, null, state.isTraffic, false,
+                state.pickUpLatLng, state.destinationLatLng);
           } else if (state is LoadedMainLocation) {
             driver = state.driver;
-            locationLatLng = state.currentLatLng;
+            pickUpLatLng = state.pickUpLatLng;
+            destinationLatLng = state.destinationLatLng;
             trafficEnabled = state.isTraffic;
-            return buildMainWidget(context, false, null, state.currentLatLng,
-                state.isTraffic, state.isLocation);
-          } else if (state is LoadedMainLocationUpdate) {
-            driver = state.driver;
-            locationLatLng = state.currentLatLng;
-            trafficEnabled = state.isTraffic;
-            return buildMainWidget(context, false, null, state.currentLatLng,
-                state.isTraffic, false);
+            return buildMainWidget(context, false, null, state.isTraffic,
+                state.isLocation, state.pickUpLatLng, state.destinationLatLng);
           } else if (state is ErrorMain) {
-            locationLatLng = state.currentLatLng;
+            pickUpLatLng = state.pickUpLatLng;
+            destinationLatLng = state.destinationLatLng;
             trafficEnabled = state.isTraffic;
-            return buildMainWidget(context, false, state.message,
-                state.currentLatLng, state.isTraffic, false);
-          } else {
             return buildMainWidget(
-                context, false, null, locationLatLng, trafficEnabled, false);
+                context,
+                false,
+                state.message,
+                state.isTraffic,
+                false,
+                state.pickUpLatLng,
+                state.destinationLatLng);
+          } else {
+            return buildMainWidget(context, false, null, trafficEnabled, false,
+                pickUpLatLng, destinationLatLng);
           }
         },
       ),
@@ -88,9 +130,10 @@ class MainPage extends StatelessWidget {
     BuildContext context,
     bool isLoading,
     String? errMsg,
-    LatLng currentLocation,
     bool isTraffic,
     bool isLocation,
+    LatLng? pickUpPosition,
+    LatLng? destinationPosition,
   ) {
     return Stack(
       children: <Widget>[
@@ -107,7 +150,6 @@ class MainPage extends StatelessWidget {
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: MapControlsWidget(
-                    currentLatLng: currentLocation,
                     isTraffic: isTraffic,
                     isLocation: isLocation,
                   )),
@@ -161,8 +203,9 @@ class MainPage extends StatelessWidget {
                   Spacer(),
                   MainCardControlsWidget(
                     driver: driver,
-                    locationLatLng: currentLocation,
                     isTraffic: isTraffic,
+                    pickUpLatLng: pickUpLatLng,
+                    destinationLatLng: destinationLatLng,
                   ),
                   // mainLoading(currentLocation, isTraffic),
                 ],
@@ -176,25 +219,26 @@ class MainPage extends StatelessWidget {
     );
   }
 
-  Widget mainLoading(LatLng latLng, bool isTraffic) {
-    checkPermission();
-    bool isFirstTime = isFirst;
-    isFirst = false;
-    return MainControlsWidget(
-      isFirst: isFirstTime,
-      locationLatLng: latLng,
-      isTraffic: isTraffic,
-    );
-  }
-
   Future<void> checkPermission() async {
     print('LogHulu permission');
-    await Permission.locationAlways.request();
-    if (await Permission.locationAlways.request().isGranted) {
-      print('LogHulu permission granted');
-      // Either the permission was already granted before or the user just granted it.
-    } else {
-      print('LogHulu permission granted');
+    bool isLocationAllowed = await Permission.location.request().isGranted;
+    bool isLocationAlwaysAllowed =
+        await Permission.locationAlways.request().isGranted;
+    bool isBatteryAllowed =
+        await Permission.ignoreBatteryOptimizations.request().isGranted;
+
+    if (isLocationAllowed) {
+      if (isLocationAlwaysAllowed) {
+        if (isBatteryAllowed) {
+          print('LogHulu permission : All granted');
+        } else if (!isBatteryAllowed) {
+          Permission.ignoreBatteryOptimizations.request();
+        }
+      } else if (!isBatteryAllowed) {
+        Permission.locationAlways.request();
+      }
+    } else if (!isLocationAllowed) {
+      Permission.location.request();
     }
   }
 
