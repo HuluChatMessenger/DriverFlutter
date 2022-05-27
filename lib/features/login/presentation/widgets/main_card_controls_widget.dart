@@ -10,15 +10,17 @@ import 'widgets.dart';
 
 class MainCardControlsWidget extends StatefulWidget {
   final Driver driver;
+  LatLng? pickUpLatLng;
+  LatLng? destinationLatLng;
   String balance = '0.0';
   bool isTraffic;
-  LatLng locationLatLng;
 
   MainCardControlsWidget(
       {Key? key,
       required this.driver,
-      required this.locationLatLng,
-      required this.isTraffic})
+      required this.isTraffic,
+      this.pickUpLatLng,
+      this.destinationLatLng,})
       : super(key: key);
 
   @override
@@ -72,8 +74,9 @@ class _MainCardControlsWidgetState extends State<MainCardControlsWidget> {
           ),
           child: MainOnlineControlsWidget(
             driver: widget.driver,
-            locationLatLng: widget.locationLatLng,
             isTraffic: widget.isTraffic,
+            pickUpLatLng: widget.pickUpLatLng,
+            destinationLatLng: widget.destinationLatLng,
           ),
         ),
       ],
@@ -82,11 +85,11 @@ class _MainCardControlsWidgetState extends State<MainCardControlsWidget> {
 
   void addMainLocation() {
     BlocProvider.of<MainBloc>(context)
-        .add(GetLocation(widget.locationLatLng, widget.isTraffic, true));
+        .add(GetLocation(widget.isTraffic, true, widget.pickUpLatLng, widget.destinationLatLng));
   }
 
   void addMainTraffic() {
     BlocProvider.of<MainBloc>(context)
-        .add(GetTraffic(widget.locationLatLng, !widget.isTraffic));
+        .add(GetTraffic(!widget.isTraffic, widget.pickUpLatLng, widget.destinationLatLng));
   }
 }

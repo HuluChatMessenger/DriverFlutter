@@ -84,6 +84,7 @@ Future<void> init() async {
   sl.registerFactory(() => MainBloc(
         postMain: sl(),
         getDriver: sl(),
+        getConnection: sl(),
       ));
   sl.registerFactory(() => ProfileBloc(
         getDriver: sl(),
@@ -110,7 +111,6 @@ Future<void> init() async {
         getEarningsInitial: sl(),
         getEarnings: sl(),
       ));
-  sl.registerFactory(() => NetworkBloc());
 
   //Use cases
   sl.registerLazySingleton(() => PostRegistrationOTP(sl()));

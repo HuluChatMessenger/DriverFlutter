@@ -12,14 +12,15 @@ import '../bloc/bloc.dart';
 
 class MainDrivingControlsWidget extends StatefulWidget {
   final Driver driver;
-  LatLng locationLatLng;
+  LatLng? pickUpLatLng;
+  LatLng? destinationLatLng;
   bool isTraffic;
   String time = '00:00:00';
   String estimatedPrice = '0.0';
   String estimatedDistance = '0';
 
   MainDrivingControlsWidget(
-      {Key? key, required this.driver, required this.locationLatLng, required this.isTraffic})
+      {Key? key, required this.driver, required this.isTraffic, this.pickUpLatLng, this.destinationLatLng,})
       : super(key: key);
 
   @override
@@ -196,6 +197,6 @@ class _MainDrivingControlsWidgetState extends State<MainDrivingControlsWidget> {
 
   void addMainDrivingComplete() {
     BlocProvider.of<MainBloc>(context)
-        .add(GetMainDrivingComplete(widget.locationLatLng, widget.isTraffic));
+        .add(GetMainDrivingComplete(widget.isTraffic, widget.pickUpLatLng, widget.destinationLatLng));
   }
 }
