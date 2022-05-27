@@ -53,10 +53,12 @@ dependencies:
   google_maps_flutter:
   #Google locator
   geolocator:
-#  #Google location
+  #Google location
 #  location:
   #permission
   permission_handler:
+  #Map path
+  flutter_polyline_points:
   #Image cache
   cached_network_image:
   #Number Format

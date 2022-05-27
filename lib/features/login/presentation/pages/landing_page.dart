@@ -30,96 +30,94 @@ class LandingPage extends StatelessWidget {
           right: 16,
           left: 16,
           child: Center(
-            child: Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                primary: false,
-                children: <Widget>[
-                  MaterialButton(
-                    onPressed: () {
-                      openPageRegistration();
-                    },
-                    color: Colors.green,
-                    minWidth: MediaQuery.of(context).size.width - 100,
-                    height: 44,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Text(
-                      'strRegister'.tr,
-                      style: const TextStyle(color: Colors.white, fontSize: 20),
+            child: ListView(
+              shrinkWrap: true,
+              primary: false,
+              children: <Widget>[
+                MaterialButton(
+                  onPressed: () {
+                    openPageRegistration();
+                  },
+                  color: Colors.green,
+                  minWidth: MediaQuery.of(context).size.width - 100,
+                  height: 44,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Text(
+                    'strRegister'.tr,
+                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                MaterialButton(
+                  onPressed: () {
+                    openPageLogin();
+                  },
+                  minWidth: MediaQuery.of(context).size.width - 100,
+                  height: 44,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Text(
+                    'strLogin'.tr,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  MaterialButton(
-                    onPressed: () {
-                      openPageLogin();
-                    },
-                    minWidth: MediaQuery.of(context).size.width - 100,
-                    height: 44,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Text(
-                      'strLogin'.tr,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 36),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      TextButton(
-                        child: const Text(AppConstants.strChooseLanguage,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                            )),
-                        onPressed: () async {
-                          SharedPreferences preference =
-                              await getSharedPreference();
+                ),
+                const SizedBox(height: 36),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TextButton(
+                      child: const Text(AppConstants.strChooseLanguage,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          )),
+                      onPressed: () async {
+                        SharedPreferences preference =
+                            await getSharedPreference();
 
-                          showModalBottomSheet(
-                              context: context,
-                              elevation: 0,
-                              barrierColor: Colors.black.withAlpha(1),
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => LanguageControlsWidget(
-                                    sharedPreferences: preference,
-                                  ));
-                        },
-                      ),
-                      const SizedBox(width: 4),
-                      SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: Material(
-                          child: InkWell(
-                            onTap: () async {
-                              SharedPreferences preference =
-                                  await getSharedPreference();
-                              showModalBottomSheet(
-                                  context: context,
-                                  elevation: 0,
-                                  barrierColor: Colors.black.withAlpha(1),
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) => LanguageControlsWidget(
-                                        sharedPreferences: preference,
-                                      ));
-                            },
-                            child: SvgPicture.asset('assets/icons/et.svg',
-                                semanticsLabel: 'Top Curve'),
-                          ),
+                        showModalBottomSheet(
+                            context: context,
+                            elevation: 0,
+                            barrierColor: Colors.black.withAlpha(1),
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => LanguageControlsWidget(
+                                  sharedPreferences: preference,
+                                ));
+                      },
+                    ),
+                    const SizedBox(width: 4),
+                    SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: Material(
+                        child: InkWell(
+                          onTap: () async {
+                            SharedPreferences preference =
+                                await getSharedPreference();
+                            showModalBottomSheet(
+                                context: context,
+                                elevation: 0,
+                                barrierColor: Colors.black.withAlpha(1),
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => LanguageControlsWidget(
+                                      sharedPreferences: preference,
+                                    ));
+                          },
+                          child: SvgPicture.asset('assets/icons/et.svg',
+                              semanticsLabel: 'Top Curve'),
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
