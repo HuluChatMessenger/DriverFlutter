@@ -12,10 +12,11 @@ class MapControlsWidget extends StatefulWidget {
   bool isTraffic;
   bool isLocation;
 
-  MapControlsWidget({this.pickupLatLng,
-    this.destinationLatLng,
-    required this.isTraffic,
-    required this.isLocation});
+  MapControlsWidget(
+      {this.pickupLatLng,
+      this.destinationLatLng,
+      required this.isTraffic,
+      required this.isLocation});
 
   @override
   State<MapControlsWidget> createState() => MapControlsWidgetState();
@@ -56,7 +57,6 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
       }
     });
 
-
     // create an instance of Location
     polylinePoints = PolylinePoints();
 
@@ -68,7 +68,8 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
       // so we're holding on to it
       currentLocation = location;
       if (widget.destinationLatLng != null) {
-      updatePinOnMap();}
+        updatePinOnMap();
+      }
     });
 
     // set custom marker pins
@@ -92,10 +93,10 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
         markers: _markers!,
         mapType: MapType.normal,
         initialCameraPosition:
-        CameraPosition(target: LatLng(currentLocation!.latitude, currentLocation!.longitude), zoom: 14.4746),
+            CameraPosition(target: getCurrentLocation(), zoom: 14.4746),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-          generateMarkers();
+          setInitialMarkers();
 
           if (widget.destinationLatLng != null) {
             showPinsOnMap();
@@ -112,12 +113,21 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
         'assets/images/marker.png');
   }
 
+  void setInitialMarkers() {
+    if (currentLocation != null) {
+      generateMarkers();
+    } else {
+      Future.delayed(const Duration(seconds: 3), () {
+        setInitialMarkers();
+      });
+    }
+  }
+
   void generateMarkers() {
     var localMarkers = <Marker>{};
     localMarkers.add(Marker(
         markerId: MarkerId('driverPin'),
-        position: LatLng(
-            currentLocation!.latitude, currentLocation!.longitude),
+        position: LatLng(currentLocation!.latitude, currentLocation!.longitude),
         icon: myMarker!));
 
     if (mounted) {
@@ -131,11 +141,18 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
     await goToCurrentPosition();
   }
 
+  LatLng getCurrentLocation() {
+    double lat = currentLocation != null ? currentLocation!.latitude : 9.005401;
+    double lon =
+        currentLocation != null ? currentLocation!.longitude : 38.763611;
+
+    return LatLng(lat, lon);
+  }
+
   Future<void> goToCurrentPosition() async {
     CameraPosition position = CameraPosition(
         bearing: AppConstants.cameraBearing,
-        target: LatLng(
-            currentLocation!.latitude, currentLocation!.longitude),
+        target: LatLng(currentLocation!.latitude, currentLocation!.longitude),
         tilt: AppConstants.cameraTilt,
         zoom: AppConstants.cameraZoom);
 
@@ -151,8 +168,7 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
       zoom: AppConstants.cameraZoom,
       tilt: AppConstants.cameraTilt,
       bearing: AppConstants.cameraBearing,
-      target: LatLng(currentLocation!.latitude,
-          currentLocation!.longitude),
+      target: LatLng(currentLocation!.latitude, currentLocation!.longitude),
     );
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
@@ -160,18 +176,16 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
     // that a widget update is due
     setState(() {
       // updated position
-      var pinPosition = LatLng(currentLocation!.latitude,
-          currentLocation!.longitude);
+      var pinPosition =
+          LatLng(currentLocation!.latitude, currentLocation!.longitude);
 
       // the trick is to remove the marker (by id)
       // and add it again at the updated location
-      _markers?.removeWhere(
-              (m) => m.markerId.value == "driverPin");
+      _markers?.removeWhere((m) => m.markerId.value == "driverPin");
       _markers?.add(Marker(
           markerId: MarkerId("driverPin"),
           position: pinPosition, // updated position
-          icon: pickupIcon!
-      ));
+          icon: pickupIcon!));
     });
   }
 
@@ -194,12 +208,12 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
 
     if (widget.destinationLatLng != null) {
       // hard-coded destination for this example
-      
+
       destinationLocation = Position.fromMap({
         "latitude": widget.destinationLatLng?.latitude,
         "longitude": widget.destinationLatLng?.longitude
       });
-      
+
       if (widget.pickupLatLng != null) {
         // hard-coded destination for this example
         pickupLocation = Position.fromMap({
@@ -213,23 +227,21 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
   void showPinsOnMap() {
     // get a LatLng for the source location
     // from the LocationData currentLocation object
-    var pinPosition = LatLng(pickupLocation!.latitude,
-        pickupLocation!.longitude);
+    var pinPosition =
+        LatLng(pickupLocation!.latitude, pickupLocation!.longitude);
     // get a LatLng out of the LocationData object
-    var destPosition = LatLng(destinationLocation!.latitude,
-        destinationLocation!.longitude);
+    var destPosition =
+        LatLng(destinationLocation!.latitude, destinationLocation!.longitude);
     // add the initial source location pin
     _markers?.add(Marker(
         markerId: MarkerId('pickUpPin'),
         position: pinPosition,
-        icon: pickupIcon!
-    ));
+        icon: pickupIcon!));
     // destination pin
     _markers?.add(Marker(
         markerId: MarkerId('destPin'),
         position: destPosition,
-        icon: destinationIcon!
-    ));
+        icon: destinationIcon!));
     // set the route lines on the map from source to destination
     // for more info follow this tutorial
     setPolyLines();
@@ -238,26 +250,20 @@ class MapControlsWidgetState extends State<MapControlsWidget> {
   void setPolyLines() async {
     PolylineResult? result = await polylinePoints?.getRouteBetweenCoordinates(
         AppConstants.apiKey,
-        PointLatLng(pickupLocation!.latitude,
-            pickupLocation!.longitude),
+        PointLatLng(pickupLocation!.latitude, pickupLocation!.longitude),
         PointLatLng(
-            destinationLocation!.latitude,
-            destinationLocation!.longitude));
-
+            destinationLocation!.latitude, destinationLocation!.longitude));
 
     if (result?.points.isNotEmpty == true) {
       result?.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(
-            LatLng(point.latitude, point.longitude)
-        );
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
       setState(() {
         _polylines.add(Polyline(
             width: 5, // set the width of the polylines
             polylineId: PolylineId('poly'),
             color: Colors.green,
-            points: polylineCoordinates
-        ));
+            points: polylineCoordinates));
       });
     }
   }
