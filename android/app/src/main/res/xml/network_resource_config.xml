@@ -8,5 +8,6 @@
         <domain includeSubdomains="true">196.188.120.3</domain>
         <domain includeSubdomains="true">196.188.120.3:11443</domain>
         <domain includeSubdomains="true">hulugram.org</domain>
+        <domain includeSubdomains="true">dev.huluchat.com</domain>
     </domain-config>
 </network-security-config>

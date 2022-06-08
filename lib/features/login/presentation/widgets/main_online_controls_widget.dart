@@ -3,26 +3,37 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hulutaxi_driver/core/util/common_utils.dart';
 import 'package:hulutaxi_driver/core/util/constants.dart';
 import 'package:hulutaxi_driver/core/util/input_converter.dart';
+import 'package:hulutaxi_driver/core/util/place_service.dart';
 import 'package:hulutaxi_driver/features/login/domain/entities/driver.dart';
 import 'package:hulutaxi_driver/features/login/presentation/bloc/bloc.dart';
 import 'package:swipeable_button_view/swipeable_button_view.dart';
+import 'package:uuid/uuid.dart';
 
 class MainOnlineControlsWidget extends StatefulWidget {
   final Driver driver;
+  final sessionToken = Uuid().v4();
+  PlaceApiProvider? apiClient;
   LatLng? pickUpLatLng;
   LatLng? destinationLatLng;
   bool isTraffic;
   String balance = '0.0';
 
   MainOnlineControlsWidget(
-      {Key? key, required this.driver, required this.isTraffic, this.pickUpLatLng, this.destinationLatLng})
-      : super(key: key);
+      {Key? key,
+      required this.driver,
+      required this.isTraffic,
+      this.pickUpLatLng,
+      this.destinationLatLng})
+      : super(key: key) {
+    apiClient = PlaceApiProvider(sessionToken);
+  }
 
   @override
   _MainOnlineControlsWidgetState createState() =>
@@ -35,12 +46,16 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
   bool isBtnEnabled = false;
   bool isFinished = false;
   bool isSearch = false;
+  bool isSearchStart = false;
+  bool isSearchEnabled = true;
   var colorsBtnBack = Colors.grey.shade300;
   Color colorsBtnTxt = Colors.grey;
   MaterialColor switchColor = Colors.red;
   Color switchBgColor = Colors.green.shade100;
+  StateSetter? setStateDialog;
   String? inputStrPhone;
   String? inputStrSearchLocation;
+  List<Suggestion>? resultsSearch = [];
   LatLng? inputLatLngDropOff;
   final controllerPhone = TextEditingController();
   final controllerSearch = TextEditingController();
@@ -175,8 +190,14 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text('strStreetPickUp'.tr),
-                      content: onClickStreetPickup(),
                       backgroundColor: Colors.grey.shade200,
+                      content: StatefulBuilder(
+                          // You need this, notice the parameters below:
+                          builder:
+                              (BuildContext context, StateSetter setState) {
+                        setStateDialog = setState;
+                        return onClickStreetPickup();
+                      }),
                     ),
                   );
                 },
@@ -304,8 +325,18 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
               height: 32,
             ),
             TextFormField(
+              enabled: isSearchEnabled,
               controller: controllerSearch,
               keyboardType: TextInputType.text,
+              onTap: () {
+                print('LogHulu: clear tap');
+                if (setStateDialog != null) {
+                  setStateDialog!(() {
+                    isSearchEnabled = true;
+                    isSearchStart = true;
+                  });
+                }
+              },
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
                 labelText: 'strPromptLocationDropOff'.tr,
@@ -326,15 +357,17 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
                   ),
                 ),
                 suffix: Visibility(
-                  visible: (inputStrSearchLocation != null &&
-                      controllerSearch.text.isNotEmpty),
+                  visible: (!isSearchEnabled),
                   child: SizedBox(
                     width: 36,
                     height: 20,
                     child: IconButton(
                         onPressed: () {
+                          print('LogHulu: clear');
                           controllerSearch.text = "";
-                          setState(() {
+                          setStateDialog!(() {
+                            isSearchEnabled = false;
+                            inputLatLngDropOff = null;
                             inputStrSearchLocation = null;
                           });
                         },
@@ -346,9 +379,19 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
                   ),
                 ),
               ),
-              onChanged: (value) {
-                inputStrSearchLocation = value;
-                setBtnStartEnabled();
+              onChanged: (value) async {
+                resultsSearch = await widget.apiClient?.fetchSuggestions(
+                    value, Localizations.localeOf(context).languageCode);
+
+                print('LogHulu: $resultsSearch +++++ $setStateDialog');
+
+                setStateDialog!(() {
+                  inputStrSearchLocation = value;
+                });
+
+                setState(() {
+                  inputStrSearchLocation = value;
+                });
               },
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
@@ -363,12 +406,13 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
               },
             ),
             Visibility(
-                visible: isSearch,
-                child: const SizedBox(
-                  height: 148,
-                )),
+              visible: true,
+              child: (resultsSearch != null && resultsSearch?.isEmpty == false)
+                  ? searchView()
+                  : searchLoadingView(),
+            ),
             Visibility(
-                visible: isSearch != true,
+                visible: isSearch == false,
                 child: const SizedBox(
                   height: 72,
                 )),
@@ -404,6 +448,55 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
         ),
       ),
     );
+  }
+
+  Widget searchLoadingView() {
+    if (isSearchStart == false) {
+      return Container();
+    } else {
+      return const SizedBox(
+        height: 48,
+        child: SpinKitFadingCircle(
+          color: Colors.green,
+          size: 24.0,
+        ),
+      );
+    }
+  }
+
+  Widget searchView() {
+    return SizedBox(
+      height: 150,
+      child: ListView.builder(
+        itemBuilder: (context, index) => ListTile(
+            title: Text(resultsSearch![index].description),
+            onTap: () async {
+              if (resultsSearch![index] != null) {
+                final placeDetails = await PlaceApiProvider(widget.sessionToken)
+                    .getPlaceDetailFromId(resultsSearch![index].placeId);
+
+                if (placeDetails.lat != null && placeDetails.long != null) {
+                  inputLatLngDropOff =
+                      LatLng(placeDetails.lat!, placeDetails.long!);
+                  inputStrSearchLocation = resultsSearch![index].description;
+                }
+              }
+              setStateDialog!(() {
+                isSearchStart = false;
+                if (inputLatLngDropOff != null) {
+                  controllerSearch.text = inputStrSearchLocation!;
+                  isSearchEnabled = false;
+
+                  Future.delayed(const Duration(seconds: 0), () {
+                    resultsSearch = [];
+                    setStateDialog = null;
+                  });
+                }
+              });
+              setBtnStartEnabled();
+            }),
+        itemCount: resultsSearch!.length,
+      ),);
   }
 
   void qrScanner() {
@@ -488,12 +581,12 @@ class _MainOnlineControlsWidgetState extends State<MainOnlineControlsWidget> {
   }
 
   void addMainOnOffLine(bool isSetOnline) {
-    BlocProvider.of<MainBloc>(context)
-        .add(GetMainOnOffline(isSetOnline, widget.isTraffic, widget.pickUpLatLng, widget.destinationLatLng));
+    BlocProvider.of<MainBloc>(context).add(GetMainOnOffline(isSetOnline,
+        widget.isTraffic, widget.pickUpLatLng, widget.destinationLatLng));
   }
 
   void addMainPickUp(String phoneNumber, LatLng dropOffLocation) {
-    BlocProvider.of<MainBloc>(context).add(
-        GetMainPickup(phoneNumber, widget.isTraffic, widget.pickUpLatLng, widget.destinationLatLng));
+    BlocProvider.of<MainBloc>(context).add(GetMainPickup(phoneNumber,
+        widget.isTraffic, widget.pickUpLatLng, widget.destinationLatLng));
   }
 }

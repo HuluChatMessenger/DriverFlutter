@@ -54,7 +54,10 @@ dependencies:
   #Google locator
   geolocator:
   #Google location
-#  location:
+#  google_places_picker:
+  #  location:
+  #Google Location Search Token
+  uuid:
   #permission
   permission_handler:
   #Map path
@@ -68,7 +71,7 @@ dependencies:
   #Swipe Button
   swipeable_button_view:
   #Scanner
-#  qr_code_scanner:
+  #  qr_code_scanner:
   #Intent
   android_intent_plus:
 
