@@ -1,5 +1,6 @@
 abstract class AppConstants {
   //Url
+  // static const baseUrl = "https://dev.huluchat.com/";
   static const baseUrl = "https://api.huluchat.com/";
   static const urlTerms = 'https://hulugram.org/hulutaxi/termsandconditions';
   static const apiKey = 'AIzaSyDywlkflWqYCy3_bQHu0lka5Ybr3YUN5s0';
