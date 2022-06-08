@@ -18,6 +18,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../widgets/widgets.dart';
 
 class SplashPage extends StatelessWidget {
+
   SplashPage({Key? key}) : super(key: key);
 
   @override
